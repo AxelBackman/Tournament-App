@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @CrossOrigin
 public class MainController {
 
-    @GetMapping(value="path")
+    @GetMapping(value="/hello")
     public @ResponseBody String hello() {
         return "Hello from Hello";
     }
