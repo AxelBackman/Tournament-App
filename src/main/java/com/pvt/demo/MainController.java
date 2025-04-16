@@ -15,7 +15,7 @@ public class MainController {
 
     @GetMapping(value="/hello")
     public @ResponseBody String hello() {
-        return "Hello from PVT";
+        return "Hello from Axel";
     }
     
 
