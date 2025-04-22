@@ -22,4 +22,9 @@ public class MainController {
         return "Hello from Simon";
     }
 
+    @GetMapping(value="/helloSimon")
+    public @ResponseBody String helloFromMarina() {
+        return "Hello from Marina";
+    }
+
 }
