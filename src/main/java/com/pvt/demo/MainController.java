@@ -32,8 +32,11 @@ public class MainController {
     	return "Hello from Iliya";
     }
 
+    @GetMapping(value="/helloElnaz")
+    public @ResponseBody String helloFromElnaz() {
+    	return "Hello from Elnaz";
+    }
     //Ok
-    
     
 
 }
