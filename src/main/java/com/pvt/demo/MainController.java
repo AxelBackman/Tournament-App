@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @CrossOrigin
 public class MainController {
 
-    @GetMapping(value="/hello")
+    @GetMapping(value="/helloAxel")
     public @ResponseBody String hello() {
         return "Hello from Axel";
     }
@@ -22,12 +22,12 @@ public class MainController {
         return "Hello from Simon";
     }
 
-    @GetMapping(value="/helloSimon")
+    @GetMapping(value="/helloMarina")
     public @ResponseBody String helloFromMarina() {
         return "Hello from Marina";
     }
     
-    @GetMapping(value="/hello")
+    @GetMapping(value="/helloIliya")
     public @ResponseBody String helloFromIliya() {
     	return "Hello from Iliya";
     }
