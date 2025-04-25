@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -51,11 +52,11 @@ public class MainController {
     }
     
     @GetMapping(path = "/add/{eventName}/{eventDescription}")
-    public @ResponseBody String addNewEvent(@RequestParam String eventName, @RequestParam String eventDescription) {
+    public @ResponseBody String addNewEvent(@PathVariable String eventName, @PathVariable String eventDescription) {
         SKEvent event = new SKEvent();
         event.setName(eventName);
         event.setDescription(eventDescription);
         eventRepository.save(event);
-        return "Saved";
+        return "Event '" + eventName + "' saved successfully";
     }
 }
