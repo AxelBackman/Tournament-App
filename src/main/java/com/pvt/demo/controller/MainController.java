@@ -15,7 +15,7 @@ public class MainController {
 
     @GetMapping(value="/helloAxel")
     public @ResponseBody String hello() {
-        return "Hello from Axel";
+        return "Hello from AxelAxel";
     }
     @GetMapping(value="/helloSimon")
     public @ResponseBody String helloFromSimon() {
@@ -36,7 +36,7 @@ public class MainController {
     public @ResponseBody String helloFromElnaz() {
     	return "Hello from Elnaz";
     }
-    //Ok
+    
     
 
 }
