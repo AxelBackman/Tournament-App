@@ -50,7 +50,7 @@ public class MainController {
         return eventRepository.findAll();
     }
     
-    @GetMapping(path = "/add{eventName}/{eventDescription}")
+    @GetMapping(path = "/add/{eventName}/{eventDescription}")
     public @ResponseBody String addNewEvent(@RequestParam String eventName, @RequestParam String eventDescription) {
         SKEvent event = new SKEvent();
         event.setName(eventName);
