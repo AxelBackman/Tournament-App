@@ -41,6 +41,11 @@ public class MainController {
     public @ResponseBody String helloFromElnaz() {
     	return "Hello from Elnaz";
     }
+
+    @GetMapping(value="/helloShoajb")
+    public @ResponseBody String helloFromShoajb() {
+    	return "Hello from Shoajb";
+    }
     
 
     @Autowired
