@@ -1,4 +1,4 @@
-package com.pvt.demo.model;
+package com.trashcan;
 
 import java.time.LocalDateTime;
 

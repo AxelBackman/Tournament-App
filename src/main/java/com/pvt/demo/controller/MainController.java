@@ -6,11 +6,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.pvt.demo.model.SKEvent;
-import com.pvt.demo.model.SKEventRepository;
+import com.trashcan.SKEvent;
+import com.trashcan.SKEventRepository;
 
 
 @Controller
@@ -93,7 +92,7 @@ public class MainController {
     // private RegistrationRepository registrationRepository;
 
     // @GetMapping(path = "/register")
-    // public @ResponseBody String registerToEvent(@RequestParam String eventName, @RequestParam String userName) {
+    // public @ResponseBody String registerToEvent(@PathVariable String eventName, @PathVariable String userName) {
     //     try {
     //         // Kontrollera att event finns
     //         SKEvent event = eventRepository.findByName(eventName);
