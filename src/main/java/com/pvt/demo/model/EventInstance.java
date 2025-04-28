@@ -2,6 +2,8 @@ package com.pvt.demo.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,6 +22,7 @@ public class EventInstance {
     private boolean randomisedMatching;
     
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "recurring_event_id")
     private RecurringEvent parentEvent;
 

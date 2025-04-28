@@ -2,6 +2,8 @@ package com.pvt.demo.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +19,8 @@ public class RecurringEvent {
 
     private String name;
     private String description;
-
+    
+    @JsonManagedReference
     @OneToMany(mappedBy = "parentEvent", cascade = CascadeType.ALL)
     private List<EventInstance> subEvents;
     
