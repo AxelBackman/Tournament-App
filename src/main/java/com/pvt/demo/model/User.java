@@ -14,8 +14,8 @@ public class User {
     private long id;
     private String name;
     private String email;
-    private List<EventInstance> coming;
-    private List<EventInstance> interested;
+    private List<EventInstance> comingEvents;
+    private List<EventInstance> interestedEvents;
 
     public User() {
 
@@ -24,8 +24,8 @@ public class User {
     public User(String name, String email) {
         this.name = name;
         this.email = email;
-        coming = new ArrayList<>();
-        interested = new ArrayList<>();
+        comingEvents = new ArrayList<>();
+        interestedEvents = new ArrayList<>();
 
     }
 
@@ -38,12 +38,19 @@ public class User {
     }
 
     public List<EventInstance> getComing(){
-        return coming;
+        return comingEvents;
     }
 
     public List<EventInstance> getInterested(){
-        return interested;
+        return interestedEvents;
+    }
 
+    public void addComingEvent(EventInstance eventInstance){
+        this.comingEvents.add(eventInstance);
+    }
+
+    public void addInterestedEvent(EventInstance eventInstance){
+        this.interestedEvents.add(eventInstance);
     }
 
     public void setName(String name) {

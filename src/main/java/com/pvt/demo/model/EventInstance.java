@@ -83,6 +83,16 @@ public class EventInstance {
 
     }
 
+    public void addComingUser(User user){
+        this.comingUsers.add(user);
+    }
+
+    public void addInterestedEvent(User user){
+        this.interestedUsers.add(user);
+    }
+
+    
+
     public void setParentEvent(RecurringEvent parentEvent) {
         this.parentEvent = parentEvent;
     }
