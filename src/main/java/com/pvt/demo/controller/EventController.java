@@ -66,4 +66,21 @@ public class EventController {
         recurringEventRepository.delete(event);
         return "Recurring event deleted: " + event.getName();
     }
+
+    @GetMapping("/deleteinstance/{id}")
+    public String deleteEventInstance(@PathVariable Integer id) {
+        EventInstance instance = eventInstanceRepository.findById(id).orElse(null);
+        if (instance == null) {
+            return "Event instance not found";
+        }
+        eventInstanceRepository.delete(instance);
+        return "Event instance deleted: " + instance.getParentEvent().getName();
+    }
+
+    @GetMapping("/deletallrecurring")
+    public String deleteAllRecurringEvents() {
+        recurringEventRepository.deleteAll();
+        return "All recurring events deleted";
+    }
+
 }
