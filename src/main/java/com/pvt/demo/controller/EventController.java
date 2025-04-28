@@ -25,17 +25,17 @@ public class EventController {
     @Autowired
     private RecurringEventRepository recurringEventRepository;
 
-    @GetMapping("/allReccurring")
+    @GetMapping("/allreccurring")
     public String getAllRecurringEvents() {
         return recurringEventRepository.findAll().toString();
     }
 
-    @GetMapping("/allInstances")
+    @GetMapping("/allinstances")
     public String getAllEventInstances() {
         return eventInstanceRepository.findAll().toString();
     }
 
-    @GetMapping("/addRecurring/{name}/{description}")
+    @GetMapping("/addrecurring/{name}/{description}")
     public String addRecurringEvent(@PathVariable String name, @PathVariable String description) {
         RecurringEvent event = new RecurringEvent();
         event.setName(name);
@@ -44,7 +44,7 @@ public class EventController {
         return "Recurring event added: " + event.getName();
     }
 
-    @GetMapping("/addInstance/{parentId}")
+    @GetMapping("/addinstance/{parentId}")
     public String addEventInstance(@PathVariable Integer parentId) {
         RecurringEvent parentEvent = recurringEventRepository.findById(parentId).orElse(null);
         if (parentEvent == null) {
