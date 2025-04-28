@@ -78,6 +78,16 @@ public class EventInstance {
         this.parentEvent = parentEvent;
     }
 
+    public Integer getParentEventId() {
+        if (parentEvent != null) {
+            return parentEvent.getId();
+        } else {
+            return null;
+        }
+    }
+
+    
+
     public void method(String type) {
         // Funktionalitet
     }
