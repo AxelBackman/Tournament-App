@@ -87,7 +87,7 @@ public class EventInstance {
         this.comingUsers.add(user);
     }
 
-    public void addInterestedEvent(User user){
+    public void addInterestedUser(User user){
         this.interestedUsers.add(user);
     }
 
