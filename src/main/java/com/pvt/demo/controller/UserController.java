@@ -1,0 +1,35 @@
+package com.pvt.demo.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.pvt.demo.model.User;
+import com.pvt.demo.repository.UserRepository;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+
+@RestController
+@RequestMapping("/users")
+@CrossOrigin
+public class UserController {
+    @Autowired
+    private UserRepository userRepository;
+
+    
+    @GetMapping("/users")
+    public Iterable<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @GetMapping("/addUser/{userName}")
+    public String addNewUser(@PathVariable String userName) {
+        User user = new User();
+        user.setName(userName);
+        userRepository.save(user);
+        return "User '" + userName + "' saved successfully";
+    }
+}

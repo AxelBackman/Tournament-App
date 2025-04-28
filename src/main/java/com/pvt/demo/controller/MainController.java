@@ -67,22 +67,7 @@ public class MainController {
 
 
 
-//     // @Autowired
-//     // private UserRepository userRepository;
 
-    
-//     // @GetMapping(path = "/users")
-//     // public @ResponseBody Iterable<User> getAllUsers() {
-//     //     return userRepository.findAll();
-//     // }
-
-//     // @GetMapping(path = "/addUser/{userName}")
-//     // public @ResponseBody String addNewUser(@PathVariable String userName) {
-//     //     User user = new User();
-//     //     user.setUsername(userName);
-//     //     userRepository.save(user);
-//     //     return "User '" + userName + "' saved successfully";
-//     // }
 
 
 //     // @Autowired

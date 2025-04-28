@@ -2,14 +2,10 @@ package com.pvt.demo.model;
 
 import jakarta.persistence.*;
 
-//Save objects to DB
 @Entity
 public class User {   
 
-    //Primary Key in DB
     @Id 
-    
-    //ID generated automatically in DB
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     
 

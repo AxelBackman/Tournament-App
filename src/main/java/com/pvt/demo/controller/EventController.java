@@ -1,5 +1,7 @@
 package com.pvt.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,13 +27,13 @@ public class EventController {
     private RecurringEventRepository recurringEventRepository;
 
     @GetMapping("/allrecurring")
-    public String getAllRecurringEvents() {
-        return recurringEventRepository.findAll().toString();
+    public List<RecurringEvent> getAllRecurringEvents() {
+        return recurringEventRepository.findAll();
     }
 
     @GetMapping("/allinstances")
-    public String getAllEventInstances() {
-        return eventInstanceRepository.findAll().toString();
+    public List<EventInstance> getAllEventInstances() {
+        return eventInstanceRepository.findAll();
     }
     
     @GetMapping("/addrecurring/{name}/{description}")
