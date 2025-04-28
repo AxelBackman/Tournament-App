@@ -64,4 +64,32 @@ public class MainController {
         eventRepository.save(event);
         return "Event '" + eventName + "' saved successfully";
     }
-}
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RegistrationRepository registrationRepository;
+
+    @GetMapping(path = "/register")
+    public @ResponseBody String registerToEvent(@RequestParam String eventName, @RequestParam String userName) {
+    
+        // Hämta event baserat på namn
+        SKEvent event = eventRepository.findByName(eventName);
+        if (event == null) {
+            return "Event not found!";
+        }
+
+        // Skapa användare
+        User user = new User();
+        user.setUsername(userName);
+        userRepository.save(user);
+
+        // Skapa registrering
+        Registration registration = new Registration();
+        registration.setUser(user);
+        registration.setEvent(event);
+        registrationRepository.save(registration);
+
+        return "User '" + userName + "' registered to event '" + eventName + "'!";
+    }
