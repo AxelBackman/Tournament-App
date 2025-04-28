@@ -12,7 +12,6 @@ import com.pvt.demo.repository.RecurringEventRepository;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -25,7 +24,7 @@ public class EventController {
     @Autowired
     private RecurringEventRepository recurringEventRepository;
 
-    @GetMapping("/allreccurring")
+    @GetMapping("/allrecurring")
     public String getAllRecurringEvents() {
         return recurringEventRepository.findAll().toString();
     }
@@ -34,7 +33,7 @@ public class EventController {
     public String getAllEventInstances() {
         return eventInstanceRepository.findAll().toString();
     }
-
+    
     @GetMapping("/addrecurring/{name}/{description}")
     public String addRecurringEvent(@PathVariable String name, @PathVariable String description) {
         RecurringEvent event = new RecurringEvent();
