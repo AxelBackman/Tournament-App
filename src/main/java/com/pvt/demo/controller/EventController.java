@@ -56,4 +56,14 @@ public class EventController {
         eventInstanceRepository.save(instance);
         return "Event instance added of: " + parentEvent.getName();
     }
+
+    @GetMapping("/deleterecurring/{id}")
+    public String deleteRecurringEvent(@PathVariable Integer id) {
+        RecurringEvent event = recurringEventRepository.findById(id).orElse(null);
+        if (event == null) {
+            return "Recurring event not found";
+        }
+        recurringEventRepository.delete(event);
+        return "Recurring event deleted: " + event.getName();
+    }
 }
