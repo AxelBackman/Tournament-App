@@ -1,26 +1,23 @@
-// package com.pvt.demo.trashcan;
+package com.pvt.demo.controller;
 
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.stereotype.Controller;
-// import org.springframework.web.bind.annotation.CrossOrigin;
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PathVariable;
-// import org.springframework.web.bind.annotation.ResponseBody;
-
-// import com.trashcan.SKEvent;
-// import com.trashcan.SKEventRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
-// @Controller
-// @RequestMapping(path="/pet")
-// @CrossOrigin
-// public class MainController {
+@Controller
+@RequestMapping(path="/pet")
+@CrossOrigin
+public class MainController {
 
-//     @GetMapping(value="/helloAxel")
-//     public @ResponseBody String hello() {
-//         return "Hello from AxelAxel";
-//     }
+@GetMapping(value="/helloAxel")
+    public @ResponseBody String hello() {
+        return "Hello from AxelAxel";
+    }
 //     @GetMapping(value="/helloSimon")
 //     public @ResponseBody String helloFromSimon() {
 //         return "Hello from Simon";
@@ -66,7 +63,7 @@
 //         event.setDescription(eventDescription);
 //         eventRepository.save(event);
 //         return "Event '" + eventName + "' saved successfully";
-//     }
+}
 
 
 
