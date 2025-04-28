@@ -71,50 +71,50 @@ public class MainController {
 
 
 
-    @Autowired
-    private UserRepository userRepository;
+    // @Autowired
+    // private UserRepository userRepository;
 
     
-    @GetMapping(path = "/users")
-    public @ResponseBody Iterable<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+    // @GetMapping(path = "/users")
+    // public @ResponseBody Iterable<User> getAllUsers() {
+    //     return userRepository.findAll();
+    // }
 
-    @GetMapping(path = "/addUser/{userName}")
-    public @ResponseBody String addNewUser(@PathVariable String userName) {
-        User user = new User();
-        user.setUsername(userName);
-        userRepository.save(user);
-        return "User '" + userName + "' saved successfully";
-    }
+    // @GetMapping(path = "/addUser/{userName}")
+    // public @ResponseBody String addNewUser(@PathVariable String userName) {
+    //     User user = new User();
+    //     user.setUsername(userName);
+    //     userRepository.save(user);
+    //     return "User '" + userName + "' saved successfully";
+    // }
 
 
-    @Autowired
-    private RegistrationRepository registrationRepository;
+    // @Autowired
+    // private RegistrationRepository registrationRepository;
 
-    @GetMapping(path = "/register")
-    public @ResponseBody String registerToEvent(@RequestParam String eventName, @RequestParam String userName) {
-        try {
-            // Kontrollera att event finns
-            SKEvent event = eventRepository.findByName(eventName);
-            if (event == null) {
-                return "Fel: Event med namn '" + eventName + "' hittades inte!";
-            }
+    // @GetMapping(path = "/register")
+    // public @ResponseBody String registerToEvent(@RequestParam String eventName, @RequestParam String userName) {
+    //     try {
+    //         // Kontrollera att event finns
+    //         SKEvent event = eventRepository.findByName(eventName);
+    //         if (event == null) {
+    //             return "Fel: Event med namn '" + eventName + "' hittades inte!";
+    //         }
 
-            // Skapa användare och spara
-            User user = new User();
-            user.setUsername(userName);
-            userRepository.save(user);
+    //         // Skapa användare och spara
+    //         User user = new User();
+    //         user.setUsername(userName);
+    //         userRepository.save(user);
 
-            // Skapa registrering och spara
-            Registration registration = new Registration();
-            registration.setUser(user);
-            registration.setEvent(event);
-            registrationRepository.save(registration);
+    //         // Skapa registrering och spara
+    //         Registration registration = new Registration();
+    //         registration.setUser(user);
+    //         registration.setEvent(event);
+    //         registrationRepository.save(registration);
 
-            return "Lyckades: User '" + userName + "' är registrerad till event '" + eventName + "'!";
-        } catch (Exception e) {
-            e.printStackTrace(); // Skriver ut felet i serverloggarna
-            return "Fel: Något gick fel vid registreringen.";
-        }
+    //         return "Lyckades: User '" + userName + "' är registrerad till event '" + eventName + "'!";
+    //     } catch (Exception e) {
+    //         e.printStackTrace(); // Skriver ut felet i serverloggarna
+    //         return "Fel: Något gick fel vid registreringen.";
+    //     }
     }
