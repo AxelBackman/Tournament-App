@@ -1,6 +1,8 @@
 package com.pvt.demo.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -19,12 +21,26 @@ public class EventInstance {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String location;
-    private boolean randomisedMatching;
+    private List<User> comingUsers;
+    private List<User> interestedUsers;
     
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "recurring_event_id")
     private RecurringEvent parentEvent;
+
+    public EventInstance() {
+
+    }
+
+    public EventInstance(LocalDateTime startTime, LocalDateTime endTime, String location) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
+        comingUsers = new ArrayList<>();
+        interestedUsers = new ArrayList<>();
+    }
+    
 
     public Integer getId() {
         return id;
@@ -52,14 +68,6 @@ public class EventInstance {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public boolean isRandomisedMatching() {
-        return randomisedMatching;
-    }
-
-    public void setRandomisedMatching(boolean randomisedMatching) {
-        this.randomisedMatching = randomisedMatching;
     }
 
     public RecurringEvent getParentEvent() {
