@@ -37,6 +37,15 @@ public class User {
         return name;
     }
 
+    public List<EventInstance> getComing(){
+        return coming;
+    }
+
+    public List<EventInstance> getInterested(){
+        return interested;
+
+    }
+
     public void setName(String name) {
         this.name = name;
     }

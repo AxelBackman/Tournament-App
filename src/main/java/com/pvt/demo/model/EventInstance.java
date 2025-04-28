@@ -74,6 +74,15 @@ public class EventInstance {
         return parentEvent;
     }
 
+    public List<User> comingUsers(){
+        return comingUsers;
+    }
+
+    public List<User> getInterestedUsers(){
+        return interestedUsers;
+
+    }
+
     public void setParentEvent(RecurringEvent parentEvent) {
         this.parentEvent = parentEvent;
     }
