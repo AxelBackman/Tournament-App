@@ -47,6 +47,10 @@ public class MainController {
     	return "Hello from Shoajb";
     }
     
+    @GetMapping(value="/helloSara")
+    public @ResponseBody String helloFromSara() {
+    	return "Hello from Sara";
+    }
 
     @Autowired
     private SKEventRepository eventRepository;
