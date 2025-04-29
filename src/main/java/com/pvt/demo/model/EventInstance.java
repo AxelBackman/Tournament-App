@@ -1,8 +1,7 @@
 package com.pvt.demo.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -21,8 +20,7 @@ public class EventInstance {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String location;
-    private List<User> comingUsers;
-    private List<User> interestedUsers;
+    
     
     @ManyToOne
     @JsonBackReference
@@ -37,8 +35,7 @@ public class EventInstance {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
-        comingUsers = new ArrayList<>();
-        interestedUsers = new ArrayList<>();
+        
     }
     
 
@@ -73,25 +70,6 @@ public class EventInstance {
     public RecurringEvent getParentEvent() {
         return parentEvent;
     }
-
-    public List<User> comingUsers(){
-        return comingUsers;
-    }
-
-    public List<User> getInterestedUsers(){
-        return interestedUsers;
-
-    }
-
-    public void addComingUser(User user){
-        this.comingUsers.add(user);
-    }
-
-    public void addInterestedUser(User user){
-        this.interestedUsers.add(user);
-    }
-
-    
 
     public void setParentEvent(RecurringEvent parentEvent) {
         this.parentEvent = parentEvent;
