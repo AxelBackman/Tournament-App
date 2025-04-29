@@ -21,16 +21,15 @@ public class RegisteredUsers {
     @ManyToOne
     private EventInstance eventInstance;
 
-
-    private String comingOrInterested; // = coming OR interested
+    private boolean coming; // = if TRUE = coming, if FALSE = interested
 
 
     public RegisteredUsers(){}
 
-    public RegisteredUsers(EventInstance eventInstance, User user, String comingOrInterested){
+    public RegisteredUsers(EventInstance eventInstance, User user, boolean coming){
         this.user = user;
         this.eventInstance = eventInstance;
-        this.comingOrInterested = comingOrInterested;
+        this.coming = coming;
     
     }
 
@@ -42,11 +41,39 @@ public class RegisteredUsers {
         return this.eventInstance;
     }
 
-    public String getComingOrInterested(){
-        return this.comingOrInterested;
+    // if true, then the person is coming - returns true
+    public boolean getComing(){
+        if (this.coming == true){
+            return true;
+        }
+        return false;
     }
 
-    // setters?
+    // if false, then the person is only interested - returns true
+    public boolean getInterested(){
+        if (this.coming == false){
+            return true;
+        }
+        return false;
+    }
+
+    /* 
+     * if User sets from interested straight to coming we only change boolean.
+     * nicen up with controls and return message?
+    */
+    public void setNewStatus(){
+        if (this.coming == false){
+            this.coming = true;
+        }
+        if (this.coming == true){
+            this.coming = false;
+        }
+    }
+
+
+
+
+    // other setters?
 
     
 }
