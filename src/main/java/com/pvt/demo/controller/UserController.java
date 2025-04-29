@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/deleteuser/{id}")
-    public String deleteUser(@PathVariable Integer id) {
+    public String deleteUser(@PathVariable Long id) {
         userRepository.deleteById(id);
         return "User with ID " + id + " deleted successfully";
     }

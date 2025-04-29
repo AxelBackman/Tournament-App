@@ -15,7 +15,7 @@ import jakarta.persistence.OneToMany;
 public class RecurringEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String name;
     private String description;
@@ -25,7 +25,7 @@ public class RecurringEvent {
     private List<EventInstance> subEvents;
     
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

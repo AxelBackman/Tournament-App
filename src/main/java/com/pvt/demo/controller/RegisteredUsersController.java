@@ -9,12 +9,9 @@ import com.pvt.demo.model.RegisteredUsers;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RegisteredUsersRepository;
 import com.pvt.demo.repository.UserRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 
@@ -36,8 +33,8 @@ public class RegisteredUsersController {
     public String RegisterUserToEvent(@PathVariable Long userId,
     @PathVariable Long eventId,
     @PathVariable boolean coming){
-        var user = userRepository.findById(userId.intValue()).orElse(null);
-        var event = eventInstanceRepository.findById(eventId.intValue()).orElse(null);
+        var user = userRepository.findById(userId).orElse(null);
+        var event = eventInstanceRepository.findById(eventId).orElse(null);
         if (user == null || event == null) {
             return "User or Event not found";
         }
@@ -50,4 +47,38 @@ public class RegisteredUsersController {
         
         return "User " + user.getName() + " registered for event " + event.getId() + " with coming status: " + (coming ? "Coming" : "Interested"); 
     }
+
+    @GetMapping("/delete/{userId}/{eventId}")
+    public String deleteUserFromEvent(@PathVariable Long userId,
+    @PathVariable Long eventId) {
+        var registeredUser = registeredUsersRepository.findByUserIdAndEventInstanceId(userId, eventId);
+        if (registeredUser == null) {
+            return "User is not registered for this event";
+        }
+        registeredUsersRepository.delete(registeredUser);
+        return "User " + userId + " unregistered from event " + eventId;
+    }
+
+    @GetMapping("/allregistered/{eventId}")
+    public Iterable<RegisteredUsers> getAllRegisteredUsers(@PathVariable Long eventId) {
+        return registeredUsersRepository.findByEventInstanceId(eventId);
+    }
+
+    @GetMapping("/allregistereduser/{userId}")
+    public Iterable<RegisteredUsers> getAllRegisteredUser(@PathVariable Long userId) {
+        return registeredUsersRepository.findByUserId(userId);
+    }
+
+    @GetMapping("/updatecoming/{userId}/{eventId}/{coming}")
+    public String updateComingStatus(@PathVariable Long userId,
+    @PathVariable Long eventId, @PathVariable boolean coming) {
+        var registeredUser = registeredUsersRepository.findByUserIdAndEventInstanceId(userId, eventId);
+        if (registeredUser == null) {
+            return "User is not registered for this event";
+        }
+        registeredUser.setNewStatus();
+        registeredUsersRepository.save(registeredUser);
+        return "Coming status updated to " + (coming ? "Coming" : "Interested") + " for user " + userId + " in event " + eventId;
+    }
+    
 }

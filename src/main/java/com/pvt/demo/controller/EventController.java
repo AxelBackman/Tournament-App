@@ -46,7 +46,7 @@ public class EventController {
     }
 
     @GetMapping("/addinstance/{parentId}")
-    public String addEventInstance(@PathVariable Integer parentId) {
+    public String addEventInstance(@PathVariable Long parentId) {
         RecurringEvent parentEvent = recurringEventRepository.findById(parentId).orElse(null);
         if (parentEvent == null) {
             return "Parent event not found";
@@ -58,7 +58,7 @@ public class EventController {
     }
 
     @GetMapping("/deleterecurring/{id}")
-    public String deleteRecurringEvent(@PathVariable Integer id) {
+    public String deleteRecurringEvent(@PathVariable Long id) {
         RecurringEvent event = recurringEventRepository.findById(id).orElse(null);
         if (event == null) {
             return "Recurring event not found";
@@ -68,7 +68,7 @@ public class EventController {
     }
 
     @GetMapping("/deleteinstance/{id}")
-    public String deleteEventInstance(@PathVariable Integer id) {
+    public String deleteEventInstance(@PathVariable Long id) {
         EventInstance instance = eventInstanceRepository.findById(id).orElse(null);
         if (instance == null) {
             return "Event instance not found";

@@ -16,7 +16,7 @@ import jakarta.persistence.ManyToOne;
 public class EventInstance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String location;
@@ -39,7 +39,7 @@ public class EventInstance {
     }
     
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -75,7 +75,7 @@ public class EventInstance {
         this.parentEvent = parentEvent;
     }
 
-    public Integer getParentEventId() {
+    public Long getParentEventId() {
         if (parentEvent != null) {
             return parentEvent.getId();
         } else {
