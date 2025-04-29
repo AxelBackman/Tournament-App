@@ -24,10 +24,11 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @GetMapping("/adduser/{userName}")
-    public String addNewUser(@PathVariable String userName) {
+    @GetMapping("/adduser/{userName}/{email}")
+    public String addNewUser(@PathVariable String userName, @PathVariable String email) {
         User user = new User();
         user.setName(userName);
+        user.setEmail(email);
         userRepository.save(user);
         return "User '" + userName + "' saved successfully";
     }
@@ -36,5 +37,11 @@ public class UserController {
     public String deleteUser(@PathVariable Long id) {
         userRepository.deleteById(id);
         return "User with ID " + id + " deleted successfully";
+    }
+
+    @GetMapping("/deleteall")
+    public String deleteAllUsers() {
+        userRepository.deleteAll();
+        return "All users deleted successfully";
     }
 }
