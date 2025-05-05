@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin
+@CrossOrigin(origins = "*") // Allow all origins for testing purposes
 public class UserController {
     @Autowired
     private UserRepository userRepository;
@@ -41,8 +41,8 @@ public class UserController {
         return "User with ID " + id + " deleted successfully";
     }
 
-    
-    @PostMapping("/deleteall") // Deletemapping doesn't seem to work without parameters
+    @CrossOrigin(origins = "*")
+    @DeleteMapping("/deleteall")
     public String deleteAllUsers() {
         userRepository.deleteAll();
         return "All users deleted successfully";
