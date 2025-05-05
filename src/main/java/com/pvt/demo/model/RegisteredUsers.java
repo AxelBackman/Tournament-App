@@ -43,18 +43,12 @@ public class RegisteredUsers {
 
     // if true, then the person is coming - returns true
     public boolean getComing(){
-        if (this.coming == true){
-            return true;
-        }
-        return false;
+        return this.coming;
     }
 
     // if false, then the person is only interested - returns true
     public boolean getInterested(){
-        if (this.coming == false){
-            return true;
-        }
-        return false;
+        return !this.coming;
     }
 
     /* 
@@ -62,12 +56,7 @@ public class RegisteredUsers {
      * nicen up with controls and return message?
     */
     public void setNewStatus(){
-        if (this.coming == false){
-            this.coming = true;
-        }
-        if (this.coming == true){
-            this.coming = false;
-        }
+       this.coming = !this.coming; 
     }
 
 
