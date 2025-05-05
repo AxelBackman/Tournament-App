@@ -13,6 +13,8 @@ import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -36,7 +38,7 @@ public class EventController {
         return eventInstanceRepository.findAll();
     }
     
-    @GetMapping("/addrecurring/{name}/{description}")
+    @PostMapping("/addrecurring/{name}/{description}")
     public String addRecurringEvent(@PathVariable String name, @PathVariable String description) {
         RecurringEvent event = new RecurringEvent();
         event.setName(name);
@@ -45,7 +47,7 @@ public class EventController {
         return "Recurring event added: " + event.getName();
     }
 
-    @GetMapping("/addinstance/{parentId}")
+    @PostMapping("/addinstance/{parentId}")
     public String addEventInstance(@PathVariable Long parentId) {
         RecurringEvent parentEvent = recurringEventRepository.findById(parentId).orElse(null);
         if (parentEvent == null) {
@@ -57,7 +59,7 @@ public class EventController {
         return "Event instance added of: " + parentEvent.getName();
     }
 
-    @GetMapping("/deleterecurring/{id}")
+    @DeleteMapping("/deleterecurring/{id}")
     public String deleteRecurringEvent(@PathVariable Long id) {
         RecurringEvent event = recurringEventRepository.findById(id).orElse(null);
         if (event == null) {
@@ -67,7 +69,7 @@ public class EventController {
         return "Recurring event deleted: " + event.getName();
     }
 
-    @GetMapping("/deleteinstance/{id}")
+    @DeleteMapping("/deleteinstance/{id}")
     public String deleteEventInstance(@PathVariable Long id) {
         EventInstance instance = eventInstanceRepository.findById(id).orElse(null);
         if (instance == null) {
@@ -77,7 +79,7 @@ public class EventController {
         return "Event instance deleted: " + instance.getParentEvent().getName();
     }
 
-    @GetMapping("/deletallrecurring")
+    @DeleteMapping("/deletallrecurring")
     public String deleteAllRecurringEvents() {
         recurringEventRepository.deleteAll();
         return "All recurring events deleted";

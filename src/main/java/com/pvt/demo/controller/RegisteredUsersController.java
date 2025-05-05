@@ -10,6 +10,9 @@ import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RegisteredUsersRepository;
 import com.pvt.demo.repository.UserRepository;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -29,7 +32,7 @@ public class RegisteredUsersController {
     @Autowired
     private EventInstanceRepository eventInstanceRepository;
 
-    @GetMapping("/register/{userId}/{eventId}/{coming}")
+    @PostMapping("/register/{userId}/{eventId}/{coming}")
     public String RegisterUserToEvent(@PathVariable Long userId,
     @PathVariable Long eventId,
     @PathVariable boolean coming){
@@ -48,7 +51,7 @@ public class RegisteredUsersController {
         return "User " + user.getName() + " registered for event " + event.getId() + " with coming status: " + (coming ? "Coming" : "Interested"); 
     }
 
-    @GetMapping("/delete/{userId}/{eventId}")
+    @DeleteMapping("/delete/{userId}/{eventId}")
     public String deleteUserFromEvent(@PathVariable Long userId,
     @PathVariable Long eventId) {
         var registeredUser = registeredUsersRepository.findByUserIdAndEventInstanceId(userId, eventId);
@@ -69,7 +72,7 @@ public class RegisteredUsersController {
         return registeredUsersRepository.findByUserId(userId);
     }
 
-    @GetMapping("/updatecoming/{userId}/{eventId}/{coming}")
+    @PatchMapping("/updatecoming/{userId}/{eventId}/{coming}")
     public String updateComingStatus(@PathVariable Long userId,
     @PathVariable Long eventId, @PathVariable boolean coming) {
         var registeredUser = registeredUsersRepository.findByUserIdAndEventInstanceId(userId, eventId);
