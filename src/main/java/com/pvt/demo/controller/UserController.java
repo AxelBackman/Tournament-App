@@ -41,7 +41,8 @@ public class UserController {
         return "User with ID " + id + " deleted successfully";
     }
 
-    @DeleteMapping("/deleteall")
+    
+    @PostMapping("/deleteall") // Deletemapping doesn't seem to work without parameters
     public String deleteAllUsers() {
         userRepository.deleteAll();
         return "All users deleted successfully";
