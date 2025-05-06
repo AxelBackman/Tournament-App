@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/registeredusers")
-@CrossOrigin(origins = "*") // Allow all origins for testing purposes
+@CrossOrigin()
 public class RegisteredUsersController {
     @Autowired 
     private RegisteredUsersRepository registeredUsersRepository;

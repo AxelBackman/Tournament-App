@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "*") // Allow all origins for testing purposes
+@CrossOrigin() 
 public class UserController {
     @Autowired
     private UserRepository userRepository;
@@ -41,7 +41,6 @@ public class UserController {
         return "User with ID " + id + " deleted successfully";
     }
 
-    @CrossOrigin(origins = "*")
     @DeleteMapping("/deleteall")
     public String deleteAllUsers() {
         userRepository.deleteAll();

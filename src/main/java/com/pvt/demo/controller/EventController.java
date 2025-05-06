@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/events")
-@CrossOrigin(origins = "*") // Allow all origins for testing purposes
+@CrossOrigin()
 public class EventController {
     @Autowired
     private EventInstanceRepository eventInstanceRepository;
