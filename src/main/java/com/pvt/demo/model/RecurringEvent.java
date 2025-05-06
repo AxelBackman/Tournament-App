@@ -20,7 +20,6 @@ public class RecurringEvent {
     private String name;
     private String description;
     
-    @JsonManagedReference
     @OneToMany(mappedBy = "parentEvent", cascade = CascadeType.ALL)
     private List<EventInstance> subEvents;
     

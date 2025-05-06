@@ -23,7 +23,6 @@ public class EventInstance {
     private int teamSize;
     
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "recurring_event_id")
     private RecurringEvent parentEvent;
 
