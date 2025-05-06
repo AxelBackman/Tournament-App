@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.yaml.snakeyaml.events.Event;
 
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
@@ -52,7 +51,7 @@ public class EventController {
         return "Recurring event added: " + event.getName();
     }
 
-    @PostMapping("/addinstance/{parentId}")
+    @GetMapping("/addinstance/{parentId}")
     public String addEventInstance(@PathVariable Long parentId) {
         EventInstance instance = eventInstanceService.addInstance(parentId);;
         return "Event instance added of parent event: " + instance.getParentEvent().getName();
