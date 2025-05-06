@@ -20,7 +20,7 @@ public class EventInstance {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String location;
-    
+    private int teamSize;
     
     @ManyToOne
     @JsonBackReference
@@ -31,11 +31,11 @@ public class EventInstance {
 
     }
 
-    public EventInstance(LocalDateTime startTime, LocalDateTime endTime, String location) {
+    public EventInstance(LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
-        
+        this.teamSize = teamSize;
     }
     
 
@@ -73,6 +73,14 @@ public class EventInstance {
 
     public void setParentEvent(RecurringEvent parentEvent) {
         this.parentEvent = parentEvent;
+    }
+
+    public int getTeamSize() {
+        return teamSize;
+    }
+
+    public void setTeamSize(int teamSize) {
+        this.teamSize = teamSize;
     }
 
     public Long getParentEventId() {
