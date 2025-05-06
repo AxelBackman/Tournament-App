@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.yaml.snakeyaml.events.Event;
 
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
+import com.pvt.demo.services.EventInstanceService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +29,9 @@ public class EventController {
     
     @Autowired
     private RecurringEventRepository recurringEventRepository;
+    
+    @Autowired
+    private EventInstanceService eventInstanceService;
 
     @GetMapping("/allrecurring")
     public List<RecurringEvent> getAllRecurringEvents() {
@@ -49,14 +54,8 @@ public class EventController {
 
     @PostMapping("/addinstance/{parentId}")
     public String addEventInstance(@PathVariable Long parentId) {
-        RecurringEvent parentEvent = recurringEventRepository.findById(parentId).orElse(null);
-        if (parentEvent == null) {
-            return "Parent event not found";
-        }
-        EventInstance instance = new EventInstance();
-        instance.setParentEvent(parentEvent);
-        eventInstanceRepository.save(instance);
-        return "Event instance added of: " + parentEvent.getName();
+        EventInstance instance = eventInstanceService.addInstance(parentId);;
+        return "Event instance added of parent event: " + instance.getParentEvent().getName();
     }
 
     @DeleteMapping("/deleterecurring/{id}")
