@@ -12,7 +12,13 @@ public class Team {
     private Long id;
 
     @ManyToMany
+    @JoinTable(
+            name = "team_members",
+            joinColumns = @JoinColumn(name = "team_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private List<User> members;
+
 
     @ManyToOne
     private EventInstance eventInstance;
