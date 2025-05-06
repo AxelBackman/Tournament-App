@@ -51,7 +51,7 @@ public class EventController {
         return "Recurring event added: " + event.getName();
     }
 
-    @GetMapping("/addinstance/{parentId}")
+    @PostMapping("/addinstance/{parentId}")
     public String addEventInstance(@PathVariable Long parentId) {
         EventInstance instance = eventInstanceService.addInstance(parentId);;
         return "Event instance added of parent event: " + instance.getParentEvent().getName();
