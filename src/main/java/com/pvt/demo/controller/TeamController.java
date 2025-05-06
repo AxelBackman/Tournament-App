@@ -49,6 +49,9 @@ public class TeamController {
         team.setEventInstance(eventInstance);
         team.setMembers(new ArrayList<>());
         team.getMembers().add(user);
+
+        teamRepository.save(team);
+
         return "Team created successfully" + team.getId();
     }
 
