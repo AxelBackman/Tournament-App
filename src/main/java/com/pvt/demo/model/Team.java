@@ -63,7 +63,7 @@ public class Team {
     public void setTeamSize(int teamSize){
         this.teamSize = teamSize;
     }
-    public User getUser(User user){
+    public User getUser(Team team){
         return user;
     }
 
