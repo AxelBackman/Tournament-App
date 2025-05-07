@@ -26,9 +26,6 @@ public class Team {
     private List<User> members = new ArrayList<>();
     private User user;
 
-    @OneToMany
-    @JsonBackReference
-    @JoinColumn(name = "event_instance_team_size")
     private int teamSize;
 
 
@@ -43,7 +40,7 @@ public class Team {
         this.eventInstance = eventInstance;
         this.user = user;
         members.add(user);
-        this.teamSize = teamSize;
+        this.teamSize = eventInstance != null ? eventInstance.getTeamSize() : 0;
 
     }
 
