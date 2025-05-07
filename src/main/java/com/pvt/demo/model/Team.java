@@ -3,6 +3,9 @@ package com.pvt.demo.model;
 import jakarta.persistence.*;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.util.ArrayList;
 
 @Entity
@@ -18,14 +21,21 @@ public class Team {
             joinColumns = @JoinColumn(name = "team_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<User> members = new ArrayList<>();
 
+
+    private List<User> members = new ArrayList<>();
     private User user;
 
+    @OneToMany
+    @JsonBackReference
+    @JoinColumn(name = "team_size")
     private int teamSize;
 
 
     @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "event_instance_id")
+
     private EventInstance eventInstance;
 
     public Team(){}
