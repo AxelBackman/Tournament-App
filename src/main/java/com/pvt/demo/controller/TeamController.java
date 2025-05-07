@@ -19,10 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-<<<<<<< HEAD
-
-=======
->>>>>>> 4a15a17c82552b3465d6f4e42e86a520c2e6613e
 
 
 
