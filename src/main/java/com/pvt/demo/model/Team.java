@@ -28,14 +28,13 @@ public class Team {
 
     @OneToMany
     @JsonBackReference
-    @JoinColumn(name = "team_size")
+    @JoinColumn(name = "event_instance_team_size")
     private int teamSize;
 
 
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "event_instance_id")
-
     private EventInstance eventInstance;
 
     public Team(){}
