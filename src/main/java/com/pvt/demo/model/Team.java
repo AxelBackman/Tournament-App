@@ -3,6 +3,7 @@ package com.pvt.demo.model;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 public class Team {
@@ -18,20 +19,20 @@ public class Team {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> members = new ArrayList<>();
+
     private User user;
 
 
     @ManyToOne
     private EventInstance eventInstance;
 
-    @ManyToOne
-    private OneTimeEvent oneTimeEvent;
-
     public Team(){}
 
     public Team(EventInstance eventInstance, User user){
         this.eventInstance = eventInstance;
         this.user = user;
+        members.add(user);
+
     }
 
     public Long getId() {
@@ -50,19 +51,15 @@ public class Team {
         this.members = members;
     }
 
+    public void addMember(User user){
+        this.members.add(user);
+    }
+
     public EventInstance getEventInstance() {
         return eventInstance;
     }
 
     public void setEventInstance(EventInstance eventInstance) {
         this.eventInstance = eventInstance;
-    }
-
-    public OneTimeEvent getOneTimeEvent() {
-        return oneTimeEvent;
-    }
-    
-    public void setOneTimeEvent(OneTimeEvent oneTimeEvent) {
-        this.oneTimeEvent = oneTimeEvent;
     }
 }
