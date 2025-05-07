@@ -21,6 +21,9 @@ public class RegisteredUsers {
     @ManyToOne
     private EventInstance eventInstance;
 
+    @ManyToOne
+    private OneTimeEvent oneTimeEvent;
+
     private boolean coming; // = if TRUE = coming, if FALSE = interested
 
 
