@@ -1,6 +1,7 @@
 package com.pvt.demo.model;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -25,13 +26,19 @@ public class RecurringEvent {
     
     @JsonManagedReference
     @OneToMany(mappedBy = "parentEvent", cascade = CascadeType.ALL)
-    private List<EventInstance> subEvents;
+    private List<EventInstance> subEvents = new ArrayList<>();
 
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "organisation_id")
     private Organisation organisation;
 
+    public RecurringEvent(){}
+
+    public RecurringEvent(String name, String description){
+        this.name = name;
+        this.description = description;
+    }
 
     public Long getId() {
         return id;
@@ -55,13 +62,6 @@ public class RecurringEvent {
 
     public List<EventInstance> getSubEvents() {
         return subEvents;
-    }
-
-    public void createSubEvent(List<EventInstance> subEvents) {
-        for (EventInstance subEvent : subEvents) {
-            subEvent.setParentEvent(this);
-            subEvents.add(subEvent);
-        }
     }
 
     public void setOrganisation(Organisation organisation) {
