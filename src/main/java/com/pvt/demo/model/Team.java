@@ -57,6 +57,19 @@ public class Team {
     public void addMember(User user){
         this.members.add(user);
     }
+    public int getTeamSize(Team team){
+        return teamSize;
+    }
+    public void setTeamSize(int teamSize){
+        this.teamSize = teamSize;
+    }
+    public User getUser(User user){
+        return user;
+    }
+
+    public void setUser(User user){
+        this.user = user;
+    }
 
     public EventInstance getEventInstance() {
         return eventInstance;
