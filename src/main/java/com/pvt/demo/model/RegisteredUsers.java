@@ -36,6 +36,12 @@ public class RegisteredUsers {
     
     }
 
+    public RegisteredUsers(OneTimeEvent oneTimeEvent, User user, boolean coming) {
+        this.oneTimeEvent = oneTimeEvent;
+        this.user = user;
+        this.coming = coming;
+    }
+
     public User getUser(){
         return this.user;
     }
