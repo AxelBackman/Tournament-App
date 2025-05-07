@@ -4,13 +4,16 @@ import java.time.LocalDateTime;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class EventInstance {
@@ -20,6 +23,9 @@ public class EventInstance {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String location;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "teamSize", cascade = CascadeType.ALL)
     private int teamSize;
     
     @ManyToOne
