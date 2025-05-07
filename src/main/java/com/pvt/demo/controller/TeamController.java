@@ -19,7 +19,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4a15a17c82552b3465d6f4e42e86a520c2e6613e
 
 
 
@@ -37,7 +40,7 @@ public class TeamController {
     private EventInstanceRepository eventInstanceRepository;
 
     // Skapa ett team
-    @PostMapping("/create/{eventInstanceId}/{userIds}")
+    @PostMapping("/create/{eventInstanceId}/{userId}")
     public String createTeam(@PathVariable Long eventInstanceId, @PathVariable Long userId) {
         EventInstance eventInstance = eventInstanceRepository.findById(eventInstanceId).orElse(null);
         User user = userRepository.findById(userId).orElse(null);
