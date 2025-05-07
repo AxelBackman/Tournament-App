@@ -34,7 +34,7 @@ public class OneTimeEvent {
     private List<Team> teams;
 
     //Ett event kan ha flera registrerade users
-    @OneToMany(mappedBy = "one_time_event_id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "oneTimeEvent", cascade = CascadeType.ALL)
     private List<RegisteredUsers> registeredUsers;
 
     public OneTimeEvent() {
