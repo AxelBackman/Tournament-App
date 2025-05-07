@@ -17,7 +17,8 @@ public class Team {
             joinColumns = @JoinColumn(name = "team_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<User> members;
+    private List<User> members = new ArrayList<>();
+    private User user;
 
 
     @ManyToOne
@@ -25,9 +26,9 @@ public class Team {
 
     public Team(){}
 
-    public Team(EventInstance eventInstance, List<User> members){
+    public Team(EventInstance eventInstance, User user){
         this.eventInstance = eventInstance;
-        this.members = members;
+        this.user = user;
     }
 
     public Long getId() {
