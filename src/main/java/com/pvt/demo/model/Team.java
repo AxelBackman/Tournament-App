@@ -21,6 +21,7 @@ public class Team {
             joinColumns = @JoinColumn(name = "team_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+    private List<User> members = new ArrayList<>();
 
     @ManyToOne
     @JsonBackReference
@@ -32,7 +33,8 @@ public class Team {
     @JoinColumn(name = "event_instance_id", nullable = true)
     private EventInstance eventInstance;
 
-    private List<User> members = new ArrayList<>();
+    
+
     private User user;
     private int teamSize;
     private boolean recurringEvent;
@@ -42,7 +44,7 @@ public class Team {
     public Team(EventInstance eventInstance, OneTimeEvent oneTimeEvent, User user){
         this.eventInstance = eventInstance;
         this.user = user;
-        members.add(user);
+        this.members.add(user);
         this.teamSize = eventInstance != null ? eventInstance.getTeamSize() : oneTimeEvent.getTeamSize();
         
 
