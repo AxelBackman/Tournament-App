@@ -1,9 +1,12 @@
 package com.pvt.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -22,6 +25,8 @@ public class RegisteredUsers {
     private EventInstance eventInstance;
 
     @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "one_time_event_id")
     private OneTimeEvent oneTimeEvent;
 
     private boolean coming; // = if TRUE = coming, if FALSE = interested

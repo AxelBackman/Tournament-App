@@ -32,11 +32,12 @@ public class EventInstance {
 
     }
 
-    public EventInstance(LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
+    public EventInstance(RecurringEvent parentEvent, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
         this.teamSize = teamSize;
+        this.parentEvent = parentEvent;
     }
     
 
