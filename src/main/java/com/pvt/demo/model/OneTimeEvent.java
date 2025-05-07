@@ -22,6 +22,7 @@ public class OneTimeEvent {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String location;
+
     private int teamSize;
 
     //Flera events kan tillhöra en organisation
@@ -29,11 +30,11 @@ public class OneTimeEvent {
     private Organisation org;
 
     //Ett event kan ha flera teams
-    @OneToMany(mappedBy = "oneTimeEvent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "one_time_event_id", cascade = CascadeType.ALL)
     private List<Team> teams;
 
     //Ett event kan ha flera registrerade users
-    @OneToMany(mappedBy = "oneTimeEvent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "one_time_event_id", cascade = CascadeType.ALL)
     private List<RegisteredUsers> registeredUsers;
 
     public OneTimeEvent() {
@@ -46,6 +47,7 @@ public class OneTimeEvent {
         this.endTime = endTime;
         this.location = location;
         this.teamSize = teamSize;
+        
     }
 
     public Long getId() {

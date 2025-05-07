@@ -36,7 +36,7 @@ public class Team {
 
     public Team(){}
 
-    public Team(EventInstance eventInstance, User user, int teamSize){
+    public Team(EventInstance eventInstance, User user){
         this.eventInstance = eventInstance;
         this.user = user;
         members.add(user);
