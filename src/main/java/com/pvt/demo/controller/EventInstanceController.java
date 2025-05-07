@@ -1,8 +1,10 @@
-package com.pvt.demo.model;
+package com.pvt.demo.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pvt.demo.model.EventInstance;
+import com.pvt.demo.model.RecurringEvent;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
 
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("/add/{recurringEventId}")
+@RequestMapping("/eventinstances")
+@CrossOrigin(origins = "*")
 public class EventInstanceController {
 
     @Autowired
