@@ -34,7 +34,7 @@ public class OneTimeEvent {
 
     //Ett event kan ha flera registrerade users
     @OneToMany(mappedBy = "oneTimeEvent", cascade = CascadeType.ALL)
-    private List<RegisteredUsers> registredUsers;
+    private List<RegisteredUsers> registeredUsers;
 
     public OneTimeEvent() {
 
@@ -108,12 +108,12 @@ public class OneTimeEvent {
         this.teams = teams;
     }
 
-    public List<RegisteredUsers> gRegisteredUsers() {
-        return registredUsers;
+    public List<RegisteredUsers> getRegisteredUsers() {
+        return registeredUsers;
     }
 
     public void setRegisteredUsers(List<RegisteredUsers> registeredUsers) {
-        this.registredUsers = registeredUsers;
+        this.registeredUsers = registeredUsers;
     }
 
 }

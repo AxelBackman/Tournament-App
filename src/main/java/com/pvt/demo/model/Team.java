@@ -24,6 +24,9 @@ public class Team {
     @ManyToOne
     private EventInstance eventInstance;
 
+    @ManyToOne
+    private OneTimeEvent oneTimeEvent;
+
     public Team(){}
 
     public Team(EventInstance eventInstance, User user){
@@ -53,5 +56,13 @@ public class Team {
 
     public void setEventInstance(EventInstance eventInstance) {
         this.eventInstance = eventInstance;
+    }
+
+    public OneTimeEvent getOneTimeEvent() {
+        return oneTimeEvent;
+    }
+    
+    public void setOneTimeEvent(OneTimeEvent oneTimeEvent) {
+        this.oneTimeEvent = oneTimeEvent;
     }
 }

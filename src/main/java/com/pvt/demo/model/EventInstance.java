@@ -15,7 +15,7 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class EventInstance {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
