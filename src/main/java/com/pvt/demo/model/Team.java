@@ -33,21 +33,21 @@ public class Team {
     @JoinColumn(name = "event_instance_id", nullable = true)
     private EventInstance eventInstance;
 
-    
-
-    private User user;
     private int teamSize;
     private boolean recurringEvent;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User creator;
 
     public Team(){}
 
     public Team(EventInstance eventInstance, OneTimeEvent oneTimeEvent, User user){
         this.eventInstance = eventInstance;
-        this.user = user;
         this.members.add(user);
         this.teamSize = eventInstance != null ? eventInstance.getTeamSize() : oneTimeEvent.getTeamSize();
+        this.creator = members != null ? this.members.get(0) : null;
         
-
         if(eventInstance == null){
             recurringEvent = false;
             this.eventInstance = eventInstance;
@@ -89,13 +89,6 @@ public class Team {
     }
     public void setTeamSize(int teamSize){
         this.teamSize = teamSize;
-    }
-    public User getUser(Team team){
-        return user;
-    }
-
-    public void setUser(User user){
-        this.user = user;
     }
 
     public EventInstance getEventInstance() {
