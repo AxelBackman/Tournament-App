@@ -22,16 +22,19 @@ public class Team {
 
     private User user;
 
+    private int teamSize;
+
 
     @ManyToOne
     private EventInstance eventInstance;
 
     public Team(){}
 
-    public Team(EventInstance eventInstance, User user){
+    public Team(EventInstance eventInstance, User user, int teamSize){
         this.eventInstance = eventInstance;
         this.user = user;
         members.add(user);
+        this.teamSize = teamSize;
 
     }
 
