@@ -44,16 +44,21 @@ public class OrganisationController {
     }
 
     // Uppdatera en organisation
-    @PutMapping("/{id}")
-    public ResponseEntity<Organisation> updateOrganisation(@PathVariable Long id, @RequestBody Organisation updatedOrg) {
-        return organisationRepository.findById(id)
-            .map(existingOrg -> {
-                existingOrg.setName(updatedOrg.getName());
-                existingOrg.setAdress(updatedOrg.getAdress());
-                existingOrg.setDescription(updatedOrg.getDescription());
-                return ResponseEntity.ok(organisationRepository.save(existingOrg));
-            })
-            .orElseGet(() -> ResponseEntity.notFound().build());
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Organisation> updateOrganisationWithParams(
+        @PathVariable Long id,
+        @RequestParam String name,
+        @RequestParam String adress,
+        @RequestParam String description) {
+
+    return organisationRepository.findById(id)
+        .map(existingOrg -> {
+            existingOrg.setName(name);
+            existingOrg.setAdress(adress);
+            existingOrg.setDescription(description);
+            return ResponseEntity.ok(organisationRepository.save(existingOrg));
+        })
+        .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Radera en organisation
