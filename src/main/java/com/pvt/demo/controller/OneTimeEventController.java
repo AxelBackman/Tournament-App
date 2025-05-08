@@ -1,5 +1,6 @@
 package com.pvt.demo.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +39,21 @@ public class OneTimeEventController {
     }
 
     //Skapa nytt OneTimeEvent och koppla till org via ID
-    @PostMapping("/create/{orgId}")
-    public String createEvent(@PathVariable Long orgId, @RequestBody OneTimeEvent event) {
+    @PostMapping("/create/{orgId}/{name}/{startTime}/{endTime}/{location}/{teamSize}")
+    public String createEvent(@PathVariable Long orgId, 
+                          @PathVariable String name, 
+                          @PathVariable String startTime, 
+                          @PathVariable String endTime, 
+                          @PathVariable String location, 
+                          @PathVariable int teamSize) {
         Organisation org = organisationRepository.findById(orgId).orElse(null);
         if (org == null) return "Organisation not found";
 
+        OneTimeEvent event = new OneTimeEvent(name, 
+                                            LocalDateTime.parse(startTime), 
+                                            LocalDateTime.parse(endTime), 
+                                            location, 
+                                            teamSize);
         event.setOrganisation(org);
         oneTimeEventRepository.save(event);
         return "OneTimeEvent created successfully with ID: " + event.getId();
