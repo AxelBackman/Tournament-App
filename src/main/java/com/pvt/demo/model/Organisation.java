@@ -35,6 +35,10 @@ public class Organisation {
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
     private List<RecurringEvent> recurringEvents = new ArrayList<>(); // koppling mot organisationens alla events - skapa attribut för Organisation join cascade i recurringEvent
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
+    private List<OneTimeEvent> oneTimeEvents = new ArrayList<>();
+
     public Organisation() {}
 
     public Organisation(String name, String adress, String description) {

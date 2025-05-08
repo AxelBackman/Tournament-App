@@ -3,6 +3,8 @@ package com.pvt.demo.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +21,11 @@ public class OneTimeEvent {
     private Long id;
 
     private String name;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
     private String location;
 
@@ -27,7 +33,7 @@ public class OneTimeEvent {
 
     //Flera events kan tillhöra en organisation
     @ManyToOne
-    private Organisation org;
+    private Organisation organisation;
 
     //Ett event kan ha flera teams
     @OneToMany(mappedBy = "oneTimeEvent", cascade = CascadeType.ALL)
@@ -95,11 +101,11 @@ public class OneTimeEvent {
     }
 
     public Organisation getOrganisation() {
-        return org;
+        return organisation;
     }
 
-    public void setOrganisation(Organisation org) {
-        this.org = org;
+    public void setOrganisation(Organisation organisation) {
+        this.organisation = organisation;
     }
 
     public List<Team> getTeams() {
