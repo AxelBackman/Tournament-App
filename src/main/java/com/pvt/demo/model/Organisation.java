@@ -105,5 +105,20 @@ public class Organisation {
         this.recurringEvents.add(event);
         // event.setOrganisation(this); //skapa setOrganisation i recurring
     }
+
+    public List<OneTimeEvent> getOneTimeEvents() {
+        return oneTimeEvents;
+    }
+
+    public void setOneTimeEvents(List<OneTimeEvent> oneTimeEvents) {
+        this.oneTimeEvents = oneTimeEvents;
+    }
+
+    public void addOneTimeEvent(OneTimeEvent event) {
+        this.oneTimeEvents.add(event);
+        // event.setOrganisation(this); // säkerställ att relationen är tvåvägs
+    }
+
+
     
 }
