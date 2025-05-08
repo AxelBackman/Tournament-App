@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -70,18 +69,24 @@ public class OneTimeEventController {
     }
 
     //Uppdatera ett OneTimeEvent via ID
-    @PutMapping("/update/{id}")
-    public String updateEvent(@PathVariable Long id, @RequestBody OneTimeEvent updatedEvent) {
-    return oneTimeEventRepository.findById(id).map(event -> {
-        event.setName(updatedEvent.getName());
-        event.setStartTime(updatedEvent.getStartTime());
-        event.setEndTime(updatedEvent.getEndTime());
-        event.setLocation(updatedEvent.getLocation());
-        event.setTeamSize(updatedEvent.getTeamSize());
-        oneTimeEventRepository.save(event);
-        return "Event updated successfully";
-    }).orElse("Event not found");
+    @PutMapping("/update/{id}/{name}/{startTime}/{endTime}/{location}/{teamSize}")
+    public String updateEvent(@PathVariable Long id, 
+                            @PathVariable String name, 
+                            @PathVariable String startTime, 
+                            @PathVariable String endTime, 
+                            @PathVariable String location, 
+                            @PathVariable int teamSize) {
+        return oneTimeEventRepository.findById(id).map(event -> {
+            event.setName(name);
+            event.setStartTime(LocalDateTime.parse(startTime));
+            event.setEndTime(LocalDateTime.parse(endTime));
+            event.setLocation(location);
+            event.setTeamSize(teamSize);
+            oneTimeEventRepository.save(event);
+            return "Event updated successfully";
+        }).orElse("Event not found");
     }
+
 
     //Sök efter OneTimeEvents baserat på namn (ignore case)
     @GetMapping("/search")
