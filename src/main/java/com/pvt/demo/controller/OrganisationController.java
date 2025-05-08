@@ -33,9 +33,14 @@ public class OrganisationController {
     }
 
     // Skapa ny organisation
-    @PostMapping(consumes = "application/json")
-    public Organisation createOrganisation(@RequestBody Organisation organisation) {
-        return organisationRepository.save(organisation);
+    @PostMapping("/create/{name}/{adress}/{description}")
+    public Organisation createOrganisationViaPath(
+            @PathVariable String name,
+            @PathVariable String adress,
+            @PathVariable String description) {
+    
+        Organisation org = new Organisation(name, adress, description);
+        return organisationRepository.save(org);
     }
 
     // Uppdatera en organisation
