@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/organisations")
+@CrossOrigin(origins = "*") // Tillåt alla ursprung för CORS, justera vid behov
 public class OrganisationController {
 
     @Autowired
@@ -32,7 +33,7 @@ public class OrganisationController {
     }
 
     // Skapa ny organisation
-    @PostMapping
+    @PostMapping(consumes = "application/json")
     public Organisation createOrganisation(@RequestBody Organisation organisation) {
         return organisationRepository.save(organisation);
     }
