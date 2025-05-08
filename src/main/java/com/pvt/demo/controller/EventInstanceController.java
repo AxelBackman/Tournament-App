@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("eventinstances")
+@RequestMapping("/eventinstances")
 @CrossOrigin() 
 public class EventInstanceController {
 
