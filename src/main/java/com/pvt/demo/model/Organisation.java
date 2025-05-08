@@ -2,7 +2,7 @@ package com.pvt.demo.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
 
@@ -31,12 +31,12 @@ public class Organisation {
     @ManyToMany
     private List<User> members = new ArrayList<>();
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("organisation")
     private List<RecurringEvent> recurringEvents = new ArrayList<>(); // koppling mot organisationens alla events - skapa attribut för Organisation join cascade i recurringEvent
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("organisation")
     private List<OneTimeEvent> oneTimeEvents = new ArrayList<>();
 
     public Organisation() {}

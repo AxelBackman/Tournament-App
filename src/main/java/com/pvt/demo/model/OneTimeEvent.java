@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -33,7 +34,9 @@ public class OneTimeEvent {
 
     //Flera events kan tillhöra en organisation
     @ManyToOne
+    @JsonIgnoreProperties({"oneTimeEvents", "recurringEvents", "members"})
     private Organisation organisation;
+
 
     //Ett event kan ha flera teams
     @OneToMany(mappedBy = "oneTimeEvent", cascade = CascadeType.ALL)
