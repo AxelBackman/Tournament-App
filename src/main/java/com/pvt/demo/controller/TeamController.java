@@ -75,7 +75,7 @@ public class TeamController {
     }
     
     // Hämta alla teams
-    @GetMapping("")
+    @GetMapping
     public Iterable<Team> getAll() {
         return teamRepository.findAll();
     }
