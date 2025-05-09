@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -34,9 +34,10 @@ public class EventInstanceController {
     private RecurringEventRepository recurringEventRepository;
 
     // Skapa ny eventInstance kopplad till en RecurringEvent
-    @PostMapping("/add/{recurringEventId}/{startTime}/{endTime}/{location}/{teamSize}")
+    @PostMapping("/add/{recurringEventId}/{description}/{startTime}/{endTime}/{location}/{teamSize}")
     public String CreateEventInstance(
-        @PathVariable Long recurringEventId, 
+        @PathVariable Long recurringEventId,
+        @PathVariable String description, 
         @PathVariable String startTime, 
         @PathVariable String endTime,
         @PathVariable String location,
@@ -54,7 +55,7 @@ public class EventInstanceController {
         LocalDateTime end = LocalDateTime.parse(endTime);
         
         // Skapa en ny EventInstance med den angivna konstruktorn
-        EventInstance eventInstance = new EventInstance(recurringEvent, start, end, location, teamSize);
+        EventInstance eventInstance = new EventInstance(recurringEvent, description, start, end, location, teamSize);
 
         eventInstanceRepository.save(eventInstance);
         return "Event instance created successfully with ID: " + eventInstance.getId();

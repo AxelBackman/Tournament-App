@@ -38,17 +38,19 @@ public class OneTimeEventController {
     }
 
     //Skapa nytt OneTimeEvent och koppla till org via ID
-    @PostMapping("/create/{orgId}/{name}/{startTime}/{endTime}/{location}/{teamSize}")
+    @PostMapping("/create/{orgId}/{name}/{description}/{startTime}/{endTime}/{location}/{teamSize}")
     public String createEvent(@PathVariable Long orgId, 
                           @PathVariable String name, 
                           @PathVariable String startTime, 
                           @PathVariable String endTime, 
                           @PathVariable String location, 
-                          @PathVariable int teamSize) {
+                          @PathVariable int teamSize,
+                          @PathVariable String description) {
         Organisation org = organisationRepository.findById(orgId).orElse(null);
         if (org == null) return "Organisation not found";
 
         OneTimeEvent event = new OneTimeEvent(name, 
+                                            description, 
                                             LocalDateTime.parse(startTime), 
                                             LocalDateTime.parse(endTime), 
                                             location, 
