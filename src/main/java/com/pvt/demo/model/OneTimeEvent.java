@@ -22,6 +22,7 @@ public class OneTimeEvent {
     private Long id;
 
     private String name;
+    private String description;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
@@ -50,8 +51,9 @@ public class OneTimeEvent {
 
     }
 
-    public OneTimeEvent(String name, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
+    public OneTimeEvent(String name, String description, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
         this.name = name;
+        this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
@@ -125,6 +127,14 @@ public class OneTimeEvent {
 
     public void setRegisteredUsers(List<RegisteredUsers> registeredUsers) {
         this.registeredUsers = registeredUsers;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

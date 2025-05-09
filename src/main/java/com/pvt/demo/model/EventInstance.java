@@ -20,6 +20,7 @@ public class EventInstance {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String location;
+    private String description;
 
     private int teamSize;
     
@@ -32,7 +33,8 @@ public class EventInstance {
 
     }
 
-    public EventInstance(RecurringEvent parentEvent, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
+    public EventInstance(RecurringEvent parentEvent, String description, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
+        this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
@@ -40,7 +42,6 @@ public class EventInstance {
         this.parentEvent = parentEvent;
     }
     
-
     public Long getId() {
         return id;
     }
@@ -91,6 +92,14 @@ public class EventInstance {
         } else {
             return null;
         }
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     
