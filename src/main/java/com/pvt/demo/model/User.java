@@ -25,7 +25,7 @@ public class User {
 
     }
 
-    public User(String name, String email) {
+    public User(String name, String email, Organisation organisation) {
         this.name = name;
         this.email = email;
         
