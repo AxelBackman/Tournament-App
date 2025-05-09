@@ -40,12 +40,12 @@ public class OneTimeEventController {
     //Skapa nytt OneTimeEvent och koppla till org via ID
     @PostMapping("/create/{orgId}/{name}/{description}/{startTime}/{endTime}/{location}/{teamSize}")
     public String createEvent(@PathVariable Long orgId, 
-                          @PathVariable String name, 
+                          @PathVariable String name,
+                          @PathVariable String description, 
                           @PathVariable String startTime, 
                           @PathVariable String endTime, 
                           @PathVariable String location, 
-                          @PathVariable int teamSize,
-                          @PathVariable String description) {
+                          @PathVariable int teamSize) {
         Organisation org = organisationRepository.findById(orgId).orElse(null);
         if (org == null) return "Organisation not found";
 
@@ -71,15 +71,17 @@ public class OneTimeEventController {
     }
 
     //Uppdatera ett OneTimeEvent via ID
-    @PutMapping("/update/{id}/{name}/{startTime}/{endTime}/{location}/{teamSize}")
+    @PutMapping("/update/{id}/{name}/{description}/{startTime}/{endTime}/{location}/{teamSize}")
     public String updateEvent(@PathVariable Long id, 
                             @PathVariable String name, 
+                            @PathVariable String description,
                             @PathVariable String startTime, 
                             @PathVariable String endTime, 
                             @PathVariable String location, 
                             @PathVariable int teamSize) {
         return oneTimeEventRepository.findById(id).map(event -> {
             event.setName(name);
+            event.setDescription(description);
             event.setStartTime(LocalDateTime.parse(startTime));
             event.setEndTime(LocalDateTime.parse(endTime));
             event.setLocation(location);

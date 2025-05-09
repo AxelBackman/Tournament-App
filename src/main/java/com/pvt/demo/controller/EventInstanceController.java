@@ -84,9 +84,10 @@ public class EventInstanceController {
     }
 
     // Updatera en instans
-    @PutMapping("/update/{id}/{startTime}/{endTime}/{location}/{teamSize}")
+    @PutMapping("/update/{id}/{description}/{startTime}/{endTime}/{location}/{teamSize}")
 public String updateEventInstance(
     @PathVariable Long id,
+    @PathVariable String description,
     @PathVariable String startTime,
     @PathVariable String endTime,
     @PathVariable String location,
@@ -105,6 +106,7 @@ public String updateEventInstance(
     LocalDateTime end = LocalDateTime.parse(endTime);
 
     // Uppdatera de relevanta fälten
+    eventInstance.setDescription(description);
     eventInstance.setStartTime(start);
     eventInstance.setEndTime(end);
     eventInstance.setLocation(location);
