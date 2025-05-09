@@ -1,16 +1,19 @@
 package com.pvt.demo.model;
 
 import java.time.LocalDateTime;
-
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class EventInstance {
@@ -28,6 +31,9 @@ public class EventInstance {
     @JsonBackReference
     @JoinColumn(name = "recurring_event_id")
     private RecurringEvent parentEvent;
+
+    @OneToMany(mappedBy = "eventInstance", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RegisteredUsers> registeredUsers = new ArrayList<>();
 
     public EventInstance() {
 

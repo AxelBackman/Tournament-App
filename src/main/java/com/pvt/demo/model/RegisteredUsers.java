@@ -22,6 +22,7 @@ public class RegisteredUsers {
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "event_instance_id")
     private EventInstance eventInstance;
 
     @ManyToOne
@@ -29,8 +30,7 @@ public class RegisteredUsers {
     @JoinColumn(name = "one_time_event_id")
     private OneTimeEvent oneTimeEvent;
 
-    private boolean coming; // = if TRUE = coming, if FALSE = interested
-
+    private boolean coming; 
 
     public RegisteredUsers(){}
 
