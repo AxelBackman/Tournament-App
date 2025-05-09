@@ -12,7 +12,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -28,7 +27,8 @@ public class Organisation {
     private String adress;
     private String description; // fyll på mer info om organisationer, typer av event? beskrivning av föreningen?
 
-    @ManyToMany
+    @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("organisation")
     private List<User> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)

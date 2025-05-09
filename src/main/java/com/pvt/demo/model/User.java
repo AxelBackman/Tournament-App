@@ -1,5 +1,7 @@
 package com.pvt.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 
@@ -14,6 +16,10 @@ public class User {
     private String name;
     private String email;
     
+    
+    @ManyToOne
+    @JsonIgnoreProperties({"oneTimeEvents", "recurringEvents", "members"})
+    private Organisation organisation;
 
     public User() {
 
@@ -45,6 +51,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Organisation getOrganisation() {
+        return organisation;
+    }
+
+    public void setOrganisation(Organisation organisation) {
+        this.organisation = organisation;
     }
     
 }
