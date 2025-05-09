@@ -1,13 +1,18 @@
 package com.pvt.demo.controller;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pvt.demo.model.Organisation;
+import com.pvt.demo.model.Team;
 import com.pvt.demo.model.User;
 import com.pvt.demo.repository.OrganisationRepository;
+import com.pvt.demo.repository.TeamRepository;
 import com.pvt.demo.repository.UserRepository;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +31,9 @@ public class UserController {
 
     @Autowired
     private OrganisationRepository organisationRepository;
+
+    @Autowired
+    private TeamRepository teamRepository;
     
     @GetMapping
     public Iterable<User> getAllUsers() {
@@ -68,9 +76,27 @@ public class UserController {
 
     @DeleteMapping("/deleteuser/{id}")
     public String deleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id);
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isEmpty()) return "User not found";
+
+        User user = userOpt.get();
+
+        // Hämta alla team där användaren är medlem
+        List<Team> teams = teamRepository.findByMembers_Id(id);
+
+
+        for (Team team : teams) {
+            team.getMembers().remove(user); 
+            if (team.getMembers().isEmpty()) {
+                teamRepository.delete(team); 
+            } else {
+                teamRepository.save(team); // Save team without the user
+            }
+        }
+        userRepository.delete(user);
         return "User with ID " + id + " deleted successfully";
     }
+
 
     @DeleteMapping("/deleteall")
     public String deleteAllUsers() {
