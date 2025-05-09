@@ -28,8 +28,7 @@ public class User {
     public User(String name, String email, Organisation organisation) {
         this.name = name;
         this.email = email;
-        
-
+        this.organisation = organisation;
     }
 
     public Long getId() {
