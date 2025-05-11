@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/organisations")
+@RequestMapping("/organisations")
 @CrossOrigin(origins = "*") // Tillåt alla ursprung för CORS, justera vid behov
 public class OrganisationController {
 
