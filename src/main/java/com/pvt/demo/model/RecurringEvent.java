@@ -28,7 +28,7 @@ public class RecurringEvent {
     private List<EventInstance> subEvents = new ArrayList<>();
 
     @ManyToOne
-    @JsonIgnoreProperties({"oneTimeEvents", "recurringEvents", "members"})
+    @JsonIgnoreProperties({"recurringEvents", "members"})
     private Organisation organisation;
 
     public RecurringEvent(){}

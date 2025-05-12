@@ -20,7 +20,7 @@ public class User {
     
     
     @ManyToOne
-    @JsonIgnoreProperties({"oneTimeEvents", "recurringEvents", "members"})
+    @JsonIgnoreProperties({"recurringEvents", "members"})
     private Organisation organisation;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

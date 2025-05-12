@@ -1,6 +1,5 @@
 package com.pvt.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,11 +24,6 @@ public class RegisteredUsers {
     @JoinColumn(name = "event_instance_id")
     private EventInstance eventInstance;
 
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "one_time_event_id")
-    private OneTimeEvent oneTimeEvent;
-
     private boolean coming; 
 
     public RegisteredUsers(){}
@@ -39,12 +33,6 @@ public class RegisteredUsers {
         this.eventInstance = eventInstance;
         this.coming = coming;
     
-    }
-
-    public RegisteredUsers(OneTimeEvent oneTimeEvent, User user, boolean coming) {
-        this.oneTimeEvent = oneTimeEvent;
-        this.user = user;
-        this.coming = coming;
     }
 
     public User getUser(){

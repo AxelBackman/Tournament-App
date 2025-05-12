@@ -25,11 +25,6 @@ public class Team {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "one_time_event_id", nullable = true)
-    private OneTimeEvent oneTimeEvent;
-
-    @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "event_instance_id", nullable = true)
     private EventInstance eventInstance;
 
@@ -42,19 +37,12 @@ public class Team {
 
     public Team(){}
 
-    public Team(EventInstance eventInstance, OneTimeEvent oneTimeEvent, User user){
+    public Team(EventInstance eventInstance, User user){
         this.eventInstance = eventInstance;
         this.members.add(user);
-        this.teamSize = eventInstance != null ? eventInstance.getTeamSize() : oneTimeEvent.getTeamSize();
+        this.teamSize = eventInstance != null ? eventInstance.getTeamSize() : 0;
         this.creator = members != null ? this.members.get(0) : null;
-        
-        if(eventInstance == null){
-            recurringEvent = false;
-            this.eventInstance = eventInstance;
-        } else{
-            recurringEvent = true;
-            this.oneTimeEvent = oneTimeEvent;
-        }
+    
     }
 
     public boolean getRecurringEvent(){
@@ -99,11 +87,4 @@ public class Team {
         this.eventInstance = eventInstance;
     }
 
-    public OneTimeEvent getOneTimeEvent() {
-        return oneTimeEvent;
-    }
-    
-    public void setOneTimeEvent(OneTimeEvent oneTimeEvent) {
-        this.oneTimeEvent = oneTimeEvent;
-    }
 }

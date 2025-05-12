@@ -35,9 +35,6 @@ public class Organisation {
     @JsonIgnoreProperties("organisation")
     private List<RecurringEvent> recurringEvents = new ArrayList<>(); // koppling mot organisationens alla events - skapa attribut för Organisation join cascade i recurringEvent
 
-    @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("organisation")
-    private List<OneTimeEvent> oneTimeEvents = new ArrayList<>();
 
     public Organisation() {}
 
@@ -106,18 +103,6 @@ public class Organisation {
         // event.setOrganisation(this); //skapa setOrganisation i recurring
     }
 
-    public List<OneTimeEvent> getOneTimeEvents() {
-        return oneTimeEvents;
-    }
-
-    public void setOneTimeEvents(List<OneTimeEvent> oneTimeEvents) {
-        this.oneTimeEvents = oneTimeEvents;
-    }
-
-    public void addOneTimeEvent(OneTimeEvent event) {
-        this.oneTimeEvents.add(event);
-        // event.setOrganisation(this); // säkerställ att relationen är tvåvägs
-    }
 
 
     
