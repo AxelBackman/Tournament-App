@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.CloseableThreadContext.Instance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +35,9 @@ public class EventInstanceController {
     @Autowired
     private EventInstanceService eventInstanceService;
 
+    @Autowired
+    private RecurringEventRepository recurringEventRepository;
+
     // Skapa ny eventInstance utan koppling till RecurringEvent
     @PostMapping("/addSoloEvent/{description}/{startTime}/{endTime}/{location}/{teamSize}")
     public String CreateSoloEventInstance(
@@ -53,9 +57,26 @@ public class EventInstanceController {
     }
 
     //Skapa eventInstance med koppling till RecurringEvent
-    @PostMapping("/addWithRecurring/{recurringEventId}")
-    public String createInstanceWithParent(@PathVariable Long recurringEventId) {
-        EventInstance instance = eventInstanceService.addInstance(recurringEventId);
+    @PostMapping("/addWithRecurring/{description}/{startTime}/{endTime}/{location}/{teamSize}/{recurringEventId}")
+    public String createInstanceWithParent(
+         @PathVariable String description,
+        @PathVariable String startTime,
+        @PathVariable String endTime,
+        @PathVariable String location,
+        @PathVariable int teamSize,
+        @PathVariable Long recurringEventId
+    ) {
+        
+        LocalDateTime start = LocalDateTime.parse(startTime);
+        LocalDateTime end = LocalDateTime.parse(endTime);
+        RecurringEvent parentEvent = recurringEventRepository.findById(recurringEventId).orElse(null);
+        if (parentEvent == null) {
+            return "RecurringEvent med ID " + recurringEventId + " hittades inte.";
+        }
+        EventInstance instance = eventInstanceService.addInstanceWithParent(
+        parentEvent, description, start, end, location, teamSize
+    );
+        
         return "EventInstance created with parent event: " + instance.getParentEvent().getName();
     }
 

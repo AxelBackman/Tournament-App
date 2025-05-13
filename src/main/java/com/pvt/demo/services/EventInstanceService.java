@@ -35,4 +35,9 @@ public class EventInstanceService {
         EventInstance instance = new EventInstance(description, start, end, location, teamSize);
         return eventInstanceRepository.save(instance);
     }
+
+    public EventInstance addInstanceWithParent(RecurringEvent parentEvent, String description, LocalDateTime start, LocalDateTime end, String location, int teamSize) {
+        EventInstance instance = new EventInstance(parentEvent, description, start, end, location, teamSize);
+        return eventInstanceRepository.save(instance);
+    }
 }
