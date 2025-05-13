@@ -3,6 +3,7 @@ package com.pvt.demo.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pvt.demo.dto.EventInstanceDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
 import com.pvt.demo.services.EventInstanceService;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -41,48 +43,32 @@ public class EventInstanceController {
     @Autowired
     private RecurringEventRepository recurringEventRepository;
 
-    // Skapa ny eventInstance utan koppling till RecurringEvent
-    @PostMapping("/addSoloEvent/{title}/{description}/{startTime}/{endTime}/{location}/{teamSize}")
-    public String CreateSoloEventInstance(
-        @PathVariable String title,
-        @PathVariable String description, 
-        @PathVariable String startTime, 
-        @PathVariable String endTime,
-        @PathVariable String location,
-        @PathVariable int teamSize
-    ) {
-        
-        // Konvertera startTime och endTime från String till LocalDateTime
-        LocalDateTime start = LocalDateTime.parse(startTime);
-        LocalDateTime end = LocalDateTime.parse(endTime);
-        
-        EventInstance instance = eventInstanceService.addSoloInstance(title, description, start, end, location, teamSize);
-        return "Solo EventInstance created with ID: " + instance.getId();   
-    }
+    // Skapa ny eventInstance med eller utan koppling till RecurringEvent
+    @PostMapping("/create")
+    public String createEventInstance(@RequestBody EventInstanceDto dto) {
+        LocalDateTime start = LocalDateTime.parse(dto.startTime);
+        LocalDateTime end = LocalDateTime.parse(dto.endTime);
 
-    //Skapa eventInstance med koppling till RecurringEvent
-    @PostMapping("/addWithRecurring/{title}/{description}/{startTime}/{endTime}/{location}/{teamSize}/{recurringEventId}")
-    public String createInstanceWithParent(
-        @PathVariable String title,
-        @PathVariable String description,
-        @PathVariable String startTime,
-        @PathVariable String endTime,
-        @PathVariable String location,
-        @PathVariable int teamSize,
-        @PathVariable Long recurringEventId
-    ) {
-        
-        LocalDateTime start = LocalDateTime.parse(startTime);
-        LocalDateTime end = LocalDateTime.parse(endTime);
-        RecurringEvent parentEvent = recurringEventRepository.findById(recurringEventId).orElse(null);
-        if (parentEvent == null) {
-            return "RecurringEvent med ID " + recurringEventId + " hittades inte.";
+        RecurringEvent parentEvent = null;
+        if (dto.recurringEventId != null) {
+            parentEvent = recurringEventRepository.findById(dto.recurringEventId).orElse(null);
+            if (parentEvent == null) {
+                return "Recurring event with ID " + dto.recurringEventId + " not found";
+            }
         }
-        EventInstance instance = eventInstanceService.addInstanceWithParent(
-        parentEvent, title, description, start, end, location, teamSize
-    );
-        
-        return "EventInstance created with parent event: " + instance.getParentEvent().getName();
+
+        EventInstance instance = new EventInstance(
+            parentEvent,
+            dto.title,
+            dto.description,
+            start,
+            end,
+            dto.location,
+            dto.teamSize
+        );
+
+        eventInstanceRepository.save(instance);
+        return "EventInstance created with ID: " + instance.getId();
     }
 
     // Hämta alla
@@ -108,31 +94,28 @@ public class EventInstanceController {
     }
 
     // Updatera en instans
-    @PutMapping("/update/{id}/{title}/{description}/{startTime}/{endTime}/{location}/{teamSize}")
-    public String updateEventInstance(
-        @PathVariable Long id,
-        @PathVariable String title,
-        @PathVariable String description,
-        @PathVariable String startTime,
-        @PathVariable String endTime,
-        @PathVariable String location,
-        @PathVariable int teamSize) {
-
-        // Hämta den existerande eventinstansen annars returnera misslyckande
+    @PutMapping("/update/{id}")
+    public String updateEventInstance(@PathVariable Long id, @RequestBody EventInstanceDto dto) {
         EventInstance instance = eventInstanceRepository.findById(id).orElse(null);
-        if (instance == null) return "EventInstance not found";
+        if (instance == null) return "EventInstance with ID " + id + " not found";
 
-        // Uppdatera de relevanta fälten (konvertera från String till LocalDateTime)
-        instance.setTitle(title);
-        instance.setDescription(description);
-        instance.setStartTime(LocalDateTime.parse(startTime));
-        instance.setEndTime(LocalDateTime.parse(endTime));
-        instance.setLocation(location);
-        instance.setTeamSize(teamSize);
+        instance.setTitle(dto.title);
+        instance.setDescription(dto.description);
+        instance.setStartTime(LocalDateTime.parse(dto.startTime));
+        instance.setEndTime(LocalDateTime.parse(dto.endTime));
+        instance.setLocation(dto.location);
+        instance.setTeamSize(dto.teamSize);
 
-        // Spara den uppdaterade eventinstansen
+        if (dto.recurringEventId != null) {
+            RecurringEvent recurring = recurringEventRepository.findById(dto.recurringEventId).orElse(null);
+            if (recurring == null) return "Recurring event not found";
+            instance.setParentEvent(recurring);
+        } else {
+            instance.setParentEvent(null);
+        }
+
         eventInstanceRepository.save(instance);
-        return "Event instance updated successfully with ID: " + instance.getId();
+        return "EventInstance updated with ID: " + id;
     }
 
     @GetMapping("/combinedEventsSorted")
