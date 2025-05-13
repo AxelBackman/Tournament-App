@@ -38,6 +38,13 @@ public class RecurringEvent {
         this.description = description;
     }
 
+    public RecurringEvent(String name, String description, Organisation organisation) {
+        this.name = name;
+        this.description = description;
+        this.organisation = organisation;
+    }
+
+
     public Long getId() {
         return id;
     }

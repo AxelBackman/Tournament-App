@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pvt.demo.dto.RecurringEventDto;
 import com.pvt.demo.model.Organisation;
 import com.pvt.demo.model.RecurringEvent;
 import com.pvt.demo.repository.OrganisationRepository;
@@ -16,6 +17,7 @@ import com.pvt.demo.repository.RecurringEventRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -36,55 +38,34 @@ public class RecurringEventController {
         return recurringEventRepository.findAll();
     }
     
-    @PostMapping("/addrecurring/{name}/{description}/{organisationId}")
-    public String addRecurringEvent(
-        @PathVariable String name, 
-        @PathVariable String description,
-        @PathVariable Long organisationId
-    ) {
-        Optional<Organisation> organisationOpt = organisationRepository.findById(organisationId);
-        if (organisationOpt.isEmpty()) {
-            return "Organisation not found";
+    @PostMapping("/addrecurring")
+    public String addRecurringEvent(@RequestBody RecurringEventDto dto) {
+        Organisation organisation = organisationRepository.findById(dto.organisationId).orElse(null);
+        if (organisation != null) {
+            RecurringEvent recurringEvent = new RecurringEvent(dto.name, dto.description, organisation);
+            recurringEventRepository.save(recurringEvent);
+            return "Recurring event '" + dto.name + "' added";
+        } else {
+            return "Organisation with ID " + dto.organisationId + " not found";
         }
-
-        Organisation organisation = organisationOpt.get();
-
-        // Skapa ett nytt återkommande event och associera det med organisationen
-        RecurringEvent event = new RecurringEvent(name, description);
-        event.setOrganisation(organisation);
-        recurringEventRepository.save(event);
-
-        return "Recurring event added: " + event.getName();
     }
 
-     @PutMapping("/updaterecurring/{id}/{name}/{description}/{organisationId}")
-    public String updateRecurringEvent(
-        @PathVariable Long id, 
-        @PathVariable String name, 
-        @PathVariable String description, 
-        @PathVariable Long organisationId
-    ) {
-        Optional<RecurringEvent> recurringEventOpt = recurringEventRepository.findById(id);
-        if (recurringEventOpt.isEmpty()) {
-            return "Recurring event not found";
+    @PutMapping("/updaterecurring/{id}")
+    public String updateRecurringEvent(@PathVariable Long id, @RequestBody RecurringEventDto dto) {
+        RecurringEvent event = recurringEventRepository.findById(id).orElse(null);
+        Organisation organisation = organisationRepository.findById(dto.organisationId).orElse(null);
+
+        if (event != null && organisation != null) {
+            event.setName(dto.name);
+            event.setDescription(dto.description);
+            event.setOrganisation(organisation);
+            recurringEventRepository.save(event);
+            return "Recurring event with ID " + id + " updated successfully";
+        } else if (event == null) {
+            return "Recurring event with ID " + id + " not found";
+        } else {
+            return "Organisation with ID " + dto.organisationId + " not found";
         }
-
-        Optional<Organisation> organisationOpt = organisationRepository.findById(organisationId);
-        if (organisationOpt.isEmpty()) {
-            return "Organisation not found";
-        }
-
-        RecurringEvent recurringEvent = recurringEventOpt.get();
-        Organisation organisation = organisationOpt.get();
-
-        // Uppdatera de relevanta fälten
-        recurringEvent.setName(name);
-        recurringEvent.setDescription(description);
-        recurringEvent.setOrganisation(organisation);
-
-        recurringEventRepository.save(recurringEvent);
-
-        return "Recurring event updated: " + recurringEvent.getName();
     }
 
     @DeleteMapping("/deleterecurring/{id}")
