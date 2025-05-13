@@ -1,5 +1,6 @@
 package com.pvt.demo.controller;
 
+import com.pvt.demo.dto.OrganisationDto;
 import com.pvt.demo.model.Organisation;
 import com.pvt.demo.repository.OrganisationRepository;
 
@@ -33,32 +34,29 @@ public class OrganisationController {
     }
 
     // Skapa ny organisation
-    @PostMapping("/create/{name}/{adress}/{description}")
-    public Organisation createOrganisationViaPath(
-            @PathVariable String name,
-            @PathVariable String adress,
-            @PathVariable String description) {
-    
-        Organisation org = new Organisation(name, adress, description);
-        return organisationRepository.save(org);
+    @PostMapping("/create")
+    public Organisation createOrganisation(@RequestBody OrganisationDto dto) {
+        Organisation organisation = new Organisation();
+        organisation.setName(dto.name);
+        organisation.setAdress(dto.adress);
+        organisation.setDescription(dto.description);
+
+        return organisationRepository.save(organisation);
     }
+
 
     // Uppdatera en organisation
     @PutMapping("/update/{id}")
-    public ResponseEntity<Organisation> updateOrganisationWithParams(
-        @PathVariable Long id,
-        @RequestParam String name,
-        @RequestParam String adress,
-        @RequestParam String description) {
-
-    return organisationRepository.findById(id)
-        .map(existingOrg -> {
-            existingOrg.setName(name);
-            existingOrg.setAdress(adress);
-            existingOrg.setDescription(description);
-            return ResponseEntity.ok(organisationRepository.save(existingOrg));
-        })
-        .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Organisation> updateOrganisation(@PathVariable Long id, @RequestBody OrganisationDto dto) {
+        return organisationRepository.findById(id)
+            .map(existingOrg -> {
+                existingOrg.setName(dto.name);
+                existingOrg.setAdress(dto.adress);
+                existingOrg.setDescription(dto.description);
+                organisationRepository.save(existingOrg);
+                return ResponseEntity.ok(existingOrg);
+            })
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Radera en organisation
