@@ -95,10 +95,6 @@ public class EventInstanceController {
         EventInstance instance = eventInstanceRepository.findById(id).orElse(null);
         if (instance == null) return "EventInstance not found";
 
-        // Konvertera startTime och endTime från String till LocalDateTime
-        LocalDateTime start = LocalDateTime.parse(startTime);
-        LocalDateTime end = LocalDateTime.parse(endTime);
-
         // Uppdatera de relevanta fälten (konvertera från String till LocalDateTime)
         instance.setDescription(description);
         instance.setStartTime(LocalDateTime.parse(startTime));
