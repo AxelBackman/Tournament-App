@@ -39,8 +39,9 @@ public class EventInstanceController {
     private RecurringEventRepository recurringEventRepository;
 
     // Skapa ny eventInstance utan koppling till RecurringEvent
-    @PostMapping("/addSoloEvent/{description}/{startTime}/{endTime}/{location}/{teamSize}")
+    @PostMapping("/addSoloEvent/{title}/{description}/{startTime}/{endTime}/{location}/{teamSize}")
     public String CreateSoloEventInstance(
+        @PathVariable String title,
         @PathVariable String description, 
         @PathVariable String startTime, 
         @PathVariable String endTime,
@@ -52,14 +53,15 @@ public class EventInstanceController {
         LocalDateTime start = LocalDateTime.parse(startTime);
         LocalDateTime end = LocalDateTime.parse(endTime);
         
-        EventInstance instance = eventInstanceService.addSoloInstance(description, start, end, location, teamSize);
+        EventInstance instance = eventInstanceService.addSoloInstance(title, description, start, end, location, teamSize);
         return "Solo EventInstance created with ID: " + instance.getId();   
     }
 
     //Skapa eventInstance med koppling till RecurringEvent
-    @PostMapping("/addWithRecurring/{description}/{startTime}/{endTime}/{location}/{teamSize}/{recurringEventId}")
+    @PostMapping("/addWithRecurring/{title}/{description}/{startTime}/{endTime}/{location}/{teamSize}/{recurringEventId}")
     public String createInstanceWithParent(
-         @PathVariable String description,
+        @PathVariable String title,
+        @PathVariable String description,
         @PathVariable String startTime,
         @PathVariable String endTime,
         @PathVariable String location,
@@ -74,7 +76,7 @@ public class EventInstanceController {
             return "RecurringEvent med ID " + recurringEventId + " hittades inte.";
         }
         EventInstance instance = eventInstanceService.addInstanceWithParent(
-        parentEvent, description, start, end, location, teamSize
+        parentEvent, title, description, start, end, location, teamSize
     );
         
         return "EventInstance created with parent event: " + instance.getParentEvent().getName();
@@ -103,9 +105,10 @@ public class EventInstanceController {
     }
 
     // Updatera en instans
-    @PutMapping("/update/{id}/{description}/{startTime}/{endTime}/{location}/{teamSize}")
+    @PutMapping("/update/{id}/{title}/{description}/{startTime}/{endTime}/{location}/{teamSize}")
     public String updateEventInstance(
         @PathVariable Long id,
+        @PathVariable String title,
         @PathVariable String description,
         @PathVariable String startTime,
         @PathVariable String endTime,
@@ -117,6 +120,7 @@ public class EventInstanceController {
         if (instance == null) return "EventInstance not found";
 
         // Uppdatera de relevanta fälten (konvertera från String till LocalDateTime)
+        instance.setTitle(title);
         instance.setDescription(description);
         instance.setStartTime(LocalDateTime.parse(startTime));
         instance.setEndTime(LocalDateTime.parse(endTime));

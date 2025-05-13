@@ -23,6 +23,9 @@ public class EventInstance {
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private String title;
+   
+
     private String location;
     private String description;
     private int teamSize;
@@ -40,18 +43,20 @@ public class EventInstance {
     }
 
     //Konstruktor med RecurringEvent
-    public EventInstance(RecurringEvent parentEvent, String description, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
+    public EventInstance(RecurringEvent parentEvent, String title, String description, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
+        
+        this.parentEvent = parentEvent;
+        this.title = title;
         this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
         this.teamSize = teamSize;
-        this.parentEvent = parentEvent;
     }
 
     //Konstruktor utan RecurringEvent (anropar första konstruktorn)
-    public EventInstance(String description, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
-        this(null, description, startTime, endTime, location, teamSize);
+    public EventInstance(String title, String description, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
+        this(null, title, description, startTime, endTime, location, teamSize);
     }
     
     public Long getId() {
@@ -104,6 +109,14 @@ public class EventInstance {
         } else {
             return null;
         }
+    }
+
+     public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
