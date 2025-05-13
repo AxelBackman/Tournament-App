@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
+import com.pvt.demo.services.EventInstanceService;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
 
@@ -31,34 +32,31 @@ public class EventInstanceController {
     private EventInstanceRepository eventInstanceRepository;
 
     @Autowired
-    private RecurringEventRepository recurringEventRepository;
+    private EventInstanceService eventInstanceService;
 
-    // Skapa ny eventInstance kopplad till en RecurringEvent
-    @PostMapping("/add/{recurringEventId}/{description}/{startTime}/{endTime}/{location}/{teamSize}")
-    public String CreateEventInstance(
-        @PathVariable Long recurringEventId,
+    // Skapa ny eventInstance utan koppling till RecurringEvent
+    @PostMapping("/addSoloEvent/{description}/{startTime}/{endTime}/{location}/{teamSize}")
+    public String CreateSoloEventInstance(
         @PathVariable String description, 
         @PathVariable String startTime, 
         @PathVariable String endTime,
         @PathVariable String location,
         @PathVariable int teamSize
     ) {
-        Optional<RecurringEvent> recurringEventOpt = recurringEventRepository.findById(recurringEventId); 
-        if (recurringEventOpt.isEmpty()) {
-            return "Recurring event not found";
-        }
-
-        RecurringEvent recurringEvent = recurringEventOpt.get();
         
         // Konvertera startTime och endTime från String till LocalDateTime
         LocalDateTime start = LocalDateTime.parse(startTime);
         LocalDateTime end = LocalDateTime.parse(endTime);
         
-        // Skapa en ny EventInstance med den angivna konstruktorn
-        EventInstance eventInstance = new EventInstance(recurringEvent, description, start, end, location, teamSize);
+        EventInstance instance = eventInstanceService.addSoloInstance(description, start, end, location, teamSize);
+        return "Solo EventInstance created with ID: " + instance.getId();   
+    }
 
-        eventInstanceRepository.save(eventInstance);
-        return "Event instance created successfully with ID: " + eventInstance.getId();
+    //Skapa eventInstance med koppling till RecurringEvent
+    @PostMapping("/addWithRecurring/{recurringEventId}")
+    public String createInstanceWithParent(@PathVariable Long recurringEventId) {
+        EventInstance instance = eventInstanceService.addInstance(recurringEventId);
+        return "EventInstance created with parent event: " + instance.getParentEvent().getName();
     }
 
     // Hämta alla
@@ -85,36 +83,32 @@ public class EventInstanceController {
 
     // Updatera en instans
     @PutMapping("/update/{id}/{description}/{startTime}/{endTime}/{location}/{teamSize}")
-public String updateEventInstance(
-    @PathVariable Long id,
-    @PathVariable String description,
-    @PathVariable String startTime,
-    @PathVariable String endTime,
-    @PathVariable String location,
-    @PathVariable int teamSize
-) {
-    Optional<EventInstance> eventInstanceOpt = eventInstanceRepository.findById(id);
-    if (eventInstanceOpt.isEmpty()) {
-        return "EventInstance not found";
+    public String updateEventInstance(
+        @PathVariable Long id,
+        @PathVariable String description,
+        @PathVariable String startTime,
+        @PathVariable String endTime,
+        @PathVariable String location,
+        @PathVariable int teamSize) {
+
+        // Hämta den existerande eventinstansen annars returnera misslyckande
+        EventInstance instance = eventInstanceRepository.findById(id).orElse(null);
+        if (instance == null) return "EventInstance not found";
+
+        // Konvertera startTime och endTime från String till LocalDateTime
+        LocalDateTime start = LocalDateTime.parse(startTime);
+        LocalDateTime end = LocalDateTime.parse(endTime);
+
+        // Uppdatera de relevanta fälten (konvertera från String till LocalDateTime)
+        instance.setDescription(description);
+        instance.setStartTime(LocalDateTime.parse(startTime));
+        instance.setEndTime(LocalDateTime.parse(endTime));
+        instance.setLocation(location);
+        instance.setTeamSize(teamSize);
+
+        // Spara den uppdaterade eventinstansen
+        eventInstanceRepository.save(instance);
+        return "Event instance updated successfully with ID: " + instance.getId();
     }
-
-    // Hämta den existerande eventinstansen
-    EventInstance eventInstance = eventInstanceOpt.get();
-
-    // Konvertera startTime och endTime från String till LocalDateTime
-    LocalDateTime start = LocalDateTime.parse(startTime);
-    LocalDateTime end = LocalDateTime.parse(endTime);
-
-    // Uppdatera de relevanta fälten
-    eventInstance.setDescription(description);
-    eventInstance.setStartTime(start);
-    eventInstance.setEndTime(end);
-    eventInstance.setLocation(location);
-    eventInstance.setTeamSize(teamSize);
-
-    // Spara den uppdaterade eventinstansen
-    eventInstanceRepository.save(eventInstance);
-    return "Event instance updated successfully with ID: " + eventInstance.getId();
-}
 
 }

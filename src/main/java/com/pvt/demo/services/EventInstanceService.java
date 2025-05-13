@@ -31,7 +31,7 @@ public class EventInstanceService {
     }
 
     //Skapar EventInstance utan koppling till RecurringEvent
-    public EventInstance addOneTimeInstance(String description, LocalDateTime start, LocalDateTime end, String location, int teamSize) {
+    public EventInstance addSoloInstance(String description, LocalDateTime start, LocalDateTime end, String location, int teamSize) {
         EventInstance instance = new EventInstance(description, start, end, location, teamSize);
         return eventInstanceRepository.save(instance);
     }
