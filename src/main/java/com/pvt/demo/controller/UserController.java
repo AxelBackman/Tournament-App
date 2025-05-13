@@ -42,7 +42,7 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @PostMapping("/adduser/{userName}/{email}/{organisationId}")
+    @PostMapping("/adduser")
     public String addNewUser(@RequestBody UserDto userDto) {
         // Hämta organisationen baserat på ID
         Organisation organisation = organisationRepository.findById(userDto.organisationId).orElse(null);
