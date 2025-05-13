@@ -5,6 +5,9 @@ import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
+
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,12 @@ public class EventInstanceService {
 
         EventInstance instance = new EventInstance();
         instance.setParentEvent(parentEvent);
+        return eventInstanceRepository.save(instance);
+    }
+
+    //Skapar EventInstance utan koppling till RecurringEvent
+    public EventInstance addOneTimeInstance(String description, LocalDateTime start, LocalDateTime end, String location, int teamSize) {
+        EventInstance instance = new EventInstance(description, start, end, location, teamSize);
         return eventInstanceRepository.save(instance);
     }
 }
