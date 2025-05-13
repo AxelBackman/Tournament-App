@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pvt.demo.dto.EventInstanceDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
-import com.pvt.demo.services.EventInstanceService;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
 
@@ -36,9 +35,6 @@ public class EventInstanceController {
 
     @Autowired
     private EventInstanceRepository eventInstanceRepository;
-
-    @Autowired
-    private EventInstanceService eventInstanceService;
 
     @Autowired
     private RecurringEventRepository recurringEventRepository;
