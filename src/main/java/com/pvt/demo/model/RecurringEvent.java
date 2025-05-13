@@ -69,4 +69,5 @@ public class RecurringEvent {
     public Organisation getOrganisation(){
         return organisation;
     }
+
 }

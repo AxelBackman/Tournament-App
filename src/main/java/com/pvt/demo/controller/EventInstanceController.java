@@ -10,10 +10,13 @@ import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.CloseableThreadContext.Instance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -130,6 +133,55 @@ public class EventInstanceController {
         // Spara den uppdaterade eventinstansen
         eventInstanceRepository.save(instance);
         return "Event instance updated successfully with ID: " + instance.getId();
+    }
+
+    @GetMapping("/combinedEventsSorted")
+    public List<Map<String, Object>> getCombinedEventsSorted() {
+        List<EventInstance> allInstances = eventInstanceRepository.findAll();
+
+        // Solo event instances (utan parent)
+        List<Map<String, Object>> soloInstances = allInstances.stream()
+            .filter(e -> e.getParentEvent() == null)
+            .map(e -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("type", "solo");
+                map.put("id", e.getId());
+                map.put("title", e.getTitle());
+                map.put("description", e.getDescription());
+                map.put("startTime", e.getStartTime());
+                map.put("endTime", e.getEndTime());
+                return map;
+            })
+            .collect(Collectors.toList());
+
+        // RecurringEvents med minst en EventInstance
+        List<Map<String, Object>> recurringWithInstances = recurringEventRepository.findAll().stream()
+            .filter(r -> !r.getSubEvents().isEmpty())
+            .map(r -> {
+                // För datum, ta första instansens startTime
+                LocalDateTime earliestStart = r.getSubEvents().stream()
+                    .map(EventInstance::getStartTime)
+                    .min(LocalDateTime::compareTo)
+                    .orElse(LocalDateTime.MAX);
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("type", "recurring");
+                map.put("id", r.getId());
+                map.put("name", r.getName());
+                map.put("description", r.getDescription());
+                map.put("startTime", earliestStart);
+                return map;
+            })
+            .collect(Collectors.toList());
+
+        // Kombinera och sortera
+        List<Map<String, Object>> combined = new ArrayList<>();
+        combined.addAll(soloInstances);
+        combined.addAll(recurringWithInstances);
+
+        combined.sort(Comparator.comparing(e -> (LocalDateTime) e.get("startTime")));
+
+        return combined;
     }
 
 }
