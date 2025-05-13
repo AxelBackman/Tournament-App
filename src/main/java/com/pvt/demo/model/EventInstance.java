@@ -20,16 +20,16 @@ public class EventInstance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String location;
     private String description;
-
     private int teamSize;
     
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "recurring_event_id")
+    @JoinColumn(name = "recurring_event_id", nullable = true) //Valfritt om relationen ska finnas
     private RecurringEvent parentEvent;
 
     @OneToMany(mappedBy = "eventInstance", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -39,6 +39,7 @@ public class EventInstance {
 
     }
 
+    //Konstruktor med RecurringEvent
     public EventInstance(RecurringEvent parentEvent, String description, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
         this.description = description;
         this.startTime = startTime;
@@ -46,6 +47,11 @@ public class EventInstance {
         this.location = location;
         this.teamSize = teamSize;
         this.parentEvent = parentEvent;
+    }
+
+    //Konstruktor utan RecurringEvent (anropar första konstruktorn)
+    public EventInstance(String description, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
+        this(null, description, startTime, endTime, location, teamSize);
     }
     
     public Long getId() {
@@ -106,11 +112,5 @@ public class EventInstance {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    
-
-    public void method(String type) {
-        // Funktionalitet
     }
 }
