@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../../.."
+		},
+		{
+			"name": "FrontEnd",
+			"path": "../../../../../../../../../git/FrontEnd"
+		},
+		{
+			"name": "pvtServer-4",
+			"path": "../../../../../../../../../git/pvtServer-4"
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.configuration.updateBuildConfiguration": "interactive"
+	}
+}
