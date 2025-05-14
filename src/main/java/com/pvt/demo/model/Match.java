@@ -1,8 +1,17 @@
 package com.pvt.demo.model;
-
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Match {
@@ -11,66 +20,64 @@ public class Match {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "teamA_id")
-    private Team teamA;
+    @JoinColumn(name = "teamOne_id")
+    private Team teamOne;
 
     @ManyToOne
-    @JoinColumn(name = "teamB_id")
-    private Team teamB;
+    @JoinColumn(name = "teamTwo_id")
+    private Team teamTwo;
 
     @ManyToOne
-    @JoinColumn(name = "event_id")
-    private EventInstance event;
+    @JoinColumn(name = "tournament_id")
+    private Tournament tournament;
 
-    private Integer round;
-    private String result;
-    private LocalDateTime matchDate;
-    private String location;
+    @Column(nullable = true)
+    private int round;
+
+    @Column(nullable = true)
+    private Team winner;
+
+    @Column(nullable = true)
+    @OneToOne(mappedBy = "leftMatch_id", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("leftMatch")
+    private Match leftMatch; // representerar barn noder - så round 1 har inga barn // if null, then = leaf
+    
+    @Column(nullable = true)
+    @OneToOne(mappedBy = "rightMatch_id", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("rightMatch")
+    private Match rightMatch; // if null, then = leaf
+
+    @Column(nullable = true)
+    @OneToOne(mappedBy = "parentMatch_id", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("parentMatch")
+    private Match parentMatch; // if null, then = root
 
     public Match() {}
-
-    /**
-     * Constructs a new Match with the specified details.
-     *
-     * @param teamA
-     * @param teamB
-     * @param event
-     * @param round
-     * @param matchDate
-     * @param location
-     */
-    public Match(Team teamA, Team teamB, EventInstance event, Integer round, LocalDateTime matchDate, String location) {
-        this.teamA = teamA;
-        this.teamB = teamB;
-        this.event = event;
+   
+    public Match(Team teamOne, Team teamTwo, Tournament tournament, int round) {
+        this.teamOne = teamOne;
+        this.teamTwo = teamTwo;
+        this.tournament = tournament;
         this.round = round;
-        this.matchDate = matchDate;
-        this.location = location;
     }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Team getTeamA() { return teamA; }
-    public void setTeamA(Team teamA) { this.teamA = teamA; }
+    public Team getTeamA() { return teamOne; }
+    public void setTeamA(Team teamA) { this.teamOne = teamA; }
 
-    public Team getTeamB() { return teamB; }
-    public void setTeamB(Team teamB) { this.teamB = teamB; }
+    public Team getTeamB() { return teamTwo; }
+    public void setTeamB(Team teamB) { this.teamTwo = teamB; }
 
-    public EventInstance getEvent() { return event; }
-    public void setEvent(EventInstance event) { this.event = event; }
+    public Tournament getTournament() { return tournament; }
+    public void setTournament(Tournament tournament) { this.tournament = tournament; }
 
-    public Integer getRound() { return round; }
-    public void setRound(Integer round) { this.round = round; }
+    public int getRound() { return round; }
+    public void setRound(int round) { this.round = round; }
 
-    public String getResult() { return result; }
-    public void setResult(String result) { this.result = result; }
-
-    public LocalDateTime getMatchDate() { return matchDate; }
-    public void setMatchDate(LocalDateTime matchDate) { this.matchDate = matchDate; }
-
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+    public Team getWinner () { return winner; }
+    public void setWinner(Team winner) {this.winner = winner; }
 
     @Override
     public boolean equals(Object o) {
