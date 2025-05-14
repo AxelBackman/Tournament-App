@@ -1,8 +1,4 @@
-package com.pvt.demo.util;
-
-import com.pvt.demo.model.Match;
-import com.pvt.demo.model.EventInstance;
-import com.pvt.demo.model.Team;
+package com.pvt.demo.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
