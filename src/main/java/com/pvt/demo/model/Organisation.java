@@ -25,6 +25,8 @@ public class Organisation {
     private String name;
 
     private String adress;
+    
+    @Column(length = 1000)
     private String description; // fyll på mer info om organisationer, typer av event? beskrivning av föreningen?
 
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
