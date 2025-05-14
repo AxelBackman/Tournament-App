@@ -32,7 +32,8 @@ public class Match {
     @Column(nullable = true)
     private int round;
 
-    @Column(nullable = true)
+    @ManyToOne
+    @JoinColumn(name = "winner_id", nullable = true)
     private Team winner;
     
     @OneToOne

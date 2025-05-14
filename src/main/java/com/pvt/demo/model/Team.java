@@ -75,7 +75,7 @@ public class Team {
     public void addMember(User user){
         this.members.add(user);
     }
-    public int getTeamSize(Team team){
+    public int getTeamSize(){
         return teamSize;
     }
     public void setTeamSize(int teamSize){
@@ -89,5 +89,8 @@ public class Team {
     public void setTournament(Tournament tournament) {
         this.tournament = tournament;
     }
+
+    public User getCreator() { return creator; }
+    
 
 }
