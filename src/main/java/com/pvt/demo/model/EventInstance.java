@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class EventInstance {
@@ -40,6 +41,10 @@ public class EventInstance {
     @OneToMany(mappedBy = "eventInstance", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RegisteredUsers> registeredUsers = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "tournament_id")
+    private Tournament tournament;
+
     public EventInstance() {
 
     }
@@ -63,6 +68,9 @@ public class EventInstance {
     public Long getId() {
         return id;
     }
+
+    public void setTournament(Tournament tournament) { this.tournament = tournament; }
+    public Tournament getTournament() { return tournament; }
 
     public LocalDateTime getStartTime() {
         return startTime;

@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import java.util.ArrayList;
 
 @Entity
@@ -24,8 +22,7 @@ public class Team {
     private List<User> members = new ArrayList<>();
 
     @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "tournament_id", nullable = true)
+    @JoinColumn(name = "tournament_id")
     private Tournament tournament;
 
     private int teamSize;

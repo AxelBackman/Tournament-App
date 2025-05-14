@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Tournament {
@@ -19,18 +20,22 @@ public class Tournament {
 
     private int teamSize;
 
-    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> matches = new ArrayList<>();
 
-    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL)
-    private List<Team> teams;
+    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Team> teams = new ArrayList<>();
+
+    @OneToOne(mappedBy = "tournament", cascade = CascadeType.ALL)
+    private EventInstance eventInstance;
 
     private boolean brackets; // if true, skapa brackets, annars något annat - vidare utveckla
 
     public Tournament() {}
 
-    public Tournament(boolean brackets){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
+    public Tournament(boolean brackets, EventInstance eventInstance){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
         this.brackets = brackets;
+        this.eventInstance = eventInstance;
 
     }
 
@@ -42,6 +47,8 @@ public class Tournament {
     public int getTeamSize() {return teamSize; } 
     public void setTeamSize(int teamSize) {this.teamSize = teamSize; }
     
+    public EventInstance getEventInstnace() { return eventInstance; }
+    public void setEventInstance(EventInstance eventInstance) { this.eventInstance = eventInstance; }
 
 
 

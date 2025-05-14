@@ -26,7 +26,7 @@ public class Match {
     private Team teamTwo;
 
     @ManyToOne
-    @JoinColumn(name = "tournament_id")
+    @JoinColumn(name = "tournament_id") // denna klass äger relationen
     private Tournament tournament;
 
     @Column(nullable = true)
