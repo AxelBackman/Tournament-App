@@ -9,4 +9,9 @@ import com.pvt.demo.model.Tournament;
 public interface TournamentRepository extends JpaRepository<Tournament, Long> {
     List<Tournament> findByEventInstanceId(Long eventInstanceId);
     List<Tournament> findByTeams_Members_Id(Long userId);
+<<<<<<< HEAD
+=======
+    List<Tournament> findByCreator_Id(Long userId);
+    List<Tournament> findByEventInstance_RecurringEvent_Id(Long recurringEventId);
+>>>>>>> parent of 6cc36b9 (liten fix)
 }
