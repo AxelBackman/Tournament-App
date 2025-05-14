@@ -83,7 +83,12 @@ public class EventInstanceControllerTest {
         EventInstance mockInstance = new EventInstance(dto.title, dto.description, LocalDateTime.parse(dto.startTime), LocalDateTime.parse(dto.endTime), dto.location, dto.teamSize);
         ReflectionTestUtils.setField(mockInstance, "id", 1L);
 
-        Mockito.when(eventInstanceRepository.save(any(EventInstance.class))).thenReturn(mockInstance);
+       Mockito.when(eventInstanceRepository.save(any(EventInstance.class)))
+       .thenAnswer(invocation -> {
+           EventInstance saved = invocation.getArgument(0);
+           ReflectionTestUtils.setField(saved, "id", 1L);
+           return saved;
+       });
 
         mockMvc.perform(post("/eventinstances/create")
                 .contentType("application/json")
@@ -92,7 +97,7 @@ public class EventInstanceControllerTest {
                 .andExpect(content().string(containsString("EventInstance created with ID: 1")));
     }
 
-    @Test
+   @Test
     public void testCreateInstanceWithParent_success() throws Exception {
         RecurringEvent parent = new RecurringEvent();
         ReflectionTestUtils.setField(parent, "id", 100L);
@@ -107,11 +112,14 @@ public class EventInstanceControllerTest {
         dto.teamSize = 6;
         dto.recurringEventId = 100L;
 
-        EventInstance instance = new EventInstance(parent, dto.title, dto.description, LocalDateTime.parse(dto.startTime), LocalDateTime.parse(dto.endTime), dto.location, dto.teamSize);
-        ReflectionTestUtils.setField(instance, "id", 2L);
-
         Mockito.when(recurringEventRepository.findById(100L)).thenReturn(Optional.of(parent));
-        Mockito.when(eventInstanceRepository.save(any(EventInstance.class))).thenReturn(instance);
+
+        Mockito.when(eventInstanceRepository.save(any(EventInstance.class)))
+            .thenAnswer(invocation -> {
+                EventInstance saved = invocation.getArgument(0);
+                ReflectionTestUtils.setField(saved, "id", 2L);
+                return saved;
+            });
 
         mockMvc.perform(post("/eventinstances/create")
                 .contentType("application/json")
