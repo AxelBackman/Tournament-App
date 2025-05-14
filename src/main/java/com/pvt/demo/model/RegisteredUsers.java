@@ -41,7 +41,7 @@ public class RegisteredUsers {
     public EventInstance getEventInstance(){
         return this.eventInstance;
     }
-    
+
     public RegistrationStatus getStatus(){ return this.status; }
     public boolean isComing() { return this.status == RegistrationStatus.COMING; }
     public boolean isInterested() { return this.status == RegistrationStatus.INTERESTED; }

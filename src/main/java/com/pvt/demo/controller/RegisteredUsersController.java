@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pvt.demo.model.RegisteredUsers;
+import com.pvt.demo.model.RegistrationStatus;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RegisteredUsersRepository;
 import com.pvt.demo.repository.UserRepository;
@@ -14,10 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-
-
-
 
 @RestController
 @RequestMapping("/registeredusers")
@@ -35,20 +32,22 @@ public class RegisteredUsersController {
     @PostMapping("/register/{userId}/{eventId}/{coming}")
     public String RegisterUserToEvent(@PathVariable Long userId,
     @PathVariable Long eventId,
-    @PathVariable boolean coming){
+    @PathVariable RegistrationStatus status){
         var user = userRepository.findById(userId).orElse(null);
         var event = eventInstanceRepository.findById(eventId).orElse(null);
+
         if (user == null || event == null) {
             return "User or Event not found";
         }
+        
         if (registeredUsersRepository.findByUserIdAndEventInstanceId(userId, eventId) != null) {
             return "User is already registered for this event";
         }
 
-        RegisteredUsers registeredUser = new RegisteredUsers(event, user, coming);
+        RegisteredUsers registeredUser = new RegisteredUsers(event, user, status);
         registeredUsersRepository.save(registeredUser);
         
-        return "User " + user.getName() + " registered for event " + event.getId() + " with coming status: " + (coming ? "Coming" : "Interested"); 
+        return "User " + user.getName() + " registered for event " + event.getId() + " with status: " + (status.name()); 
     }
 
     @DeleteMapping("/delete/{userId}/{eventId}")
@@ -79,9 +78,12 @@ public class RegisteredUsersController {
         if (registeredUser == null) {
             return "User is not registered for this event";
         }
-        registeredUser.setNewStatus();
+
+        RegistrationStatus newStatus = coming ? RegistrationStatus.COMING : RegistrationStatus.INTERESTED;
+        registeredUser.setStatus(newStatus);
         registeredUsersRepository.save(registeredUser);
-        return "Coming status updated to " + (coming ? "Coming" : "Interested") + " for user " + userId + " in event " + eventId;
+
+        return "Coming status updated to " + newStatus.name() + " for user " + userId + " in event " + eventId;
     }
     
 }
