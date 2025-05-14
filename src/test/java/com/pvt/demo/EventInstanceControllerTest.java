@@ -62,7 +62,7 @@ public class EventInstanceControllerTest {
 
     @Test
     public void testGetAllInstances() throws Exception {
-        EventInstance instance = new EventInstance("Test Title", "Test Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Stockholm", 5);
+        EventInstance instance = new EventInstance("Test Title", "Test Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Stockholm");
         Mockito.when(eventInstanceRepository.findAll()).thenReturn(List.of(instance));
 
         mockMvc.perform(get("/eventinstances"))
@@ -78,9 +78,8 @@ public class EventInstanceControllerTest {
         dto.startTime = "2025-06-01T10:00";
         dto.endTime = "2025-06-01T12:00";
         dto.location = "Gbg";
-        dto.teamSize = 4;
 
-        EventInstance mockInstance = new EventInstance(dto.title, dto.description, LocalDateTime.parse(dto.startTime), LocalDateTime.parse(dto.endTime), dto.location, dto.teamSize);
+        EventInstance mockInstance = new EventInstance(dto.title, dto.description, LocalDateTime.parse(dto.startTime), LocalDateTime.parse(dto.endTime), dto.location);
         ReflectionTestUtils.setField(mockInstance, "id", 1L);
 
        Mockito.when(eventInstanceRepository.save(any(EventInstance.class)))
@@ -109,7 +108,6 @@ public class EventInstanceControllerTest {
         dto.startTime = "2025-06-01T10:00";
         dto.endTime = "2025-06-01T12:00";
         dto.location = "Field";
-        dto.teamSize = 6;
         dto.recurringEventId = 100L;
 
         Mockito.when(recurringEventRepository.findById(100L)).thenReturn(Optional.of(parent));
@@ -130,7 +128,7 @@ public class EventInstanceControllerTest {
 
     @Test
     public void testUpdateEventInstance() throws Exception {
-        EventInstance existing = new EventInstance("Old", "Old", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "OldPlace", 2);
+        EventInstance existing = new EventInstance("Old", "Old", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "OldPlace");
         ReflectionTestUtils.setField(existing, "id", 1L);
 
         EventInstanceDto dto = new EventInstanceDto();
@@ -139,7 +137,6 @@ public class EventInstanceControllerTest {
         dto.startTime = "2025-06-01T14:00";
         dto.endTime = "2025-06-01T16:00";
         dto.location = "NewPlace";
-        dto.teamSize = 8;
 
         Mockito.when(eventInstanceRepository.findById(1L)).thenReturn(Optional.of(existing));
         Mockito.when(eventInstanceRepository.save(any(EventInstance.class))).thenReturn(existing);
