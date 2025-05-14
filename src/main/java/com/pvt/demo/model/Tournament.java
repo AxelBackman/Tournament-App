@@ -39,7 +39,7 @@ public class Tournament {
     public List<Team> getTeams(){return teams;}
     public void setTeams (List<Team> teams){ this.teams = teams; }
 
-    public get getTeamSize() {return teamSize; } 
+    public int getTeamSize() {return teamSize; } 
     public void setTeamSize(int teamSize) {this.teamSize = teamSize; }
     
 

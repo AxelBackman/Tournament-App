@@ -25,8 +25,8 @@ public class Team {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "event_instance_id", nullable = true)
-    private EventInstance eventInstance;
+    @JoinColumn(name = "tournament_id", nullable = true)
+    private Tournament tournament;
 
     private int teamSize;
     private boolean recurringEvent;
@@ -41,10 +41,10 @@ public class Team {
 
     public Team(){}
 
-    public Team(EventInstance eventInstance, User user){
-        this.eventInstance = eventInstance;
+    public Team(Tournament tournament, User user){
+        this.tournament = tournament;
         this.members.add(user);
-        this.teamSize = eventInstance != null ? eventInstance.getTeamSize() : 0;
+        this.teamSize = tournament != null ? tournament.getTeamSize() : 0;
         this.creator = members != null ? this.members.get(0) : null;
 
     }
@@ -92,12 +92,12 @@ public class Team {
         this.teamSize = teamSize;
     }
 
-    public EventInstance getEventInstance() {
-        return eventInstance;
+    public Tournament getTournament() {
+        return tournament;
     }
 
-    public void setEventInstance(EventInstance eventInstance) {
-        this.eventInstance = eventInstance;
+    public void setTournament(Tournament tournament) {
+        this.tournament = tournament;
     }
 
 }
