@@ -7,11 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pvt.demo.dto.TeamDto;
-import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.Team;
 import com.pvt.demo.model.Tournament;
 import com.pvt.demo.model.User;
-import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.TeamRepository;
 import com.pvt.demo.repository.TournamentRepository;
 import com.pvt.demo.repository.UserRepository;
@@ -33,9 +31,6 @@ public class TeamController {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private EventInstanceRepository eventInstanceRepository;
 
     @Autowired
     private TournamentRepository tournamentRepository;
@@ -88,13 +83,13 @@ public class TeamController {
     }
 
     // Hämta teamns för en viss EventInstance
-    @GetMapping("/event/{eventInstanceId}")
-    public List<Team> getTeamsByEventInstance(@PathVariable Long eventInstanceId) {
-        EventInstance eventInstance = eventInstanceRepository.findById(eventInstanceId).orElse(null);
-        if (eventInstance == null) {
+    @GetMapping("/event/{tournamentId}")
+    public List<Team> getTeamsByEventInstance(@PathVariable Long tournamentId) {
+        Tournament tournament = tournamentRepository.findById(tournamentId).orElse(null);
+        if (tournament == null) {
             return null;
         }
-        return teamRepository.findByEventInstanceId(eventInstanceId);
+        return teamRepository.findByTournamentId(tournamentId);
     }
 
 }
