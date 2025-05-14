@@ -2,8 +2,6 @@ package com.pvt.demo.model;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,21 +34,19 @@ public class Match {
 
     @Column(nullable = true)
     private Team winner;
-
-    @Column(nullable = true)
-    @OneToOne(mappedBy = "leftMatch_id", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("leftMatch")
-    private Match leftMatch; // representerar barn noder - så round 1 har inga barn // if null, then = leaf
     
-    @Column(nullable = true)
-    @OneToOne(mappedBy = "rightMatch_id", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("rightMatch")
-    private Match rightMatch; // if null, then = leaf
-
-    @Column(nullable = true)
-    @OneToOne(mappedBy = "parentMatch_id", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("parentMatch")
+    @OneToOne
+    @JoinColumn(name = "parent_match_id")
+    @JsonIgnoreProperties({"leftMatch", "rightMatch"})
     private Match parentMatch; // if null, then = root
+
+    @OneToOne(mappedBy = "parentMatch")
+    @JsonIgnoreProperties("parentMatch")
+    private Match leftMatch; // if null, then = leaf
+
+    @OneToOne(mappedBy = "parentMatch")
+    @JsonIgnoreProperties("parentMatch")
+    private Match rightMatch; // if null, then = leaf
 
     public Match() {}
    
@@ -64,11 +60,11 @@ public class Match {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Team getTeamA() { return teamOne; }
-    public void setTeamA(Team teamA) { this.teamOne = teamA; }
+    public Team getTeamOne() { return teamOne; }
+    public void setTeamOne(Team teamOne) { this.teamOne = teamOne; }
 
-    public Team getTeamB() { return teamTwo; }
-    public void setTeamB(Team teamB) { this.teamTwo = teamB; }
+    public Team getTeamTwo() { return teamTwo; }
+    public void setTeamTwo(Team teamTwo) { this.teamTwo = teamTwo; }
 
     public Tournament getTournament() { return tournament; }
     public void setTournament(Tournament tournament) { this.tournament = tournament; }

@@ -25,18 +25,15 @@ public class Tournament {
 
     public Tournament() {}
 
-    public Tournament(List<Team> teams, boolean brackets){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
-        this.teams = teams;
+    public Tournament(boolean brackets){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
         this.brackets = brackets;
 
     }
 
-
-
-
     public boolean getBrackets(){return brackets;}
 
     public List<Team> getTeams(){return teams;}
+    public void setTeams (List<Team> teams){ this.teams = teams; }
 
 
 
