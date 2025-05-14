@@ -2,7 +2,7 @@ package com.pvt.demo.controller;
 
 import com.pvt.demo.model.Match;
 import com.pvt.demo.model.Team;
-import com.pvt.demo.model.OneTimeEvent;
+import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.services.BracketService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +32,7 @@ public class BracketController {
         List<Team> teams = List.of(team1, team2, team3, team4);
 
         
-        OneTimeEvent event = new OneTimeEvent("Test Tournament", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "Stockholm", 2);
+        EventInstance event = new EventInstance("Test Tournament", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "Stockholm", 2);
         event.setTeams(new java.util.ArrayList<>()); 
 
         

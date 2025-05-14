@@ -2,7 +2,7 @@ package com.pvt.demo.services;
 
 import com.pvt.demo.model.Match;
 import com.pvt.demo.model.Team;
-import com.pvt.demo.model.OneTimeEvent;
+import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.repository.MatchRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public class BracketService {
         this.matchRepository = matchRepository;
     }
 
-    public List<Match> generateBracket(List<Team> teams, OneTimeEvent event) {
+    public List<Match> generateBracket(List<Team> teams, EventInstance event) {
         
         if (teams == null || teams.size() < 2) {
             throw new IllegalArgumentException("Teams must not be null and must contain at least two teams.");

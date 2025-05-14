@@ -20,7 +20,7 @@ public class Match {
 
     @ManyToOne
     @JoinColumn(name = "event_id")
-    private OneTimeEvent event;
+    private EventInstance event;
 
     private Integer round;
     private String result;
@@ -39,7 +39,7 @@ public class Match {
      * @param matchDate
      * @param location
      */
-    public Match(Team teamA, Team teamB, OneTimeEvent event, Integer round, LocalDateTime matchDate, String location) {
+    public Match(Team teamA, Team teamB, EventInstance event, Integer round, LocalDateTime matchDate, String location) {
         this.teamA = teamA;
         this.teamB = teamB;
         this.event = event;
@@ -57,8 +57,8 @@ public class Match {
     public Team getTeamB() { return teamB; }
     public void setTeamB(Team teamB) { this.teamB = teamB; }
 
-    public OneTimeEvent getEvent() { return event; }
-    public void setEvent(OneTimeEvent event) { this.event = event; }
+    public EventInstance getEvent() { return event; }
+    public void setEvent(EventInstance event) { this.event = event; }
 
     public Integer getRound() { return round; }
     public void setRound(Integer round) { this.round = round; }
