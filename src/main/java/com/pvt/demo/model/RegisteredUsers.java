@@ -2,6 +2,8 @@ package com.pvt.demo.model;
 
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -10,9 +12,6 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class RegisteredUsers {
-
-    // skall innehålla event + anmälda users
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,15 +23,15 @@ public class RegisteredUsers {
     @JoinColumn(name = "event_instance_id")
     private EventInstance eventInstance;
 
-    private boolean coming; 
+    @Enumerated(EnumType.STRING)
+    private RegistrationStatus status;
 
     public RegisteredUsers(){}
 
-    public RegisteredUsers(EventInstance eventInstance, User user, boolean coming){
+    public RegisteredUsers(EventInstance eventInstance, User user, RegistrationStatus status){
         this.user = user;
         this.eventInstance = eventInstance;
-        this.coming = coming;
-    
+        this.status = status; // COMING eller INTERESTED
     }
 
     public User getUser(){
@@ -43,28 +42,7 @@ public class RegisteredUsers {
         return this.eventInstance;
     }
 
-    // if true, then the person is coming - returns true
-    public boolean getComing(){
-        return this.coming;
-    }
+    public RegistrationStatus getStatus(){ return this.status; }
+    public void setStatus(RegistrationStatus status) { this.status = status; }
 
-    // if false, then the person is only interested - returns true
-    public boolean getInterested(){
-        return !this.coming;
-    }
-
-    /* 
-     * if User sets from interested straight to coming we only change boolean.
-     * nicen up with controls and return message?
-    */
-    public void setNewStatus(){
-       this.coming = !this.coming; 
-    }
-
-
-
-
-    // other setters?
-
-    
 }
