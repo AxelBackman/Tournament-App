@@ -32,12 +32,12 @@ public class EventInstanceService {
 
     //Skapar EventInstance utan koppling till RecurringEvent
     public EventInstance addSoloInstance(String title, String description, LocalDateTime start, LocalDateTime end, String location, int teamSize) {
-        EventInstance instance = new EventInstance(title, description, start, end, location, teamSize);
+        EventInstance instance = new EventInstance(title, description, start, end, location);
         return eventInstanceRepository.save(instance);
     }
 
     public EventInstance addInstanceWithParent(RecurringEvent parentEvent, String title, String description, LocalDateTime start, LocalDateTime end, String location, int teamSize) {
-        EventInstance instance = new EventInstance(parentEvent, title, description, start, end, location, teamSize);
+        EventInstance instance = new EventInstance(parentEvent, title, description, start, end, location);
         return eventInstanceRepository.save(instance);
     }
 }

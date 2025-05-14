@@ -8,17 +8,21 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pvt.demo.dto.TeamDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.Team;
+import com.pvt.demo.model.Tournament;
 import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.TeamRepository;
+import com.pvt.demo.repository.TournamentRepository;
 import com.pvt.demo.repository.UserRepository;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -35,23 +39,28 @@ public class TeamController {
     @Autowired
     private EventInstanceRepository eventInstanceRepository;
 
+    @Autowired
+    private TournamentRepository tournamentRepository;
+
     // Skapa ett team
-    @PostMapping("/create/{eventInstanceId}/{userId}")
-    public String createTeam(@PathVariable Long eventInstanceId, @PathVariable Long userId) {
-        EventInstance eventInstance = eventInstanceRepository.findById(eventInstanceId).orElse(null);
-        User user = userRepository.findById(userId).orElse(null);
-        if (eventInstance == null || user == null) {
-            return "Event instance not found";
+    @PostMapping("/create")
+    public String createTeam(@RequestBody TeamDto teamDto) {
+       
+
+        Tournament tournament = tournamentRepository.findById(teamDto.tournamentId).orElse(null);
+        User user = userRepository.findById(teamDto.userId).orElse(null);
+
+        if (tournament == null || user == null) {
+            return "Event instance or user not found";
         }
 
-        Team team = new Team();
-        team.setEventInstance(eventInstance);
-        team.setMembers(new ArrayList<>());
-        team.getMembers().add(user);
+        // Skapa team med hjälp av konstruktorn
+        Team team = new Team(tournament, user, teamDto.name);
 
+        // Spara teamet i databasen
         teamRepository.save(team);
 
-        return "Team created successfully" + team.getId();
+        return "Team '" + team.getName() + "' created successfully with ID " + team.getId();
     }
 
     // Lägg till en medlem i teamet

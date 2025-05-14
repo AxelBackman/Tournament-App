@@ -27,6 +27,11 @@ public class EventInstance {
     private LocalDateTime endTime;
     private String title;
    
+    
+    @OneToOne
+    @JoinColumn(name = "tournament_id")
+    private Tournament tournament;
+
 
     private String location;
     
@@ -41,16 +46,12 @@ public class EventInstance {
     @OneToMany(mappedBy = "eventInstance", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RegisteredUsers> registeredUsers = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "tournament_id")
-    private Tournament tournament;
-
     public EventInstance() {
 
     }
 
     //Konstruktor med RecurringEvent
-    public EventInstance(RecurringEvent parentEvent, String title, String description, LocalDateTime startTime, LocalDateTime endTime, String location) {
+    public EventInstance(RecurringEvent parentEvent, String title, String description, LocalDateTime startTime, LocalDateTime endTime, String location ) {
         
         this.parentEvent = parentEvent;
         this.title = title;
@@ -68,9 +69,6 @@ public class EventInstance {
     public Long getId() {
         return id;
     }
-
-    public void setTournament(Tournament tournament) { this.tournament = tournament; }
-    public Tournament getTournament() { return tournament; }
 
     public LocalDateTime getStartTime() {
         return startTime;
@@ -127,4 +125,7 @@ public class EventInstance {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public void setTournament(Tournament tournament) { this.tournament = tournament; }
+    public Tournament getTournament() { return tournament; }
 }

@@ -59,8 +59,7 @@ public class EventInstanceController {
             dto.description,
             start,
             end,
-            dto.location,
-            dto.teamSize
+            dto.location
         );
 
         eventInstanceRepository.save(instance);
@@ -100,7 +99,6 @@ public class EventInstanceController {
         instance.setStartTime(LocalDateTime.parse(dto.startTime));
         instance.setEndTime(LocalDateTime.parse(dto.endTime));
         instance.setLocation(dto.location);
-        instance.setTeamSize(dto.teamSize);
 
         if (dto.recurringEventId != null) {
             RecurringEvent recurring = recurringEventRepository.findById(dto.recurringEventId).orElse(null);

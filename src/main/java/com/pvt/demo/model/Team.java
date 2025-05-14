@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
+
 import java.util.ArrayList;
 
 @Entity
@@ -22,11 +23,10 @@ public class Team {
     private List<User> members = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "tournament_id")
+    @JoinColumn(name = "tournament_id", nullable = true)
     private Tournament tournament;
 
     private int teamSize;
-    private boolean recurringEvent;
 
     private String name;
 
@@ -38,21 +38,14 @@ public class Team {
 
     public Team(){}
 
-    public Team(Tournament tournament, User user){
+    public Team(Tournament tournament, User user, String name){
         this.tournament = tournament;
+        members = new ArrayList<>();
         this.members.add(user);
-        this.teamSize = tournament != null ? tournament.getTeamSize() : 0;
         this.creator = members != null ? this.members.get(0) : null;
-
+        this.name = name;
     }
 
-    public boolean getRecurringEvent(){
-        return recurringEvent;
-    }
-
-    public void setRecurringEvent(Boolean bool){
-        recurringEvent = bool;
-    }
 
     public Long getId() {
         return id;
