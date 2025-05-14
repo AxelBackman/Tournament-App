@@ -20,7 +20,9 @@ public class Tournament {
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL)
     private List<Match> matches = new ArrayList<>();
 
+    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL)
     private List<Team> teams;
+
     private boolean brackets; // if true, skapa brackets, annars något annat - vidare utveckla
 
     public Tournament() {}
