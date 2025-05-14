@@ -31,6 +31,10 @@ public class Team {
     private int teamSize;
     private boolean recurringEvent;
 
+    private String name;
+
+
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User creator;
@@ -42,7 +46,7 @@ public class Team {
         this.members.add(user);
         this.teamSize = eventInstance != null ? eventInstance.getTeamSize() : 0;
         this.creator = members != null ? this.members.get(0) : null;
-    
+
     }
 
     public boolean getRecurringEvent(){
@@ -59,6 +63,15 @@ public class Team {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<User> getMembers() {
