@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class Match {
+public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,19 +39,19 @@ public class Match {
     @OneToOne
     @JoinColumn(name = "parent_match_id")
     @JsonIgnoreProperties({"leftMatch", "rightMatch"})
-    private Match parentMatch; // if null, then = root
+    private Game parentMatch; // if null, then = root
 
     @OneToOne(mappedBy = "parentMatch")
     @JsonIgnoreProperties("parentMatch")
-    private Match leftMatch; // if null, then = leaf
+    private Game leftMatch; // if null, then = leaf
 
     @OneToOne(mappedBy = "parentMatch")
     @JsonIgnoreProperties("parentMatch")
-    private Match rightMatch; // if null, then = leaf
+    private Game rightMatch; // if null, then = leaf
 
-    public Match() {}
+    public Game() {}
    
-    public Match(Team teamOne, Team teamTwo, Tournament tournament, int round) {
+    public Game(Team teamOne, Team teamTwo, Tournament tournament, int round) {
         this.teamOne = teamOne;
         this.teamTwo = teamTwo;
         this.tournament = tournament;
@@ -80,7 +80,7 @@ public class Match {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Match match = (Match) o;
+        Game match = (Game) o;
         return Objects.equals(id, match.id);
     }
 
