@@ -17,6 +17,8 @@ public class Tournament {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private int teamSize;
+
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL)
     private List<Match> matches = new ArrayList<>();
 
@@ -36,6 +38,10 @@ public class Tournament {
 
     public List<Team> getTeams(){return teams;}
     public void setTeams (List<Team> teams){ this.teams = teams; }
+
+    public get getTeamSize() {return teamSize; } 
+    public void setTeamSize(int teamSize) {this.teamSize = teamSize; }
+    
 
 
 

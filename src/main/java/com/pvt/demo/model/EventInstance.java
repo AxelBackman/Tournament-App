@@ -31,7 +31,6 @@ public class EventInstance {
     
     @Column(length = 1000)
     private String description;
-    private int teamSize;
     
     @ManyToOne
     @JsonBackReference
