@@ -71,19 +71,19 @@ public class RegisteredUsersController {
         return registeredUsersRepository.findByUserId(userId);
     }
 
-    @PatchMapping("/updatecoming/{userId}/{eventId}/{coming}")
+    @PatchMapping("/updatecoming/{userId}/{eventId}/{status}")
     public String updateComingStatus(@PathVariable Long userId,
-    @PathVariable Long eventId, @PathVariable boolean coming) {
+    @PathVariable Long eventId, 
+    @PathVariable RegistrationStatus status) {
         var registeredUser = registeredUsersRepository.findByUserIdAndEventInstanceId(userId, eventId);
         if (registeredUser == null) {
             return "User is not registered for this event";
         }
 
-        RegistrationStatus newStatus = coming ? RegistrationStatus.COMING : RegistrationStatus.INTERESTED;
-        registeredUser.setStatus(newStatus);
+        registeredUser.setStatus(status);
         registeredUsersRepository.save(registeredUser);
 
-        return "Coming status updated to " + newStatus.name() + " for user " + userId + " in event " + eventId;
+        return "Coming status updated to " + status.name() + " for user " + userId + " in event " + eventId;
     }
     
 }
