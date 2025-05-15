@@ -1,6 +1,7 @@
 package com.pvt.demo.model;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -103,6 +104,19 @@ public class Organisation {
     public void addRecurringEvent(RecurringEvent event) {
         this.recurringEvents.add(event);
         // event.setOrganisation(this); //skapa setOrganisation i recurring
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Organisation that = (Organisation) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 

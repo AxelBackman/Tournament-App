@@ -3,6 +3,7 @@ package com.pvt.demo.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -128,4 +129,17 @@ public class EventInstance {
 
     public void setTournament(Tournament tournament) { this.tournament = tournament; }
     public Tournament getTournament() { return tournament; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EventInstance that = (EventInstance) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

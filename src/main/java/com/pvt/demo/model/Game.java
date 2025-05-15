@@ -80,8 +80,8 @@ public class Game {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Game match = (Game) o;
-        return Objects.equals(id, match.id);
+        Game that = (Game) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
