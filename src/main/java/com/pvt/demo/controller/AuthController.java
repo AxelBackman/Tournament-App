@@ -34,7 +34,7 @@ public class AuthController {
         try {
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier
                     .Builder(GoogleNetHttpTransport.newTrustedTransport(), com.google.api.client.json.gson.GsonFactory.getDefaultInstance())
-                    .setAudience(Collections.singletonList("DIN_CLIENT_ID_HÄR"))
+                    .setAudience(Collections.singletonList("443127138684-671fbn391k16mt05hvqdppeai0voegd8.apps.googleusercontent.com"))
                     .build();
 
             GoogleIdToken idToken = verifier.verify(dto.idToken);
