@@ -29,7 +29,7 @@ public class RegisteredUsersController {
     @Autowired
     private EventInstanceRepository eventInstanceRepository;
 
-    @PostMapping("/register/{userId}/{eventId}/{coming}")
+    @PostMapping("/register/{userId}/{eventId}/{status}")
     public String RegisterUserToEvent(@PathVariable Long userId,
     @PathVariable Long eventId,
     @PathVariable RegistrationStatus status){
