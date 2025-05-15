@@ -3,8 +3,7 @@ package com.pvt.demo.model;
 import jakarta.persistence.*;
 
 import java.util.List;
-
-
+import java.util.Objects;
 import java.util.ArrayList;
 
 @Entity
@@ -91,6 +90,19 @@ public class Team {
     }
 
     public User getCreator() { return creator; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Team that = (Team) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
     
 
 }
