@@ -111,6 +111,7 @@ public class Organisation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organisation that = (Organisation) o;
+        if (id == null || that.id == null) return false;
         return Objects.equals(id, that.id);
     }
 

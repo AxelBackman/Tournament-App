@@ -56,6 +56,7 @@ public class Tournament {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tournament that = (Tournament) o;
+        if (id == null || that.id == null) return false;
         return Objects.equals(id, that.id);
     }
 

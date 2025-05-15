@@ -71,6 +71,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User that = (User) o;
+        if (id == null || that.id == null) return false;
         return Objects.equals(id, that.id);
     }
 

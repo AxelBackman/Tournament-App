@@ -96,6 +96,7 @@ public class Team {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Team that = (Team) o;
+        if (id == null || that.id == null) return false;
         return Objects.equals(id, that.id);
     }
 

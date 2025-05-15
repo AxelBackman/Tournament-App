@@ -86,6 +86,7 @@ public class RecurringEvent {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RecurringEvent that = (RecurringEvent) o;
+        if (id == null || that.id == null) return false;
         return Objects.equals(id, that.id);
     }
 
