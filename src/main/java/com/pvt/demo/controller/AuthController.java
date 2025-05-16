@@ -99,7 +99,7 @@ public class AuthController {
 
                 return ResponseEntity.ok("Inloggad som: " + name + " (" + email + ")");
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Ogiltig ID-token");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Ogiltig ID-token" + dto.getIdToken());
             }
 
         } catch (Exception e) {
