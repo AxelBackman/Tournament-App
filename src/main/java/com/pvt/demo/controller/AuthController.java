@@ -67,4 +67,44 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fel vid verifiering: " + e.getMessage());
         }
     }
+
+     @PostMapping("/google/testning")
+    public ResponseEntity<?> authenticateWithGoogleTest(@RequestBody GoogleTokenDto dto) {
+        try {
+            System.out.println("Mottagen idToken: " + dto.idToken);
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier
+                    .Builder(GoogleNetHttpTransport.newTrustedTransport(), com.google.api.client.json.gson.GsonFactory.getDefaultInstance())
+                    .setAudience(Collections.singletonList("570496735293-htssr9kvsj68e0bttaluogihqfah04al.apps.googleusercontent.com"))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(dto.idToken);
+            if (idToken != null) {
+                GoogleIdToken.Payload payload = idToken.getPayload();
+
+                String email = payload.getEmail();
+                String name = (String) payload.get("name");
+
+                User user = userRepository.findByEmail(email);
+
+                if (user == null) {
+                    Organisation organisation = organisationRepository.findById(1L).orElse(null);
+
+                    if (organisation == null) {
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Standardorganisation saknas");
+                    }
+
+                    user = new User(name, email, organisation);
+                    userRepository.save(user);
+                }
+
+                return ResponseEntity.ok("Inloggad som: " + name + " (" + email + ")");
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Ogiltig ID-token");
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fel vid verifiering: " + e.getMessage());
+        }
+    }
+    
 }
