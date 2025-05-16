@@ -68,13 +68,14 @@ public class AuthController {
         }
     }
 
-     @PostMapping("/google/testning")
+    @PostMapping("/google/testning")
     public ResponseEntity<?> authenticateWithGoogleTest(@RequestBody GoogleTokenDto dto) {
         try {
             System.out.println("Mottagen idToken: " + dto.getIdToken());
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier
                     .Builder(GoogleNetHttpTransport.newTrustedTransport(), com.google.api.client.json.gson.GsonFactory.getDefaultInstance())
                     .setAudience(Collections.singletonList("570496735293-htssr9kvsj68e0bttaluogihqfah04al.apps.googleusercontent.com"))
+                    .setIssuer("https://accounts.google.com")
                     .build();
 
             GoogleIdToken idToken = verifier.verify(dto.getIdToken());
