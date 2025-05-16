@@ -32,13 +32,13 @@ public class AuthController {
     @PostMapping("/google")
     public ResponseEntity<?> authenticateWithGoogle(@RequestBody GoogleTokenDto dto) {
         try {
-            System.out.println("Mottagen idToken: " + dto.idToken);
+            System.out.println("Mottagen idToken: " + dto.getIdToken());
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier
                     .Builder(GoogleNetHttpTransport.newTrustedTransport(), com.google.api.client.json.gson.GsonFactory.getDefaultInstance())
                     .setAudience(Collections.singletonList("570496735293-ag91l8e5p1vf9dbk1nout9qrqcdlvt0t.apps.googleusercontent.com"))
                     .build();
 
-            GoogleIdToken idToken = verifier.verify(dto.idToken);
+            GoogleIdToken idToken = verifier.verify(dto.getIdToken());
             if (idToken != null) {
                 GoogleIdToken.Payload payload = idToken.getPayload();
 
@@ -71,13 +71,13 @@ public class AuthController {
      @PostMapping("/google/testning")
     public ResponseEntity<?> authenticateWithGoogleTest(@RequestBody GoogleTokenDto dto) {
         try {
-            System.out.println("Mottagen idToken: " + dto.idToken);
+            System.out.println("Mottagen idToken: " + dto.getIdToken());
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier
                     .Builder(GoogleNetHttpTransport.newTrustedTransport(), com.google.api.client.json.gson.GsonFactory.getDefaultInstance())
                     .setAudience(Collections.singletonList("570496735293-htssr9kvsj68e0bttaluogihqfah04al.apps.googleusercontent.com"))
                     .build();
 
-            GoogleIdToken idToken = verifier.verify(dto.idToken);
+            GoogleIdToken idToken = verifier.verify(dto.getIdToken());
             if (idToken != null) {
                 GoogleIdToken.Payload payload = idToken.getPayload();
 
