@@ -37,17 +37,17 @@ public class Game {
     private Team winner;
     
     @OneToOne
-    @JoinColumn(name = "parent_match_id")
-    @JsonIgnoreProperties({"leftMatch", "rightMatch"})
-    private Game parentMatch; // if null, then = root
+    @JoinColumn(name = "parent_id")
+    @JsonIgnoreProperties({"left", "right"})
+    private Game parent; // if null, then = root
 
-    @OneToOne(mappedBy = "parentMatch")
-    @JsonIgnoreProperties("parentMatch")
-    private Game leftMatch; // if null, then = leaf
+    @OneToOne(mappedBy = "parent")
+    @JsonIgnoreProperties("parent")
+    private Game left; // if null, then = leaf
 
-    @OneToOne(mappedBy = "parentMatch")
-    @JsonIgnoreProperties("parentMatch")
-    private Game rightMatch; // if null, then = leaf
+    @OneToOne(mappedBy = "parent")
+    @JsonIgnoreProperties("parent")
+    private Game right; // if null, then = leaf
 
     public Game() {}
    
@@ -75,6 +75,9 @@ public class Game {
 
     public Team getWinner () { return winner; }
     public void setWinner(Team winner) {this.winner = winner; }
+
+    public Game getParent() { return parent; }
+    public void setParent(Game game){ this.parent = game; }
 
     @Override
     public boolean equals(Object o) {
