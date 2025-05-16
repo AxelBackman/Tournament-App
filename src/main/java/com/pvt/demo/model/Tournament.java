@@ -1,10 +1,10 @@
 package com.pvt.demo.model;
 
 import java.util.List;
-import java.util.Map;
+//import java.util.Map;
 import java.util.Objects;
 import java.util.ArrayList;
-import java.util.HashMap;
+//import java.util.HashMap;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -32,17 +32,19 @@ public class Tournament {
     @OneToOne(mappedBy = "tournament", cascade = CascadeType.ALL)
     private EventInstance eventInstance;
 
-    private Map<Integer, List<Game>> bracketMap;
+    // private Map<Integer, List<Game>> bracketMap;
 
     public Tournament() {}
 
     public Tournament(EventInstance eventInstance){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
         this.eventInstance = eventInstance;
-        bracketMap = generateBracket();
+        //bracketMap = generateBracket();
+        generateBracket();
     }
 
-    public Map<Integer, List<Game>> generateBracket(){
-        Map<Integer, List<Game>> bracketMap = new HashMap<>();
+    //public Map<Integer, List<Game>> generateBracket(){
+    public void generateBracket(){
+        // Map<Integer, List<Game>> bracketMap = new HashMap<>();
         int teamCount = teams.size();
         int gameCount = teamCount-1;
 
@@ -62,7 +64,7 @@ public class Tournament {
             game.setRound(round);
             allGames.add(game);
 
-            bracketMap.computeIfAbsent(round, r -> new ArrayList<>()).add(game);
+            // bracketMap.computeIfAbsent(round, r -> new ArrayList<>()).add(game);
         }
 
 
@@ -78,9 +80,11 @@ public class Tournament {
             parentIndex++;
         }
 
-        return bracketMap;
+        // return bracketMap;
+
 
     }
+    // kommenterar bort map temporärt för att hitta annan lösning
 
     public List<Team> getTeams(){return teams;}
     public void setTeams (List<Team> teams){ this.teams = teams; }
@@ -91,8 +95,8 @@ public class Tournament {
     public EventInstance getEventInstnace() { return eventInstance; }
     public void setEventInstance(EventInstance eventInstance) { this.eventInstance = eventInstance; }
 
-    public Map<Integer, List<Game>> getBracketMap(){ return bracketMap; }
-    public void setBracketMap(Map<Integer, List<Game>> bracket) { this.bracketMap = bracket;}
+    //public Map<Integer, List<Game>> getBracketMap(){ return bracketMap; }
+    //public void setBracketMap(Map<Integer, List<Game>> bracket) { this.bracketMap = bracket;}
 
     public List<Game> getAllGames() { return allGames; }
     public void setAllGames(List<Game> games) { this.allGames = games; }
