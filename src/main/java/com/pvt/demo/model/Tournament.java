@@ -82,8 +82,6 @@ public class Tournament {
 
     }
 
-    public boolean getBrackets(){return brackets;}
-
     public List<Team> getTeams(){return teams;}
     public void setTeams (List<Team> teams){ this.teams = teams; }
 
