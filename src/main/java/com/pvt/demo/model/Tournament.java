@@ -36,95 +36,78 @@ public class Tournament {
     
     public Tournament() {}
 
-    public Tournament(EventInstance eventInstance){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
+    public Tournament(EventInstance eventInstance, int teamSize){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
         this.eventInstance = eventInstance;
+        this.teamSize = teamSize;
         setTeams();
         generateBracket();
     }
 
-    private void generateBracket() {
+    private void generateBracket() { //hårdkodad single elimination - måste vara lag av 4 potens
         int teamCount = teams.size();
-        int gameCount = teamCount - 1;
-    
-        int round = 1;
-        int gamesInCurrentRound = teamCount / 2;
-        int startIndex = 0;
-    
-        // Skapa games
-        for (int i = 0 ; i < gameCount; i++) {
-            if (i >= startIndex + gamesInCurrentRound) {
-                startIndex += gamesInCurrentRound;
-                gamesInCurrentRound /= 2;
-                round++;
-            }
-    
-            Game game = new Game();
-            game.setTournament(this);
-            game.setRound(round);
-            allGames.add(game);
+        int totalRounds = (int) (Math.log(teamCount) / Math.log(2)); // logaritm, 8 lag -> 3 rundor
 
-            addGameToRound(round, game); // compute If absent kopia nedanför
+        // Skapa alla GameGroups (en per rond)
+        for (int round = 1; round <= totalRounds; round++) {
+            GameGroup group = new GameGroup();
+            group.setRound(round);
+            map.add(group);
         }
     
-        // Koppla game till sina parentnoder
-        int currentParentIndex = teamCount / 2;  // starta från första match i rond 2
-        for (int i = 0; i < currentParentIndex; i += 2) {
-            int child1 = i;
-            int child2 = i + 1;
-            int parent = currentParentIndex + (i / 2);
+        // Lägg till matcher för varje rond
+        for (int round = 1; round <= totalRounds; round++) {
+            GameGroup group = map.get(round - 1);
+            int numGames = (int) Math.pow(2, totalRounds - round); 
     
-            if (parent < allGames.size()) {
-                Game left = allGames.get(child1);
-                Game right = allGames.get(child2);
-                Game parentGame = allGames.get(parent);
-                left.setParent(parentGame);
-                right.setParent(parentGame);
+            for (int i = 0; i < numGames; i++) {
+                Game game = new Game();
+                group.add(game);
             }
         }
     
-        // Tilldela lag till första rundan - itererar och hittar den som har round = 1, och sedan itererar dess matcher och sätter lag
-        int index = 0;
-        for (GameGroup gameGroup : map){
-            if (gameGroup.getRound() == 1){
-                for (Game game : gameGroup.getGames()){
-                    game.setTeamOne(teams.get(index));
-                    game.setTeamTwo(teams.get(index + 1));
-                    index += 2;
-                }
-
+        // Fördela lag till matcher i första ronden
+        GameGroup firstRound = map.get(0);
+        List<Game> firstRoundGames = firstRound.getGames();
+    
+        for (int i = 0; i < teams.size(); i += 2) {
+            Game game = firstRoundGames.get(i / 2);
+            game.setTeamOne(teams.get(i));
+            game.setTeamTwo(teams.get(i + 1));
+        }
+    
+        // Koppla matcher till nästa rond (setParent)
+        for (int r = 0; r < totalRounds - 1; r++) {
+            List<Game> currentRoundGames = map.get(r).getGames();
+            List<Game> nextRoundGames = map.get(r + 1).getGames();
+    
+            for (int i = 0; i < currentRoundGames.size(); i++) {
+                Game child = currentRoundGames.get(i);
+                Game parent = nextRoundGames.get(i / 2);
+                child.setParent(parent);
             }
         }
     }
-
-    public void addGameToRound(int round, Game game) {
-        GameGroup group = map.stream()
-            .filter(g -> g.getRound() == round)
-            .findFirst()
-            .orElseGet(() -> {
-                GameGroup newGroup = new GameGroup();
-                newGroup.setRound(round);
-                map.add(newGroup);
-                return newGroup;
-        });
-    group.add(game);
-}
 
     public void setWinner(Game game, Team team){
         if (game.getTeamOne() != team && game.getTeamTwo() != team){
             System.err.println("Laget spelar ej i matchen");
         }        
+
+        game.setWinner(team);
+
         Game nextGame = game.getParent();
+
+        if (nextGame == null){ // alltså finalen nu
+            return;
+        }
 
         if (nextGame.getTeamOne() == null){
             nextGame.setTeamOne(team);
         } else if(nextGame.getTeamTwo() == null){
             nextGame.setTeamTwo(team);
-        } else {
-            System.err.println("Fel");
+        } else { // nästa match har redan två lag
             return;
         }
-
-        game.setWinner(team);
     }
 
     private void setTeams(){ // sätter lagen baserat på getUsers
