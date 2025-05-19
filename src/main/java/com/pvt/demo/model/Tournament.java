@@ -97,16 +97,15 @@ public class Tournament {
     }
 
     public void addGameToRound(int round, Game game) {
-    GameGroup group = map.stream()
-        .filter(g -> g.getRound() == round)
-        .findFirst()
-        .orElseGet(() -> {
-            GameGroup newGroup = new GameGroup();
-            newGroup.setRound(round);
-            map.add(newGroup);
-            return newGroup;
+        GameGroup group = map.stream()
+            .filter(g -> g.getRound() == round)
+            .findFirst()
+            .orElseGet(() -> {
+                GameGroup newGroup = new GameGroup();
+                newGroup.setRound(round);
+                map.add(newGroup);
+                return newGroup;
         });
-
     group.add(game);
 }
 
