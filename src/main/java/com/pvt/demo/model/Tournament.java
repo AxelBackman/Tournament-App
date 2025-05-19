@@ -3,7 +3,7 @@ package com.pvt.demo.model;
 import java.util.List;
 import java.util.Objects;
 import java.util.ArrayList;
-
+import java.util.Collections;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -112,6 +112,7 @@ public class Tournament {
 
     private void setTeams(){ // sätter lagen baserat på getUsers
         List<User> registeredUsers = eventInstance.getUsers();
+        Collections.shuffle(registeredUsers); // shufflar så alla blir random
 
         Team currentTeam = new Team("team1");
         int amount = 2;
