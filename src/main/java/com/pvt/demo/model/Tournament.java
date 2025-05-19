@@ -39,11 +39,9 @@ public class Tournament {
     public Tournament(EventInstance eventInstance, int teamSize){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
         this.eventInstance = eventInstance;
         this.teamSize = teamSize;
-        setTeams();
-        generateBracket();
     }
 
-    private void generateBracket() { //hårdkodad single elimination - måste vara lag av 4 potens
+    public void generateBracket() { //hårdkodad single elimination - måste vara lag av 4 potens
         int teamCount = teams.size();
         int totalRounds = (int) (Math.log(teamCount) / Math.log(2)); // logaritm, 8 lag -> 3 rundor
 
@@ -110,7 +108,7 @@ public class Tournament {
         }
     }
 
-    private void setTeams(){ // sätter lagen baserat på getUsers
+    public void setTeams(){ // sätter lagen baserat på getUsers
         List<User> registeredUsers = eventInstance.getUsers();
         Collections.shuffle(registeredUsers); // shufflar så alla blir random
 
