@@ -75,6 +75,19 @@ public class EventInstance {
         return startTime;
     }
 
+    public List<User> getUsers() {
+        List<User> users = new ArrayList<>();
+
+        for (RegisteredUsers user : registeredUsers){
+            if(user.getStatus().equals("COMING")){
+                users.add(user.getUser());
+            }
+        }
+        return users;
+    }
+
+
+
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }

@@ -49,6 +49,10 @@ public class Game {
     @JsonIgnoreProperties("parent")
     private Game right; // if null, then = leaf
 
+    @ManyToOne
+    @JoinColumn(name = "game_group_id") // foreign key i Game-tabellen
+    private GameGroup gameGroup;
+
     public Game() {}
    
     public Game(Team teamOne, Team teamTwo, Tournament tournament, int round) {
@@ -78,6 +82,9 @@ public class Game {
 
     public Game getParent() { return parent; }
     public void setParent(Game game){ this.parent = game; }
+
+    public void setGameGroup(GameGroup gameGroup) { this.gameGroup = gameGroup; }
+    public GameGroup getGameGroup() { return gameGroup; }
 
     @Override
     public boolean equals(Object o) {

@@ -29,8 +29,6 @@ public class Team {
 
     private String name;
 
-
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User creator;
@@ -44,6 +42,13 @@ public class Team {
         this.creator = members != null ? this.members.get(0) : null;
         this.name = name;
     }
+
+    public Team(String name){
+        members = new ArrayList<>();
+        this.name = name;
+    }
+
+
 
 
     public Long getId() {
