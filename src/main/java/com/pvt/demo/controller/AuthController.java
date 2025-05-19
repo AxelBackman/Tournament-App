@@ -35,7 +35,7 @@ public class AuthController {
             System.out.println("Mottagen idToken: " + dto.getIdToken());
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier
                     .Builder(GoogleNetHttpTransport.newTrustedTransport(), com.google.api.client.json.gson.GsonFactory.getDefaultInstance())
-                    .setAudience(Collections.singletonList("570496735293-ag91l8e5p1vf9dbk1nout9qrqcdlvt0t.apps.googleusercontent.com"))
+                    .setAudience(Collections.singletonList("522180760468-melhoial2731rkaj0pvsghf0dp7ga2h3.apps.googleusercontent.com"))
                     .build();
 
             GoogleIdToken idToken = verifier.verify(dto.getIdToken());
