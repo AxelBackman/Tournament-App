@@ -115,9 +115,9 @@ public class Tournament {
         }        
         Game nextGame = game.getParent();
 
-        if (game.getTeamOne() == null){
+        if (nextGame.getTeamOne() == null){
             nextGame.setTeamOne(team);
-        } else if(game.getTeamTwo() == null){
+        } else if(nextGame.getTeamTwo() == null){
             nextGame.setTeamTwo(team);
         } else {
             System.err.println("Fel");
