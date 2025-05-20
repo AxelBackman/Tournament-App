@@ -141,7 +141,7 @@ public class EventInstance {
 
     public void setTournament(Tournament tournament) {
          this.tournament = tournament;
-         if (tournament != null && tournament.getEventInstnace() != this) {
+         if (tournament != null && tournament.getEventInstance() != this) {
             tournament.setEventInstance(this);
          } 
         }

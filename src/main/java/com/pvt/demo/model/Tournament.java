@@ -139,7 +139,7 @@ public class Tournament {
     public int getTeamSize() {return teamSize; } 
     public void setTeamSize(int teamSize) {this.teamSize = teamSize; }
     
-    public EventInstance getEventInstnace() { return eventInstance; }
+    public EventInstance getEventInstance() { return eventInstance; }
 
     public void setEventInstance(EventInstance eventInstance) { 
         this.eventInstance = eventInstance; 
