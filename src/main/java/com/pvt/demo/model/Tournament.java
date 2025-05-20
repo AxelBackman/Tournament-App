@@ -118,6 +118,7 @@ public class Tournament {
             currentTeam.addMember(user);
 
             if (currentTeam.getMembers().size() == teamSize) {
+                currentTeam.setTournament(this);
                 teams.add(currentTeam);
                 String name = "team" + amount;
                 currentTeam = new Team(name); // börja nytt lag
