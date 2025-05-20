@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 
 import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -24,6 +27,7 @@ public class Team {
 
     @ManyToOne
     @JoinColumn(name = "tournament_id", nullable = true)
+    @JsonIgnore
     private Tournament tournament;
 
     private int teamSize;
