@@ -40,6 +40,7 @@ public class Team {
 
     //Lista med chattmeddelanden som är kopplade till detta lag
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<TeamChat> messages = new ArrayList<>();
 
     public Team(){}
