@@ -118,6 +118,8 @@ public class Tournament {
             currentTeam.addMember(user);
 
             if (currentTeam.getMembers().size() == teamSize) {
+                //Sätter första medlemmen i laget till "lagledare"
+                currentTeam.setCreator(currentTeam.getMembers().get(0));
                 currentTeam.setTournament(this);
                 teams.add(currentTeam);
                 String name = "team" + amount;

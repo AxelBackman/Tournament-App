@@ -61,7 +61,6 @@ public class Team {
         this.id = id;
     }
 
-    
     public String getName() {
         return name;
     }
@@ -97,6 +96,10 @@ public class Team {
     }
 
     public User getCreator() { return creator; }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
 
     public List<TeamChat> getMessages() {
         return messages;
