@@ -92,4 +92,14 @@ public class TeamController {
         return teamRepository.findByTournamentId(tournamentId);
     }
 
+    //Hämta teams efter teamId
+    @GetMapping("/{teamId}/members")
+    public List<User> getTeamMembers(@PathVariable Long teamId) {
+        Team team = teamRepository.findById(teamId).orElse(null);
+        if (team == null) {
+            throw new RuntimeException("Team with ID " + teamId + " not found");
+        }
+        return team.getMembers();
+    }
+
 }
