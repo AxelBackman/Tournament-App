@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 @Entity
 public class Team {
@@ -33,6 +34,10 @@ public class Team {
     @JoinColumn(name = "user_id")
     private User creator;
 
+    //Lista med chattmeddelanden som är kopplade till detta lag
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TeamChat> messages = new ArrayList<>();
+
     public Team(){}
 
     public Team(Tournament tournament, User user, String name){
@@ -47,9 +52,6 @@ public class Team {
         members = new ArrayList<>();
         this.name = name;
     }
-
-
-
 
     public Long getId() {
         return id;
@@ -95,6 +97,38 @@ public class Team {
     }
 
     public User getCreator() { return creator; }
+
+    public List<TeamChat> getMessages() {
+        return messages;
+    }
+
+    public void addMessage(TeamChat message) {
+        message.setTeam(this);
+        messages.add(message);
+    }
+
+    //Hämtar X-antal meddelanden och sorterar dessa på senaste först
+    public List<TeamChat> getLatestMessages(int count) {
+        List<TeamChat> sortedMessages = new ArrayList<>(messages);
+
+        //Sortera meddelanden baserat på timestamp
+        sortedMessages.sort(new Comparator<TeamChat>() {
+            @Override
+            public int compare(TeamChat message1, TeamChat message2) {
+                return message2.getTimestamp().compareTo(message1.getTimestamp());
+            }
+        });
+
+        //Ny lista för senaste meddelandena
+        List<TeamChat> latestMessages = new ArrayList<>();
+
+        //Lägg till X-antal meddelanden
+        for (int i = 0; i < count && i < sortedMessages.size(); i++) {
+            latestMessages.add(sortedMessages.get(i));
+        }
+
+        return latestMessages;    
+    }
 
     @Override
     public boolean equals(Object o) {
