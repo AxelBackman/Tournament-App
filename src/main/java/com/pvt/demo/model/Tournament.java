@@ -39,6 +39,10 @@ public class Tournament {
     public Tournament(EventInstance eventInstance, int teamSize){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
         this.eventInstance = eventInstance;
         this.teamSize = teamSize;
+
+        if (eventInstance != null) {
+            eventInstance.setTournament(this);
+        }
     }
 
     public void generateBracket() { //hårdkodad single elimination - måste vara lag av 4 potens
@@ -136,7 +140,13 @@ public class Tournament {
     public void setTeamSize(int teamSize) {this.teamSize = teamSize; }
     
     public EventInstance getEventInstnace() { return eventInstance; }
-    public void setEventInstance(EventInstance eventInstance) { this.eventInstance = eventInstance; }
+
+    public void setEventInstance(EventInstance eventInstance) { 
+        this.eventInstance = eventInstance; 
+        if (eventInstance != null && eventInstance.getTournament() != this) {
+            eventInstance.setTournament(this);
+        }
+    }
 
     public List<Game> getAllGames() { return allGames; }
     public void setAllGames(List<Game> games) { this.allGames = games; }

@@ -33,7 +33,6 @@ public class EventInstance {
     @JoinColumn(name = "tournament_id")
     private Tournament tournament;
 
-
     private String location;
     
     @Column(length = 1000)
@@ -140,7 +139,13 @@ public class EventInstance {
         this.description = description;
     }
 
-    public void setTournament(Tournament tournament) { this.tournament = tournament; }
+    public void setTournament(Tournament tournament) {
+         this.tournament = tournament;
+         if (tournament != null && tournament.getEventInstnace() != this) {
+            tournament.setEventInstance(this);
+         } 
+        }
+
     public Tournament getTournament() { return tournament; }
 
     @Override
