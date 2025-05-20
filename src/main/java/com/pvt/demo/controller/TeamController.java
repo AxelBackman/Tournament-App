@@ -66,6 +66,10 @@ public class TeamController {
             return "Team or user not found";
         }
 
+        if (team.getMembers().size() >= team.getTournament().getTeamSize()) {
+            return "Team is already full (max " + team.getTournament().getTeamSize() + " members)";
+        }
+
         if (!team.getMembers().contains(user)) {
             team.getMembers().add(user);
             teamRepository.save(team);
