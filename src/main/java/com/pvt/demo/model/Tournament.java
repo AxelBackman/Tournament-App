@@ -2,6 +2,9 @@ package com.pvt.demo.model;
 
 import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -29,6 +32,7 @@ public class Tournament {
     private List<Team> teams = new ArrayList<>();
 
     @OneToOne(mappedBy = "tournament", cascade = CascadeType.ALL)
+    @JsonBackReference
     private EventInstance eventInstance;
 
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
