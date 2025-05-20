@@ -1,0 +1,86 @@
+package com.pvt.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.pvt.demo.dto.TeamChatDto;
+import com.pvt.demo.model.Team;
+import com.pvt.demo.model.TeamChat;
+import com.pvt.demo.model.User;
+import com.pvt.demo.repository.TeamChatRepository;
+import com.pvt.demo.repository.TeamRepository;
+import com.pvt.demo.repository.UserRepository;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
+
+@RestController
+@RequestMapping("/teams/{teamId}/chat")
+@CrossOrigin()
+public class TeamChatController {
+
+    @Autowired
+    private TeamChatRepository teamChatRepository;
+
+    @Autowired
+    private TeamRepository teamRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @GetMapping
+    public List<TeamChatDto> getLatestMessages(@PathVariable Long teamId) {
+        //Hämta laget, om det inte finns kasta fel
+        Team team = teamRepository.findById(teamId).orElseThrow();
+        //Hämta 10 senaste meddelandena
+        List<TeamChat> messages = teamChatRepository.findTop10ByTeamOrderByTimestampDesc(team);
+
+        //Till DTO
+        return messages.stream()
+            .map(chat -> new TeamChatDto(
+                chat.getId(),
+                chat.getMessage(),
+                chat.getTimestamp(),
+                chat.getSender().getId(),
+                chat.getSender().getName()
+            ))
+            .toList();
+    }
+
+    @PostMapping
+    public TeamChatDto sendMessage(
+            @PathVariable Long teamId,
+            @RequestParam Long userId,
+            @RequestBody String messageText
+    ) {
+        Team team = teamRepository.findById(teamId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
+
+        //För att skicka meddelande måste user vara medlem i laget
+        if (!team.getMembers().contains(user)) {
+            throw new RuntimeException("User is not a member of this team.");
+        }
+
+        TeamChat message = new TeamChat(messageText, user, team);
+        TeamChat saved = teamChatRepository.save(message);
+
+        return new TeamChatDto(
+            saved.getId(),
+            saved.getMessage(),
+            saved.getTimestamp(),
+            user.getId(),
+            user.getName()
+        );
+    }
+}
+
+    
+    

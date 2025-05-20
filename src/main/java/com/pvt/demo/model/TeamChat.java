@@ -49,7 +49,7 @@ public class TeamChat {
         return message;
     }
 
-    public void setContent(String message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 
