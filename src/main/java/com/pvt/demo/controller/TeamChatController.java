@@ -46,13 +46,15 @@ public class TeamChatController {
 
         //Till DTO
         return messages.stream()
-            .map(chat -> new TeamChatDto(
-                chat.getId(),
-                chat.getMessage(),
-                chat.getTimestamp(),
-                chat.getSender().getId(),
-                chat.getSender().getName()
-            ))
+            .map(chat -> {
+                TeamChatDto dto = new TeamChatDto();
+                dto.id = chat.getId();
+                dto.message = chat.getMessage();
+                dto.timestamp = chat.getTimestamp();
+                dto.senderId = chat.getSender().getId();
+                dto.senderName = chat.getSender().getName();
+                return dto;
+            })
             .toList();
     }
 
@@ -73,13 +75,13 @@ public class TeamChatController {
         TeamChat message = new TeamChat(messageText, user, team);
         TeamChat saved = teamChatRepository.save(message);
 
-        return new TeamChatDto(
-            saved.getId(),
-            saved.getMessage(),
-            saved.getTimestamp(),
-            user.getId(),
-            user.getName()
-        );
+        TeamChatDto dto = new TeamChatDto();
+        dto.id = saved.getId();
+        dto.message = saved.getMessage();
+        dto.timestamp = saved.getTimestamp();
+        dto.senderId = user.getId();
+        dto.senderName = user.getName();
+        return dto;
     }
 }
 
