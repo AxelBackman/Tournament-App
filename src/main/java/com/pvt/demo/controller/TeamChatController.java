@@ -39,7 +39,8 @@ public class TeamChatController {
     @GetMapping
     public List<TeamChatDto> getLatestMessages(@PathVariable Long teamId) {
         //Hämta laget, om det inte finns kasta fel
-        Team team = teamRepository.findById(teamId).orElseThrow();
+        Team team = teamRepository.findById(teamId)
+            .orElseThrow(() -> new RuntimeException("Team with ID " + teamId + " not found"));
         //Hämta 10 senaste meddelandena
         List<TeamChat> messages = teamChatRepository.findTop10ByTeamOrderByTimestampDesc(team);
 
