@@ -62,7 +62,7 @@ public class EventInstanceControllerTest {
 
     @Test
     public void testGetAllInstances() throws Exception {
-        EventInstance instance = new EventInstance("Test Title", "Test Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Stockholm");
+        EventInstance instance = new EventInstance("Test Title", "Test Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Stockholm", 3);
         Mockito.when(eventInstanceRepository.findAll()).thenReturn(List.of(instance));
 
         mockMvc.perform(get("/eventinstances"))
@@ -78,8 +78,9 @@ public class EventInstanceControllerTest {
         dto.startTime = "2025-06-01T10:00";
         dto.endTime = "2025-06-01T12:00";
         dto.location = "Gbg";
+        dto.teamSize = 3;
 
-        EventInstance mockInstance = new EventInstance(dto.title, dto.description, LocalDateTime.parse(dto.startTime), LocalDateTime.parse(dto.endTime), dto.location);
+        EventInstance mockInstance = new EventInstance(dto.title, dto.description, LocalDateTime.parse(dto.startTime), LocalDateTime.parse(dto.endTime), dto.location, dto.teamSize);
         ReflectionTestUtils.setField(mockInstance, "id", 1L);
 
        Mockito.when(eventInstanceRepository.save(any(EventInstance.class)))
@@ -128,7 +129,7 @@ public class EventInstanceControllerTest {
 
     @Test
     public void testUpdateEventInstance() throws Exception {
-        EventInstance existing = new EventInstance("Old", "Old", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "OldPlace");
+        EventInstance existing = new EventInstance("Old", "Old", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "OldPlace", 4);
         ReflectionTestUtils.setField(existing, "id", 1L);
 
         EventInstanceDto dto = new EventInstanceDto();
@@ -137,6 +138,7 @@ public class EventInstanceControllerTest {
         dto.startTime = "2025-06-01T14:00";
         dto.endTime = "2025-06-01T16:00";
         dto.location = "NewPlace";
+        dto.teamSize = 4;
 
         Mockito.when(eventInstanceRepository.findById(1L)).thenReturn(Optional.of(existing));
         Mockito.when(eventInstanceRepository.save(any(EventInstance.class))).thenReturn(existing);

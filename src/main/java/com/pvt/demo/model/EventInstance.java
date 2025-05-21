@@ -28,6 +28,7 @@ public class EventInstance {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String title;
+    private int teamSize;
    
     
     @OneToOne
@@ -53,7 +54,7 @@ public class EventInstance {
     }
 
     //Konstruktor med RecurringEvent
-    public EventInstance(RecurringEvent parentEvent, String title, String description, LocalDateTime startTime, LocalDateTime endTime, String location ) {
+    public EventInstance(RecurringEvent parentEvent, String title, String description, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
         
         this.parentEvent = parentEvent;
         this.title = title;
@@ -64,9 +65,18 @@ public class EventInstance {
     }
 
     //Konstruktor utan RecurringEvent (anropar första konstruktorn)
-    public EventInstance(String title, String description, LocalDateTime startTime, LocalDateTime endTime, String location) {
-        this(null, title, description, startTime, endTime, location);
+    public EventInstance(String title, String description, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
+        this(null, title, description, startTime, endTime, location, teamSize);
     }
+
+    public int getTeamSize(){
+        return this.teamSize;
+    }
+
+    public void setTeamSize(int teamSize){
+        this.teamSize = teamSize;
+    }
+
     
     public Long getId() {
         return id;

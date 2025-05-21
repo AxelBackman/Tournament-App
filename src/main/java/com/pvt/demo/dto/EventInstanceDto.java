@@ -7,6 +7,7 @@ public class EventInstanceDto {
     public String endTime;
     public String location;
     public Long recurringEventId;
+    public int teamSize;
 
     public EventInstanceDto() {
 

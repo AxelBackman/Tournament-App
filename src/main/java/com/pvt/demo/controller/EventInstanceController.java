@@ -59,7 +59,8 @@ public class EventInstanceController {
             dto.description,
             start,
             end,
-            dto.location
+            dto.location,
+            dto.teamSize
         );
 
         eventInstanceRepository.save(instance);

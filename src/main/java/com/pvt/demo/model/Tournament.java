@@ -49,6 +49,18 @@ public class Tournament {
         }
     }
 
+    public Tournament(EventInstance eventInstance, int teamSize, String grejer){ // samma konstruktor som ovan men särskiljer sig för mickes chat tjofräs
+        this.eventInstance = eventInstance;
+        this.teamSize = teamSize;
+
+        if (eventInstance != null) {
+            eventInstance.setTournament(this);
+        }
+
+        this.setTeams();
+        this.generateBracket();
+    }
+
     public void generateBracket() { //hårdkodad single elimination - måste vara lag av 4 potens
         int teamCount = teams.size();
         int totalRounds = (int) (Math.log(teamCount) / Math.log(2)); // logaritm, 8 lag -> 3 rundor
