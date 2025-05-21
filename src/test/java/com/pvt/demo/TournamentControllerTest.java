@@ -70,6 +70,39 @@ public class TournamentControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+   @Test
+    public void testCreateTournament_success() throws Exception {
+        // Skapa EventInstance med id
+        EventInstance eventInstance = new EventInstance();
+        ReflectionTestUtils.setField(eventInstance, "id", 200L);
+
+        // Skapa Tournament med ovan EventInstance och teamSize
+        Tournament tournament = new Tournament(eventInstance, 3);
+
+        Tournament savedTournament = new Tournament(eventInstance, 3);
+        ReflectionTestUtils.setField(savedTournament, "id", 10L);
+
+        // Mocka repository
+        Mockito.when(eventInstanceRepository.findById(200L)).thenReturn(Optional.of(eventInstance));
+        Mockito.when(tournamentRepository.save(any(Tournament.class))).thenReturn(savedTournament);
+
+        // Serialisera tournament till JSON
+        String json = """
+        {
+            "teamSize": 3,
+            "eventInstance": {
+                "id": 200
+            }
+        }
+        """;
+
+
+        mockMvc.perform(post("/tournaments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.teamSize").value(3));
+    }
 
     @Test
     public void testCreateTournament_missingEventInstance() throws Exception {
