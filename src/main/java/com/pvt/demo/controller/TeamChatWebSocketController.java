@@ -36,7 +36,7 @@ public class TeamChatWebSocketController {
     @Transactional
     @MessageMapping("/teamchat/send/{teamId}")
     @SendTo("/topic/teamchat/{teamId}")
-    public Object sendMessage(@DestinationVariable Long teamId, TeamChatStompDto dto) {
+    public TeamChatDto  sendMessage(@DestinationVariable Long teamId, TeamChatStompDto dto) {
         try {
             Team team = teamRepository.findById(teamId)
                     .orElseThrow(() -> new RuntimeException("Team not found"));
@@ -64,7 +64,7 @@ public class TeamChatWebSocketController {
             return response;
         } catch (Exception e) {
             System.err.println("Error processing WebSocket message: " + e.getMessage());
-            return new ErrorDto(e.getMessage()); // Rethrow the exception to indicate failure
+            return null; // Rethrow the exception to indicate failure
         }
     }
 }

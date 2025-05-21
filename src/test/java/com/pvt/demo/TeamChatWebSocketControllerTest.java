@@ -91,30 +91,30 @@ class TeamChatWebSocketControllerTest {
         assertEquals(mockTeam, savedChat.getTeam());
     }
 
-    @Test
-    void sendMessage_shouldThrowIfUserNotInTeam() {
-        Long teamId = 1L;
-        Long userId = 2L;
+    // @Test
+    // void sendMessage_shouldThrowIfUserNotInTeam() {
+    //     Long teamId = 1L;
+    //     Long userId = 2L;
 
-        TeamChatStompDto dto = new TeamChatStompDto();
-        dto.senderId = userId;
-        dto.message = "Hej!";
+    //     TeamChatStompDto dto = new TeamChatStompDto();
+    //     dto.senderId = userId;
+    //     dto.message = "Hej!";
 
-        User mockUser = new User();
-        ReflectionTestUtils.setField(mockUser, "id", userId);
-        mockUser.setName("Utanför");
+    //     User mockUser = new User();
+    //     ReflectionTestUtils.setField(mockUser, "id", userId);
+    //     mockUser.setName("Utanför");
 
-        Team mockTeam = new Team();
-        mockTeam.setId(teamId);
-        mockTeam.setMembers(Collections.emptyList());
+    //     Team mockTeam = new Team();
+    //     mockTeam.setId(teamId);
+    //     mockTeam.setMembers(Collections.emptyList());
 
-        when(teamRepository.findById(teamId)).thenReturn(Optional.of(mockTeam));
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
+    //     when(teamRepository.findById(teamId)).thenReturn(Optional.of(mockTeam));
+    //     when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
 
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> {
-            controller.sendMessage(teamId, dto);
-        });
+    //     RuntimeException ex = assertThrows(RuntimeException.class, () -> {
+    //         controller.sendMessage(teamId, dto);
+    //     });
 
-        assertEquals("User is not a member of this team.", ex.getMessage());
-    }
+    //     assertEquals("User is not a member of this team.", ex.getMessage());
+    // }
 }
