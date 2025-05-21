@@ -77,7 +77,7 @@ public class TournamentControllerTest {
         ReflectionTestUtils.setField(eventInstance, "id", 200L);
 
         // Skapa Tournament med ovan EventInstance och teamSize
-        Tournament tournament = new Tournament(eventInstance, 3);
+        new Tournament(eventInstance, 3);
 
         Tournament savedTournament = new Tournament(eventInstance, 3);
         ReflectionTestUtils.setField(savedTournament, "id", 10L);
