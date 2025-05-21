@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.pvt.demo.model.EventInstance;
 
 public interface EventInstanceRepository extends JpaRepository<EventInstance, Long> {
-    List<EventInstance> findByStartDateBetweenAndTournamentCreatedFalse(LocalDateTime startTime, LocalDateTime end);
+    List<EventInstance> findByStartTimeBetweenAndTournamentCreatedFalse(LocalDateTime startTime, LocalDateTime end);
 }

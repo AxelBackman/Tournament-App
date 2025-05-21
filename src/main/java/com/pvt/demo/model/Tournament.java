@@ -25,6 +25,8 @@ public class Tournament {
 
     private int teamSize;
 
+    private boolean tournamentCreated = false;
+
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Game> allGames = new ArrayList<>();
 
@@ -43,6 +45,7 @@ public class Tournament {
     public Tournament(EventInstance eventInstance, int teamSize){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
         this.eventInstance = eventInstance;
         this.teamSize = teamSize;
+        tournamentCreated = true;
 
         if (eventInstance != null) {
             eventInstance.setTournament(this);
@@ -52,6 +55,7 @@ public class Tournament {
     public Tournament(EventInstance eventInstance, int teamSize, String grejer){ // samma konstruktor som ovan men särskiljer sig för mickes chat tjofräs
         this.eventInstance = eventInstance;
         this.teamSize = teamSize;
+        tournamentCreated = true;
 
         if (eventInstance != null) {
             eventInstance.setTournament(this);
@@ -147,6 +151,13 @@ public class Tournament {
                 amount++;
             }
         }
+    }
+
+    public void setTournamentCreated(){
+        this.tournamentCreated = true;
+    }
+    public boolean getTournamentCreated(){
+        return tournamentCreated;
     }
 
     public List<Team> getTeams(){return teams;}

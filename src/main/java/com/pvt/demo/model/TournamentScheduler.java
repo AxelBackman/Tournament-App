@@ -23,12 +23,13 @@ public class TournamentScheduler {
         LocalDateTime startOfDay = LocalDate.now().plusDays(1).atStartOfDay(); // 00:00
         LocalDateTime endOfDay = startOfDay.plusDays(1); // Nästa dag 00:00
 
-        List<EventInstance> events = eventRepository.findByStartDateBetweenAndTournamentCreatedFalse(startOfDay, endOfDay);
+        List<EventInstance> events = eventRepository.findByStartTimeBetweenAndTournamentCreatedFalse(startOfDay, endOfDay);
 
         for (EventInstance eventInstance : events) {
             if (eventInstance.getTournament() != null) {
                 tournamentService.createTournamentForEvent(eventInstance);
                 eventRepository.save(eventInstance);
+                
             }
             
         }
