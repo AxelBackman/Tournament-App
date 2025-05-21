@@ -11,8 +11,8 @@ public class TournamentService {
     public void createTournamentForEvent(EventInstance eventInstance){
 
 
-        Tournament tournament = new Tournament(eventInstance, eventInstance.getTeamSize(), "grejer");
-        // osv
+        new Tournament(eventInstance, eventInstance.getTeamSize(), "grejer");
+        
     }
 
 
