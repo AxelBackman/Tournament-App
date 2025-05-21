@@ -1,6 +1,7 @@
 package com.pvt.demo.controller;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -44,8 +45,9 @@ public class TeamChatWebSocketController {
                     .orElseThrow(() -> new RuntimeException("User not found"));
             team.getMembers().size();
 
-            if (!team.getMembers().contains(sender)) {
-                throw new RuntimeException("User is not a member of this team.");
+            Set<User> members = (Set<User>) team.getMembers();
+            if (members.stream().noneMatch(u -> u.getId().equals(dto.senderId))) {
+                 throw new RuntimeException("User is not a member of this team.");
             }
 
             TeamChat message = new TeamChat(dto.message, sender, team);
