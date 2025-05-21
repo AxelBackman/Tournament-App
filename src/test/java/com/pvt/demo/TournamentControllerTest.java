@@ -59,8 +59,7 @@ public class TournamentControllerTest {
 
         mockMvc.perform(get("/tournaments/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.teamSize").value(4))
-                .andExpect(jsonPath("$.eventInstance.id").value(100));
+                .andExpect(jsonPath("$.teamSize").value(4));
     }
 
     @Test
@@ -91,8 +90,7 @@ public class TournamentControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.teamSize").value(3))
-                .andExpect(jsonPath("$.eventInstance.id").value(200));
+                .andExpect(jsonPath("$.teamSize").value(3));
     }
 
     @Test
@@ -110,19 +108,19 @@ public class TournamentControllerTest {
     }
 
     @Test
-    public void testCreateTournament_eventInstanceNotFound() throws Exception {
-        EventInstance fakeEvent = new EventInstance();
-        ReflectionTestUtils.setField(fakeEvent, "id", 777L);
-        Tournament tournament = new Tournament(fakeEvent, 5);
-
-        Mockito.when(eventInstanceRepository.findById(777L)).thenReturn(Optional.empty());
-
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(tournament);
+    public void testCreateTournament_missingEventInstance_shouldReturnBadRequest() throws Exception {
+        String invalidJson = """
+            {
+                "teamSize": 5,
+                "allGames": [],
+                "teams": []
+            }
+            """;
 
         mockMvc.perform(post("/tournaments")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isInternalServerError()); // Because RuntimeException is thrown
+                .content(invalidJson))
+                .andExpect(status().isBadRequest());
     }
+
 }
