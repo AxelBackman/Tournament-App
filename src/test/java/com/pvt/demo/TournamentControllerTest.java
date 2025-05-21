@@ -70,21 +70,25 @@ public class TournamentControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
+   @Test
     public void testCreateTournament_success() throws Exception {
-        EventInstance event = new EventInstance();
-        ReflectionTestUtils.setField(event, "id", 200L);
+        // Skapa EventInstance med id
+        EventInstance eventInstance = new EventInstance();
+        ReflectionTestUtils.setField(eventInstance, "id", 200L);
 
-        Tournament incomingTournament = new Tournament(event, 3);
+        // Skapa Tournament med ovan EventInstance och teamSize
+        Tournament tournament = new Tournament(eventInstance, 3);
 
-        Tournament savedTournament = new Tournament(event, 3);
+        Tournament savedTournament = new Tournament(eventInstance, 3);
         ReflectionTestUtils.setField(savedTournament, "id", 10L);
 
-        Mockito.when(eventInstanceRepository.findById(200L)).thenReturn(Optional.of(event));
+        // Mocka repository
+        Mockito.when(eventInstanceRepository.findById(200L)).thenReturn(Optional.of(eventInstance));
         Mockito.when(tournamentRepository.save(any(Tournament.class))).thenReturn(savedTournament);
 
+        // Serialisera tournament till JSON
         ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(incomingTournament);
+        String json = mapper.writeValueAsString(tournament);
 
         mockMvc.perform(post("/tournaments")
                 .contentType(MediaType.APPLICATION_JSON)
