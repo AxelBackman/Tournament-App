@@ -18,6 +18,8 @@ import com.pvt.demo.repository.TeamChatRepository;
 import com.pvt.demo.repository.TeamRepository;
 import com.pvt.demo.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Controller
 public class TeamChatWebSocketController {
 
@@ -30,23 +32,17 @@ public class TeamChatWebSocketController {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional
     @MessageMapping("/teamchat/send/{teamId}")
     @SendTo("/topic/teamchat/{teamId}")
     public Object sendMessage(@DestinationVariable Long teamId, TeamChatStompDto dto) {
         try {
-            System.out.println("WebSocket message received:");
-            System.out.println("  teamId = " + teamId);
-            System.out.println("  senderId = " + dto.senderId);
-            System.out.println("  message = " + dto.message);
-
             Team team = teamRepository.findById(teamId)
                     .orElseThrow(() -> new RuntimeException("Team not found"));
 
             User sender = userRepository.findById(dto.senderId)
                     .orElseThrow(() -> new RuntimeException("User not found"));
-
-            System.out.println("  Found sender = " + sender.getName());
-            System.out.println("  Team members = " + team.getMembers());
+            team.getMembers().size();
 
             if (!team.getMembers().contains(sender)) {
                 throw new RuntimeException("User is not a member of this team.");
