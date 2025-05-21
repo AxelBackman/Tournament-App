@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
+import com.pvt.demo.dto.ErrorDto;
 import com.pvt.demo.dto.TeamChatDto;
 import com.pvt.demo.dto.TeamChatStompDto;
 import com.pvt.demo.model.Team;
@@ -31,28 +32,41 @@ public class TeamChatWebSocketController {
 
     @MessageMapping("/teamchat/send/{teamId}")
     @SendTo("/topic/teamchat/{teamId}")
-    public TeamChatDto sendMessage(@DestinationVariable Long teamId, TeamChatStompDto dto) {
-        Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new RuntimeException("Team not found"));
+    public Object sendMessage(@DestinationVariable Long teamId, TeamChatStompDto dto) {
+        try {
+            System.out.println("WebSocket message received:");
+            System.out.println("  teamId = " + teamId);
+            System.out.println("  senderId = " + dto.senderId);
+            System.out.println("  message = " + dto.message);
 
-        User sender = userRepository.findById(dto.senderId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+            Team team = teamRepository.findById(teamId)
+                    .orElseThrow(() -> new RuntimeException("Team not found"));
 
-        if (!team.getMembers().contains(sender)) {
-            throw new RuntimeException("User is not a member of this team.");
+            User sender = userRepository.findById(dto.senderId)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            System.out.println("  Found sender = " + sender.getName());
+            System.out.println("  Team members = " + team.getMembers());
+
+            if (!team.getMembers().contains(sender)) {
+                throw new RuntimeException("User is not a member of this team.");
+            }
+
+            TeamChat message = new TeamChat(dto.message, sender, team);
+            message.setTimestamp(LocalDateTime.now());
+
+            TeamChat saved = teamChatRepository.save(message);
+
+            TeamChatDto response = new TeamChatDto();
+            response.id = saved.getId();
+            response.message = saved.getMessage();
+            response.timestamp = saved.getTimestamp();
+            response.senderId = sender.getId();
+            response.senderName = sender.getName();
+            return response;
+        } catch (Exception e) {
+            System.err.println("Error processing WebSocket message: " + e.getMessage());
+            return new ErrorDto(e.getMessage()); // Rethrow the exception to indicate failure
         }
-
-        TeamChat message = new TeamChat(dto.message, sender, team);
-        message.setTimestamp(LocalDateTime.now());
-
-        TeamChat saved = teamChatRepository.save(message);
-
-        TeamChatDto response = new TeamChatDto();
-        response.id = saved.getId();
-        response.message = saved.getMessage();
-        response.timestamp = saved.getTimestamp();
-        response.senderId = sender.getId();
-        response.senderName = sender.getName();
-        return response;
     }
 }
