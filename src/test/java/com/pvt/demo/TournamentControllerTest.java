@@ -1,0 +1,128 @@
+package com.pvt.demo;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pvt.demo.controller.TournamentController;
+import com.pvt.demo.model.EventInstance;
+import com.pvt.demo.model.Tournament;
+import com.pvt.demo.repository.EventInstanceRepository;
+import com.pvt.demo.repository.TournamentRepository;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(TournamentController.class)
+public class TournamentControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private TournamentRepository tournamentRepository;
+
+    @Autowired
+    private EventInstanceRepository eventInstanceRepository;
+
+    @TestConfiguration
+    static class Config {
+        @Bean
+        public TournamentRepository tournamentRepository() {
+            return Mockito.mock(TournamentRepository.class);
+        }
+
+        @Bean
+        public EventInstanceRepository eventInstanceRepository() {
+            return Mockito.mock(EventInstanceRepository.class);
+        }
+    }
+
+    @Test
+    public void testGetTournamentById_found() throws Exception {
+        EventInstance event = new EventInstance();
+        ReflectionTestUtils.setField(event, "id", 100L);
+
+        Tournament tournament = new Tournament(event, 4);
+        ReflectionTestUtils.setField(tournament, "id", 1L);
+
+        Mockito.when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
+
+        mockMvc.perform(get("/tournaments/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.teamSize").value(4))
+                .andExpect(jsonPath("$.eventInstance.id").value(100));
+    }
+
+    @Test
+    public void testGetTournamentById_notFound() throws Exception {
+        Mockito.when(tournamentRepository.findById(99L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/tournaments/99"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testCreateTournament_success() throws Exception {
+        EventInstance event = new EventInstance();
+        ReflectionTestUtils.setField(event, "id", 200L);
+
+        Tournament incomingTournament = new Tournament(event, 3);
+
+        Tournament savedTournament = new Tournament(event, 3);
+        ReflectionTestUtils.setField(savedTournament, "id", 10L);
+
+        Mockito.when(eventInstanceRepository.findById(200L)).thenReturn(Optional.of(event));
+        Mockito.when(tournamentRepository.save(any(Tournament.class))).thenReturn(savedTournament);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(incomingTournament);
+
+        mockMvc.perform(post("/tournaments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.teamSize").value(3))
+                .andExpect(jsonPath("$.eventInstance.id").value(200));
+    }
+
+    @Test
+    public void testCreateTournament_missingEventInstance() throws Exception {
+        Tournament invalidTournament = new Tournament();
+        invalidTournament.setTeamSize(2); // no eventInstance
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(invalidTournament);
+
+        mockMvc.perform(post("/tournaments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testCreateTournament_eventInstanceNotFound() throws Exception {
+        EventInstance fakeEvent = new EventInstance();
+        ReflectionTestUtils.setField(fakeEvent, "id", 777L);
+        Tournament tournament = new Tournament(fakeEvent, 5);
+
+        Mockito.when(eventInstanceRepository.findById(777L)).thenReturn(Optional.empty());
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(tournament);
+
+        mockMvc.perform(post("/tournaments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isInternalServerError()); // Because RuntimeException is thrown
+    }
+}
