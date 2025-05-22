@@ -9,7 +9,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
-import com.pvt.demo.dto.ErrorDto;
+
 import com.pvt.demo.dto.TeamChatDto;
 import com.pvt.demo.dto.TeamChatStompDto;
 import com.pvt.demo.model.Team;
