@@ -32,7 +32,7 @@ public class EventInstance {
     private String title;
     private int teamSize;
 
-    @Size(max = 200, message = "Description cannot exceed 200 characters")
+    @Size(max = 250, message = "Description cannot exceed 200 characters")
     private String description;
    
     
