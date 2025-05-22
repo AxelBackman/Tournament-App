@@ -50,7 +50,8 @@ public class UserController {
     @PostMapping("/adduser")
     public ResponseEntity<String> addNewUser(@Valid @RequestBody UserDto userDto, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Username must be min 2 and max 20 characters long");
+            String errorMessage = result.getFieldErrors().get(0).getDefaultMessage();
+            return ResponseEntity.badRequest().body(errorMessage);
         }
         
         // Hämta organisationen baserat på ID
@@ -68,7 +69,8 @@ public class UserController {
     @PutMapping("/updateuser/{id}")
     public ResponseEntity<String> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Username must be min 2 and max 20 characters long");
+            String errorMessage = result.getFieldErrors().get(0).getDefaultMessage();
+            return ResponseEntity.badRequest().body(errorMessage);
         }
         
         User user = userRepository.findById(id).orElse(null);
