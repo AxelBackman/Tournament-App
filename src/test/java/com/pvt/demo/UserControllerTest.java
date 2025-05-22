@@ -56,7 +56,7 @@ public class UserControllerTest {
     @Test
     public void testGetAllUsers() throws Exception {
         Organisation org = new Organisation("Org", "Addr", "Desc");
-        User user = new User("Alice", "alice@example.com", org);
+        User user = new User("Alice", "alice@example.com", org, false);
         Mockito.when(userRepository.findAll()).thenReturn(List.of(user));
 
         mockMvc.perform(get("/users"))
@@ -88,7 +88,7 @@ public class UserControllerTest {
     public void testUpdateUser_success() throws Exception {
         Organisation org = new Organisation("Org", "Addr", "Desc");
         ReflectionTestUtils.setField(org, "id", 1L);
-        User user = new User("Old", "old@mail.com", org);
+        User user = new User("Old", "old@mail.com", org, false);
         ReflectionTestUtils.setField(user, "id", 10L);
 
         Organisation newOrg = new Organisation("NewOrg", "NewAddr", "NewDesc");
@@ -113,7 +113,7 @@ public class UserControllerTest {
     @Test
     public void testDeleteUser_success() throws Exception {
         Organisation org = new Organisation("Org", "Addr", "Desc");
-        User user = new User("Charlie", "charlie@mail.com", org);
+        User user = new User("Charlie", "charlie@mail.com", org, false);
         ReflectionTestUtils.setField(user, "id", 5L);
 
         // Team team = new Team();
