@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pvt.demo.dto.EventInstanceDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
+import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
+import com.pvt.demo.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,9 +42,27 @@ public class EventInstanceController {
     @Autowired
     private RecurringEventRepository recurringEventRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     // Skapa ny eventInstance med eller utan koppling till RecurringEvent
     @PostMapping("/create")
     public String createEventInstance(@RequestBody EventInstanceDto dto) {
+        if (dto.userId == null) {
+            return "UserId not found";
+        }
+
+        User user = userRepository.findById(dto.userId).orElse(null);
+        
+        if (user == null) {
+            return "User cannot be found.";
+        }
+
+        if (!user.isAdmin()) {
+            return "Only admins can create events";
+        }
+
+
         LocalDateTime start = LocalDateTime.parse(dto.startTime);
         LocalDateTime end = LocalDateTime.parse(dto.endTime);
 
