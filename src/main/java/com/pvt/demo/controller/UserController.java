@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +16,9 @@ import com.pvt.demo.model.User;
 import com.pvt.demo.repository.OrganisationRepository;
 import com.pvt.demo.repository.TeamRepository;
 import com.pvt.demo.repository.UserRepository;
+
+import jakarta.validation.Valid;
+
 import com.pvt.demo.dto.UserDto;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,21 +48,29 @@ public class UserController {
     }
 
     @PostMapping("/adduser")
-    public String addNewUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<String> addNewUser(@Valid @RequestBody UserDto userDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body("Username must be min 2 and max 20 characters long");
+        }
+        
         // Hämta organisationen baserat på ID
         Organisation organisation = organisationRepository.findById(userDto.organisationId).orElse(null);
 
         if (organisation != null) {
             User user = new User(userDto.name, userDto.email, organisation, userDto.isAdmin); // Skapa användare med organisation
             userRepository.save(user);
-            return "User '" + user.getName() + "' saved successfully";
+            return ResponseEntity.ok("User '" + user.getName() + "' saved successfully");
         } else {
-            return "Organisation with ID " + userDto.organisationId + " not found";
+            return ResponseEntity.badRequest().body("Organisation with ID " + userDto.organisationId + " not found");
         }
     }
 
     @PutMapping("/updateuser/{id}")
-    public String updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
+    public ResponseEntity<String> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body("Username must be min 2 and max 20 characters long");
+        }
+        
         User user = userRepository.findById(id).orElse(null);
 
         if (user != null) {
@@ -68,19 +81,19 @@ public class UserController {
                 user.setOrganisation(organisation);
                 user.setAdmin(userDto.isAdmin);
                 userRepository.save(user);
-                return "User with ID " + id + " updated successfully";
+                return ResponseEntity.ok("User with ID " + id + " updated successfully");
             } else {
-                return "Organisation with ID " + userDto.organisationId + " not found";
+                return ResponseEntity.badRequest().body("Organisation with ID " + userDto.organisationId + " not found");
             }
         } else {
-            return "User with ID " + id + " not found";
+            return ResponseEntity.badRequest().body("User with ID " + id + " not found");
     }
 }
 
     @DeleteMapping("/deleteuser/{id}")
-    public String deleteUser(@PathVariable Long id) {
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         Optional<User> userOpt = userRepository.findById(id);
-        if (userOpt.isEmpty()) return "User not found";
+        if (userOpt.isEmpty()) return ResponseEntity.badRequest().body("User not found");
 
         User user = userOpt.get();
 
@@ -96,15 +109,15 @@ public class UserController {
             }
         }
         userRepository.delete(user);
-        return "User with ID " + id + " deleted successfully";
+        return ResponseEntity.ok("User with ID " + id + " deleted successfully");
     }
 
 
 
 
     @DeleteMapping("/deleteall")
-    public String deleteAllUsers() {
+    public ResponseEntity<String> deleteAllUsers() {
         userRepository.deleteAll();
-        return "All users deleted successfully";
+        return ResponseEntity.ok("All users deleted successfully");
     }
 }

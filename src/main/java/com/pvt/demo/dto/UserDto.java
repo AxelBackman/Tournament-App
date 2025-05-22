@@ -1,9 +1,10 @@
 package com.pvt.demo.dto;
 
-
+import jakarta.validation.constraints.Size;
 
 public class UserDto {
     
+    @Size(min = 2, max = 20, message = "Username must be min 2 and max 20 characters long")
     public String name;
     
     public String email;
