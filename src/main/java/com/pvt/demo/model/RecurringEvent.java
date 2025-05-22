@@ -25,7 +25,7 @@ public class RecurringEvent {
     @Size(max = 100, message = "Title cannot exceed 100 characters")
     private String name;
 
-    @Size(max = 200, message = "Description cannot exceed 200 characters")
+    @Size(max = 250, message = "Description cannot exceed 200 characters")
     private String description;
     
     @JsonManagedReference
