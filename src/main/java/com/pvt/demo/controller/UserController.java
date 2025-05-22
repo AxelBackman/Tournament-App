@@ -60,6 +60,7 @@ public class UserController {
                 user.setName(userDto.name);
                 user.setEmail(userDto.email);
                 user.setOrganisation(organisation);
+                user.setAdmin(userDto.isAdmin);
                 userRepository.save(user);
                 return "User with ID " + id + " updated successfully";
             } else {
