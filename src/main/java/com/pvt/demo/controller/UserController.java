@@ -42,7 +42,7 @@ public class UserController {
         Organisation organisation = organisationRepository.findById(userDto.organisationId).orElse(null);
         
         if (organisation != null) {
-            User user = new User(userDto.name, userDto.email, organisation); // Skapa användare med organisation
+            User user = new User(userDto.name, userDto.email, organisation, userDto.isAdmin); // Skapa användare med organisation
             userRepository.save(user);
             return "User '" + user.getName() + "' saved successfully";
         } else {
