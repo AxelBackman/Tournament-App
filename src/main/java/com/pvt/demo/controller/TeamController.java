@@ -2,6 +2,7 @@ package com.pvt.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,14 +38,14 @@ public class TeamController {
 
     // Skapa ett team
     @PostMapping("/create")
-    public String createTeam(@RequestBody TeamDto teamDto) {
+    public ResponseEntity<String> createTeam(@RequestBody TeamDto teamDto) {
        
 
         Tournament tournament = tournamentRepository.findById(teamDto.tournamentId).orElse(null);
         User user = userRepository.findById(teamDto.userId).orElse(null);
 
         if (tournament == null || user == null) {
-            return "Event instance or user not found";
+            return ResponseEntity.badRequest().body("Event instance or user not found");
         }
 
         // Skapa team med hjälp av konstruktorn
@@ -53,29 +54,29 @@ public class TeamController {
         // Spara teamet i databasen
         teamRepository.save(team);
 
-        return "Team '" + team.getName() + "' created successfully with ID " + team.getId();
+        return ResponseEntity.ok("Team '" + team.getName() + "' created successfully with ID " + team.getId());
     }
 
     // Lägg till en medlem i teamet
     @PatchMapping("/addMember/{teamId}/{userId}")
-    public String addMember(@PathVariable Long teamId, @PathVariable Long userId) {
+    public ResponseEntity<String> addMember(@PathVariable Long teamId, @PathVariable Long userId) {
         Team team = teamRepository.findById(teamId).orElse(null);
         User user = userRepository.findById(userId).orElse(null);
 
         if (team == null || user == null) {
-            return "Team or user not found";
+            return ResponseEntity.badRequest().body("Team or user not found");
         }
 
         if (team.getMembers().size() >= team.getTournament().getTeamSize()) {
-            return "Team is already full (max " + team.getTournament().getTeamSize() + " members)";
+            return ResponseEntity.badRequest().body("Team is already full (max " + team.getTournament().getTeamSize() + " members)");
         }
 
         if (!team.getMembers().contains(user)) {
             team.getMembers().add(user);
             teamRepository.save(team);
-            return "User added to team successfully";
+            return ResponseEntity.ok("User added to team successfully");
         } else {
-            return "User already in team";
+            return ResponseEntity.badRequest().body("User already in team");
         }
        
     }
@@ -88,22 +89,23 @@ public class TeamController {
 
     // Hämta teamns för en viss EventInstance
     @GetMapping("/event/{tournamentId}")
-    public List<Team> getTeamsByEventInstance(@PathVariable Long tournamentId) {
+    public ResponseEntity<List<Team>> getTeamsByEventInstance(@PathVariable Long tournamentId) {
         Tournament tournament = tournamentRepository.findById(tournamentId).orElse(null);
         if (tournament == null) {
-            return null;
+            return ResponseEntity.badRequest().build();
         }
-        return teamRepository.findByTournamentId(tournamentId);
+        List<Team> teams = teamRepository.findByTournamentId(tournamentId);
+        return ResponseEntity.ok(teams);
     }
 
     //Hämta members efter teamId
     @GetMapping("/{teamId}/members")
-    public List<User> getTeamMembers(@PathVariable Long teamId) {
+    public ResponseEntity<List<User>> getTeamMembers(@PathVariable Long teamId) {
         Team team = teamRepository.findById(teamId).orElse(null);
         if (team == null) {
-            throw new RuntimeException("Team with ID " + teamId + " not found");
+            return ResponseEntity.badRequest().build();
         }
-        return team.getMembers();
+        return ResponseEntity.ok(team.getMembers());
     }
 
 }
