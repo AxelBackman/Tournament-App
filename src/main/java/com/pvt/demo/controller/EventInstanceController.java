@@ -112,6 +112,20 @@ public class EventInstanceController {
     // Updatera en instans
     @PutMapping("/update/{id}")
     public String updateEventInstance(@PathVariable Long id, @RequestBody EventInstanceDto dto) {
+        if (dto.userId == null) {
+            return "UserId not found";
+        }
+
+        User user = userRepository.findById(dto.userId).orElse(null);
+        
+        if (user == null) {
+            return "User cannot be found.";
+        }
+
+        if (!user.isAdmin()) {
+            return "Only admins can create events";
+        }
+        
         EventInstance instance = eventInstanceRepository.findById(id).orElse(null);
         if (instance == null) return "EventInstance with ID " + id + " not found";
 
