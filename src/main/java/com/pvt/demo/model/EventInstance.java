@@ -62,6 +62,7 @@ public class EventInstance {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
+        this.teamSize = teamSize;
     }
 
     //Konstruktor utan RecurringEvent (anropar första konstruktorn)
