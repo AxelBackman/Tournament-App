@@ -50,6 +50,9 @@ public class Tournament {
         if (eventInstance != null) {
             eventInstance.setTournament(this);
         }
+
+        this.setTeams();
+        this.generateBracket();
     }
 
     public Tournament(EventInstance eventInstance, int teamSize, String grejer){ // samma konstruktor som ovan men särskiljer sig för mickes chat tjofräs
