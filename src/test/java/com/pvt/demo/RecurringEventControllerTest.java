@@ -75,7 +75,7 @@ public class RecurringEventControllerTest {
         mockMvc.perform(post("/recurringevents/addrecurring")
                 .contentType("application/json")
                 .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Recurring event 'New Rec Event' added")));
     }
 
@@ -91,7 +91,7 @@ public class RecurringEventControllerTest {
         mockMvc.perform(post("/recurringevents/addrecurring")
                 .contentType("application/json")
                 .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string(containsString("Organisation with ID 999 not found")));
     }
 
@@ -128,7 +128,7 @@ public class RecurringEventControllerTest {
         Mockito.when(recurringEventRepository.findById(10L)).thenReturn(Optional.of(event));
 
         mockMvc.perform(delete("/recurringevents/deleterecurring/10"))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Recurring event deleted: Event to delete")));
     }
 
@@ -137,7 +137,7 @@ public class RecurringEventControllerTest {
         Mockito.when(recurringEventRepository.findById(999L)).thenReturn(Optional.empty());
 
         mockMvc.perform(delete("/recurringevents/deleterecurring/999"))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string(containsString("Recurring event not found")));
     }
 }
