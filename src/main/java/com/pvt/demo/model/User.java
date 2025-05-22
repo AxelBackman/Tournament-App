@@ -37,6 +37,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.organisation = organisation;
+        this.isAdmin = isAdmin;
     }
 
     public Long getId() {
