@@ -17,8 +17,10 @@ import com.pvt.demo.controller.EventInstanceController;
 import com.pvt.demo.dto.EventInstanceDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
+import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
+import com.pvt.demo.repository.UserRepository;
 import com.pvt.demo.services.EventInstanceService;
 
 
@@ -42,6 +44,9 @@ public class EventInstanceControllerTest {
     @Autowired
     private RecurringEventRepository recurringEventRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @TestConfiguration
     static class MockConfig {
         @Bean
@@ -57,6 +62,11 @@ public class EventInstanceControllerTest {
         @Bean
         public RecurringEventRepository recurringEventRepository() {
             return Mockito.mock(RecurringEventRepository.class);
+        }
+
+        @Bean
+        public UserRepository userRepository() {
+            return Mockito.mock(UserRepository.class);
         }
     }
 
@@ -79,6 +89,12 @@ public class EventInstanceControllerTest {
         dto.endTime = "2025-06-01T12:00";
         dto.location = "Gbg";
         dto.teamSize = 3;
+        dto.userId = 1L;
+
+        User mockUser = Mockito.mock(User.class);
+        ReflectionTestUtils.setField(mockUser, "id", 1L);
+        Mockito.when(mockUser.isAdmin()).thenReturn(true);
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
 
         EventInstance mockInstance = new EventInstance(dto.title, dto.description, LocalDateTime.parse(dto.startTime), LocalDateTime.parse(dto.endTime), dto.location, dto.teamSize);
         ReflectionTestUtils.setField(mockInstance, "id", 1L);
@@ -110,6 +126,14 @@ public class EventInstanceControllerTest {
         dto.endTime = "2025-06-01T12:00";
         dto.location = "Field";
         dto.recurringEventId = 100L;
+        dto.teamSize = 3;
+        dto.userId = 1L;
+        
+        User adminUser = Mockito.mock(User.class); // ✔ korrekt mock
+        ReflectionTestUtils.setField(adminUser, "id", 1L);
+        Mockito.when(adminUser.isAdmin()).thenReturn(true); // ✔ fungerar nu
+
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(adminUser));
 
         Mockito.when(recurringEventRepository.findById(100L)).thenReturn(Optional.of(parent));
 
@@ -139,7 +163,13 @@ public class EventInstanceControllerTest {
         dto.endTime = "2025-06-01T16:00";
         dto.location = "NewPlace";
         dto.teamSize = 4;
+        dto.userId = 1L;
 
+        User adminUser = Mockito.mock(User.class);
+        ReflectionTestUtils.setField(adminUser, "id", 1L);
+        Mockito.when(adminUser.isAdmin()).thenReturn(true);
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(adminUser));
+        
         Mockito.when(eventInstanceRepository.findById(1L)).thenReturn(Optional.of(existing));
         Mockito.when(eventInstanceRepository.save(any(EventInstance.class))).thenReturn(existing);
 
