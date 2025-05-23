@@ -54,13 +54,37 @@ public class TournamentController {
             return ResponseEntity.badRequest().body("EventInstance not found");
         }
 
-        int teamSize = eventInstance.getTeamSize();  // Hämta teamSize från eventInstance
+        int teamSize = eventInstance.getTeamSize();
 
+        java.util.List<com.pvt.demo.model.User> users = eventInstance.getUsers();
+
+        if (users == null || users.size() == 0) {
+             return ResponseEntity.badRequest().body("EventInstance must have users");
+        }
+
+        if (users.size() % teamSize != 0) {
+            return ResponseEntity.badRequest().body("Number of users must be evenly divisible by team size");
+        }
+
+        // Skapa Tournament och generera lag
         Tournament newTournament = new Tournament(eventInstance, teamSize);
+        newTournament.setTeams();  // Detta förutsätter att setTeams() använder users och teamSize
+
+        // Validera att antal lag är jämnt delbart med 4
+        if (newTournament.getTeams() == null || newTournament.getTeams().size() % 4 != 0) {
+            return ResponseEntity.badRequest().body("Number of teams must be divisible by 4 to create a bracket");
+        }
+
+        newTournament.generateBracket();  // Bara om team-antalet är korrekt
 
         Tournament saved = tournamentRepository.save(newTournament);
+        
         return ResponseEntity.ok(saved);
     }
+
+
+
+    
 
     
 }

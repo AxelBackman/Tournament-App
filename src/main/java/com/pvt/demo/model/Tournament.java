@@ -57,12 +57,13 @@ public class Tournament {
         this.teamSize = teamSize;
         created = true;
 
-        if (eventInstance != null) {
+        if ( eventInstance != null && eventInstance.getUsers() != null ) {
             eventInstance.setTournament(this);
+            this.setTeams();
+            this.generateBracket();
         }
 
-        this.setTeams();
-        this.generateBracket();
+
     }
 
     public void generateBracket() { //hårdkodad single elimination - måste vara lag av 4 potens
