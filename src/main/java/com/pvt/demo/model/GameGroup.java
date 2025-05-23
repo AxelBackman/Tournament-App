@@ -23,14 +23,16 @@ public class GameGroup {
     @JoinColumn(name = "tournament_id") // foreign key i GameGroup-tabellen
     private Tournament tournament;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "gameGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Game> games = new ArrayList<>();
 
     public GameGroup(){}
 
-    public void add(Game game){
+    public void add(Game game) {
+        game.setGameGroup(this);
         this.games.add(game);
     }
+
 
     public List<Game> getGames(){
         return this.games;
@@ -41,5 +43,9 @@ public class GameGroup {
     }
     public Integer getRound(){
         return keyValue;
+    }
+
+    public void setTournament(Tournament tournament) {
+        this.tournament = tournament;
     }
 }
