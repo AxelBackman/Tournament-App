@@ -118,9 +118,12 @@ public class TournamentController {
                 tournament.setEventInstance(null);
             }
 
-            for (Game game : new ArrayList<>(tournament.getAllGames())) {
-                game.setTournament(null);
+             for (Game game : new ArrayList<>(tournament.getAllGames())) {
+                game.setTeamOne(null);
+                game.setTeamTwo(null);
             }
+
+            // Clear games & teams
             tournament.getAllGames().clear();
 
             for (Team team : new ArrayList<>(tournament.getTeams())) {
