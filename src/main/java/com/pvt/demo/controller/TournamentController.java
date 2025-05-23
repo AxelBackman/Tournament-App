@@ -130,9 +130,17 @@ public class TournamentController {
                 ei.setTournament(null);
                 tournament.setEventInstance(null);
             }
+            
+            List<Game> games = new ArrayList<>(Optional.ofNullable(tournament.getAllGames()).orElse(Collections.emptyList()));
+
+
+            for (Game game : games) {
+                tournament.getAllGames().remove(game); // Viktigt!
+            }
+            gameRepository.flush();
+            tournament.setAllGames(new ArrayList<>());
 
             // Bryt FK i games och spara
-            List<Game> games = new ArrayList<>(Optional.ofNullable(tournament.getAllGames()).orElse(Collections.emptyList()));
             for (Game game : games) {
                 game.setParent(null);
                 game.setLeft(null);
@@ -147,11 +155,7 @@ public class TournamentController {
             gameRepository.flush();
 
 
-            for (Game game : games) {
-                tournament.getAllGames().remove(game); // Viktigt!
-            }
-            gameRepository.flush();
-            tournament.setAllGames(new ArrayList<>());
+            
 
             
             List<GameGroup> gameGroups = new ArrayList<>(Optional.ofNullable(tournament.getMap()).orElse(Collections.emptyList()));
