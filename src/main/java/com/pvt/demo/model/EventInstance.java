@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class EventInstance {
@@ -27,8 +27,13 @@ public class EventInstance {
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    
+    @Size(max = 100, message = "Title cannot exceed 100 characters")
     private String title;
     private int teamSize;
+
+    @Size(max = 250, message = "Description cannot exceed 200 characters")
+    private String description;
    
     
     @OneToOne
@@ -38,8 +43,7 @@ public class EventInstance {
 
     private String location;
     
-    @Column(length = 1000)
-    private String description;
+    
     
     @ManyToOne
     @JsonBackReference
@@ -62,6 +66,7 @@ public class EventInstance {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
+        this.teamSize = teamSize;
     }
 
     //Konstruktor utan RecurringEvent (anropar första konstruktorn)

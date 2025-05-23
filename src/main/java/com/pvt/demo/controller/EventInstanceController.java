@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pvt.demo.dto.EventInstanceDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
+import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
+import com.pvt.demo.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,9 +42,27 @@ public class EventInstanceController {
     @Autowired
     private RecurringEventRepository recurringEventRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     // Skapa ny eventInstance med eller utan koppling till RecurringEvent
     @PostMapping("/create")
-    public String createEventInstance(@RequestBody EventInstanceDto dto) {
+    public ResponseEntity<String> createEventInstance(@RequestBody EventInstanceDto dto) {
+        if (dto.userId == null) {
+            return ResponseEntity.badRequest().body("UserId not found");
+        }
+
+        User user = userRepository.findById(dto.userId).orElse(null);
+        
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User cannot be found");
+        }
+
+        if (!user.isAdmin()) {
+            return ResponseEntity.badRequest().body("Only admins can create events");
+        }
+
+
         LocalDateTime start = LocalDateTime.parse(dto.startTime);
         LocalDateTime end = LocalDateTime.parse(dto.endTime);
 
@@ -49,7 +70,7 @@ public class EventInstanceController {
         if (dto.recurringEventId != null) {
             parentEvent = recurringEventRepository.findById(dto.recurringEventId).orElse(null);
             if (parentEvent == null) {
-                return "Recurring event with ID " + dto.recurringEventId + " not found";
+                return ResponseEntity.badRequest().body("Recurring event with ID " + dto.recurringEventId + " not found");
             }
         }
 
@@ -64,7 +85,7 @@ public class EventInstanceController {
         );
 
         eventInstanceRepository.save(instance);
-        return "EventInstance created with ID: " + instance.getId();
+        return ResponseEntity.ok("EventInstance created with ID: " + instance.getId());
     }
 
     // Hämta alla
@@ -75,42 +96,61 @@ public class EventInstanceController {
 
     // Hämta en specifik
     @GetMapping("/{id}")
-    public EventInstance getInstanceById(@PathVariable Long id) {
-        return eventInstanceRepository.findById(id).orElse(null);
+    public ResponseEntity<?> getInstanceById(@PathVariable Long id) {
+        EventInstance instance = eventInstanceRepository.findById(id).orElse(null);
+        if (instance == null) {
+            return ResponseEntity.badRequest().body("EventInstance with ID " + id + " not found");
+        }
+        return ResponseEntity.ok(instance);
     }
 
      // Radera en instans
     @DeleteMapping("/{id}")
-    public String deleteInstance(@PathVariable Long id) {
+    public ResponseEntity<String> deleteInstance(@PathVariable Long id) {
         if (!eventInstanceRepository.existsById(id)) {
-            return "EventInstance not found";
+            return ResponseEntity.badRequest().body("EventInstance not found");
         }
         eventInstanceRepository.deleteById(id);
-        return "EventInstance deleted";
+        return ResponseEntity.ok("EventInstance deleted");
     }
 
     // Updatera en instans
     @PutMapping("/update/{id}")
-    public String updateEventInstance(@PathVariable Long id, @RequestBody EventInstanceDto dto) {
+    public ResponseEntity<String> updateEventInstance(@PathVariable Long id, @RequestBody EventInstanceDto dto) {
+        if (dto.userId == null) {
+            return ResponseEntity.badRequest().body("UserId not found");
+        }
+
+        User user = userRepository.findById(dto.userId).orElse(null);
+        
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User cannot be found");
+        }
+
+        if (!user.isAdmin()) {
+            return ResponseEntity.badRequest().body("Only admins can create events");
+        }
+        
         EventInstance instance = eventInstanceRepository.findById(id).orElse(null);
-        if (instance == null) return "EventInstance with ID " + id + " not found";
+        if (instance == null) return ResponseEntity.badRequest().body("EventInstance with ID " + id + " not found");
 
         instance.setTitle(dto.title);
         instance.setDescription(dto.description);
         instance.setStartTime(LocalDateTime.parse(dto.startTime));
         instance.setEndTime(LocalDateTime.parse(dto.endTime));
         instance.setLocation(dto.location);
+        instance.setTeamSize(dto.teamSize);
 
         if (dto.recurringEventId != null) {
             RecurringEvent recurring = recurringEventRepository.findById(dto.recurringEventId).orElse(null);
-            if (recurring == null) return "Recurring event not found";
+            if (recurring == null) return ResponseEntity.badRequest().body("Recurring event not found");
             instance.setParentEvent(recurring);
         } else {
             instance.setParentEvent(null);
         }
 
         eventInstanceRepository.save(instance);
-        return "EventInstance updated with ID: " + id;
+        return ResponseEntity.ok("EventInstance updated with ID: " + id);
     }
 
     @GetMapping("/combinedEventsSorted")

@@ -18,6 +18,8 @@ public class User {
     
     private String name;
     private String email;
+
+    private boolean isAdmin = false;
     
     
     @ManyToOne
@@ -31,10 +33,11 @@ public class User {
 
     }
 
-    public User(String name, String email, Organisation organisation) {
+    public User(String name, String email, Organisation organisation, Boolean isAdmin) {
         this.name = name;
         this.email = email;
         this.organisation = organisation;
+        this.isAdmin = isAdmin;
     }
 
     public Long getId() {
@@ -64,6 +67,14 @@ public class User {
 
     public void setOrganisation(Organisation organisation) {
         this.organisation = organisation;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
     @Override

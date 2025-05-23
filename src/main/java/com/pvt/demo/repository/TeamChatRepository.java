@@ -10,6 +10,6 @@ import com.pvt.demo.model.Team;
 
 @Repository
 public interface TeamChatRepository extends JpaRepository<TeamChat, Long> {
-    //Hämta 10 senaste meddelandena för ett visst lag
-    List<TeamChat> findTop10ByTeamOrderByTimestampDesc(Team team);
+    //Hämta alla meddelanden och sortera på äldst först
+    List<TeamChat> findByTeamOrderByTimestampAsc(Team team);
 }

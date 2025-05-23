@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pvt.demo.dto.TournamentDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.Tournament;
 import com.pvt.demo.repository.EventInstanceRepository;
@@ -41,17 +42,21 @@ public class TournamentController {
 
     //Skapande av ett Tournament för test av annat
     @PostMapping
-    public ResponseEntity<Tournament> createTournament(@RequestBody Tournament tournament) {
-        if (tournament.getEventInstance() == null || tournament.getEventInstance().getId() == null) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> createTournament(@RequestBody TournamentDto dto) {
+        if (dto.eventInstanceId == null) {
+            return ResponseEntity.badRequest().body("EventInstanceId is required");
         }
 
-        // Hämta EventInstance från databasen
-        EventInstance eventInstance = eventInstanceRepository.findById(tournament.getEventInstance().getId())
-        .orElseThrow(() -> new RuntimeException("EventInstance not found"));
+        EventInstance eventInstance = eventInstanceRepository.findById(dto.eventInstanceId)
+                .orElse(null);
 
-        // Skapa ny turnering och koppla korrekt
-        Tournament newTournament = new Tournament(eventInstance, tournament.getTeamSize());
+        if (eventInstance == null) {
+            return ResponseEntity.badRequest().body("EventInstance not found");
+        }
+
+        int teamSize = eventInstance.getTeamSize();  // Hämta teamSize från eventInstance
+
+        Tournament newTournament = new Tournament(eventInstance, teamSize);
 
         Tournament saved = tournamentRepository.save(newTournament);
         return ResponseEntity.ok(saved);

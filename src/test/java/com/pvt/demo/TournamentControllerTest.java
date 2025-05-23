@@ -72,12 +72,10 @@ public class TournamentControllerTest {
 
    @Test
     public void testCreateTournament_success() throws Exception {
-        // Skapa EventInstance med id
+        // Skapa EventInstance med id och teamSize
         EventInstance eventInstance = new EventInstance();
         ReflectionTestUtils.setField(eventInstance, "id", 200L);
-
-        // Skapa Tournament med ovan EventInstance och teamSize
-        new Tournament(eventInstance, 3);
+        eventInstance.setTeamSize(3); // viktigt!
 
         Tournament savedTournament = new Tournament(eventInstance, 3);
         ReflectionTestUtils.setField(savedTournament, "id", 10L);
@@ -86,16 +84,12 @@ public class TournamentControllerTest {
         Mockito.when(eventInstanceRepository.findById(200L)).thenReturn(Optional.of(eventInstance));
         Mockito.when(tournamentRepository.save(any(Tournament.class))).thenReturn(savedTournament);
 
-        // Serialisera tournament till JSON
+        // Skicka bara eventInstanceId som i TournamentDto
         String json = """
-        {
-            "teamSize": 3,
-            "eventInstance": {
-                "id": 200
+            {
+                "eventInstanceId": 200
             }
-        }
-        """;
-
+            """;
 
         mockMvc.perform(post("/tournaments")
                 .contentType(MediaType.APPLICATION_JSON)

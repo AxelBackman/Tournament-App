@@ -91,7 +91,7 @@ public class RecurringEventControllerTest {
         mockMvc.perform(post("/recurringevents/addrecurring")
                 .contentType("application/json")
                 .content(new ObjectMapper().writeValueAsString(dto)))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string(containsString("Organisation with ID 999 not found")));
     }
 
@@ -137,7 +137,7 @@ public class RecurringEventControllerTest {
         Mockito.when(recurringEventRepository.findById(999L)).thenReturn(Optional.empty());
 
         mockMvc.perform(delete("/recurringevents/deleterecurring/999"))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string(containsString("Recurring event not found")));
     }
 }

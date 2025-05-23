@@ -54,7 +54,7 @@ public class AuthController {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Standardorganisation saknas");
                     }
 
-                    user = new User(name, email, organisation);
+                    user = new User(name, email, organisation, false);
                     userRepository.save(user);
                 }
 
@@ -94,7 +94,7 @@ public class AuthController {
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Standardorganisation saknas");
                     }
 
-                    user = new User(name, email, organisation);
+                    user = new User(name, email, organisation, false);
                     userRepository.save(user);
                 }
 

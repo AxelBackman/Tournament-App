@@ -104,7 +104,7 @@ public class RegisteredUsersControllerTest {
                 .thenReturn(new RegisteredUsers());
 
         mockMvc.perform(post("/registeredusers/register/1/100/COMING"))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string("User is already registered for this event"));
     }
 
@@ -123,7 +123,7 @@ public class RegisteredUsersControllerTest {
         when(registeredUsersRepository.findByUserIdAndEventInstanceId(1L, 100L)).thenReturn(null);
 
         mockMvc.perform(delete("/registeredusers/delete/1/100"))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string("User is not registered for this event"));
     }
 
