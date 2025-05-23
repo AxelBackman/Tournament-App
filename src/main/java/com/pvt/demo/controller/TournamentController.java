@@ -138,23 +138,31 @@ public class TournamentController {
                 game.setTournament(null); // också bryt FK till tournament
             }
             gameRepository.saveAll(games);
+            gameRepository.flush();
 
             gameRepository.deleteAll(games);
+            gameRepository.flush();
             tournament.getAllGames().clear();
 
             List<Team> teams = new ArrayList<>(tournament.getTeams());
             for (Team team : teams) {
                 team.setTournament(null);
             }
+            teamRepository.saveAll(teams);
+            teamRepository.flush();
+
             teamRepository.deleteAll(teams);
-            tournament.getTeams().clear();
+            teamRepository.flush();
 
             List<GameGroup> gameGroups = new ArrayList<>(tournament.getMap());
             for (GameGroup gg : gameGroups) {
                 gg.setTournament(null);
             }
             gameGroupRepository.saveAll(gameGroups);
+            gameGroupRepository.flush();
+
             gameGroupRepository.deleteAll(gameGroups);
+            gameGroupRepository.flush();
             tournament.getMap().clear();
             // Radera Tournament
             tournamentRepository.delete(tournament);
