@@ -133,16 +133,33 @@ public class TournamentController {
             // Bryt FK i games och spara
             List<Game> games = new ArrayList<>(tournament.getAllGames());
             for (Game game : games) {
+                game.setParent(null);
+                game.setLeft(null);
+                game.setRight(null);
                 game.setTeamOne(null);
                 game.setTeamTwo(null);
-                game.setTournament(null); // också bryt FK till tournament
+                game.setWinner(null);
+                game.setTournament(null);
+                game.setGameGroup(null);
             }
             gameRepository.saveAll(games);
             gameRepository.flush();
 
+
             gameRepository.deleteAll(games);
             gameRepository.flush();
             tournament.getAllGames().clear();
+            
+            List<GameGroup> gameGroups = new ArrayList<>(tournament.getMap());
+            for (GameGroup gg : gameGroups) {
+                gg.setTournament(null);
+            }
+            gameGroupRepository.saveAll(gameGroups);
+            gameGroupRepository.flush();
+
+            gameGroupRepository.deleteAll(gameGroups);
+            gameGroupRepository.flush();
+            tournament.getMap().clear();
 
             List<Team> teams = new ArrayList<>(tournament.getTeams());
             for (Team team : teams) {
@@ -154,16 +171,7 @@ public class TournamentController {
             teamRepository.deleteAll(teams);
             teamRepository.flush();
 
-            List<GameGroup> gameGroups = new ArrayList<>(tournament.getMap());
-            for (GameGroup gg : gameGroups) {
-                gg.setTournament(null);
-            }
-            gameGroupRepository.saveAll(gameGroups);
-            gameGroupRepository.flush();
-
-            gameGroupRepository.deleteAll(gameGroups);
-            gameGroupRepository.flush();
-            tournament.getMap().clear();
+           
             // Radera Tournament
             tournamentRepository.delete(tournament);
 

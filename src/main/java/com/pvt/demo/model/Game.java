@@ -52,7 +52,7 @@ public class Game {
     @OneToOne
     @JoinColumn(name = "right_child_id")
     @JsonIgnoreProperties("parent")
-private Game right;// if null, then = leaf
+    private Game right;// if null, then = leaf
 
     @ManyToOne
     @JoinColumn(name = "game_group_id") // foreign key i Game-tabellen
@@ -90,6 +90,9 @@ private Game right;// if null, then = leaf
 
     public void setGameGroup(GameGroup gameGroup) { this.gameGroup = gameGroup; }
     public GameGroup getGameGroup() { return gameGroup; }
+
+    public void setLeft(Game left) { this.left = left; }
+    public void setRight(Game right) { this.right = right; }
 
     @Override
     public boolean equals(Object o) {
