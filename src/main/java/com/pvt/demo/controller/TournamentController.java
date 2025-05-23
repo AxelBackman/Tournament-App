@@ -23,6 +23,7 @@ import com.pvt.demo.model.GameGroup;
 import com.pvt.demo.model.Team;
 import com.pvt.demo.model.Tournament;
 import com.pvt.demo.repository.EventInstanceRepository;
+import com.pvt.demo.repository.GameRepository;
 import com.pvt.demo.repository.TournamentRepository;
 
 @RestController
@@ -35,6 +36,10 @@ public class TournamentController {
 
     @Autowired
     private EventInstanceRepository eventInstanceRepository;
+
+    @Autowired
+    private GameRepository gameRepository;
+
 
     // Hämta tournament via ID
     @GetMapping("/{id}")
@@ -118,10 +123,14 @@ public class TournamentController {
                 tournament.setEventInstance(null);
             }
 
-             for (Game game : new ArrayList<>(tournament.getAllGames())) {
+            List<Game> games = new ArrayList<>(tournament.getAllGames());
+            for (Game game : games) {
                 game.setTeamOne(null);
                 game.setTeamTwo(null);
             }
+            
+            gameRepository.saveAll(games);
+
 
             // Clear games & teams
             tournament.getAllGames().clear();
