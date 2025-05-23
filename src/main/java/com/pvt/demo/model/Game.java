@@ -36,10 +36,11 @@ public class Game {
     @JoinColumn(name = "winner_id", nullable = true)
     private Team winner;
     
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "parent_id")
     @JsonIgnoreProperties({"left", "right"})
-    private Game parent; // if null, then = root
+    private Game parent;
+
 
     @OneToOne
     @JoinColumn(name = "left_child_id")
