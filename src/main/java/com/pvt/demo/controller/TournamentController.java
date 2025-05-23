@@ -147,7 +147,9 @@ public class TournamentController {
             gameRepository.flush();
 
 
-            gameRepository.deleteAll(games);
+            for (Game game : games) {
+                tournament.getAllGames().remove(game); // Viktigt!
+            }
             gameRepository.flush();
             tournament.setAllGames(new ArrayList<>());
 
@@ -159,7 +161,9 @@ public class TournamentController {
             gameGroupRepository.saveAll(gameGroups);
             gameGroupRepository.flush();
 
-            gameGroupRepository.deleteAll(gameGroups);
+            for (GameGroup gg : gameGroups) {
+                tournament.getMap().remove(gg);
+            }
             gameGroupRepository.flush();
             tournament.setMap(new ArrayList<>());
 
@@ -169,8 +173,9 @@ public class TournamentController {
             }
             teamRepository.saveAll(teams);
             teamRepository.flush();
-
-            teamRepository.deleteAll(teams);
+            for (Team team : teams) {
+                tournament.getTeams().remove(team);
+            }
             teamRepository.flush();
 
            

@@ -192,19 +192,19 @@ public class TournamentControllerTest {
         game1.setTournament(tournament);
         Game game2 = new Game();
         game2.setTournament(tournament);
-        List<Game> games = List.of(game1, game2);
+        List<Game> games = new ArrayList<>(List.of(game1, game2));
         tournament.setAllGames(games);
 
         // GameGroups
         GameGroup gg1 = new GameGroup();
         gg1.setTournament(tournament);
-        List<GameGroup> groups = List.of(gg1);
+        List<GameGroup> groups = new ArrayList<>(List.of(gg1));
         tournament.setMap(groups);
 
         // Teams
         Team team1 = new Team("Team1");
         team1.setTournament(tournament);
-        List<Team> teams = List.of(team1);
+        List<Team> teams = new ArrayList<>(List.of(team1));
         tournament.setTeams(teams);
 
         // Ställ in mock-beteende
@@ -216,11 +216,8 @@ public class TournamentControllerTest {
 
         // Verifiera att relationer rensas och sparas/borttas
         verify(gameRepository).saveAll(any());
-        verify(gameRepository).deleteAll(any());
         verify(gameGroupRepository).saveAll(any());
-        verify(gameGroupRepository).deleteAll(any());
         verify(teamRepository).saveAll(any());
-        verify(teamRepository).deleteAll(any());
         verify(tournamentRepository).delete(tournament);
     }
 
