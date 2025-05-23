@@ -3,7 +3,10 @@ package com.pvt.demo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pvt.demo.controller.TournamentController;
 import com.pvt.demo.model.EventInstance;
+import com.pvt.demo.model.RegisteredUsers;
+import com.pvt.demo.model.RegistrationStatus;
 import com.pvt.demo.model.Tournament;
+import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.TournamentRepository;
 import org.junit.jupiter.api.Test;
@@ -16,6 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -70,33 +75,44 @@ public class TournamentControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-   @Test
+    @Test
     public void testCreateTournament_success() throws Exception {
-        // Skapa EventInstance med id och teamSize
         EventInstance eventInstance = new EventInstance();
         ReflectionTestUtils.setField(eventInstance, "id", 200L);
-        eventInstance.setTeamSize(3); // viktigt!
+        eventInstance.setTeamSize(3);
 
-        Tournament savedTournament = new Tournament(eventInstance, 3);
-        ReflectionTestUtils.setField(savedTournament, "id", 10L);
+    List<RegisteredUsers> registeredUsersList = new ArrayList<>();
 
-        // Mocka repository
-        Mockito.when(eventInstanceRepository.findById(200L)).thenReturn(Optional.of(eventInstance));
-        Mockito.when(tournamentRepository.save(any(Tournament.class))).thenReturn(savedTournament);
+    for (long i = 1; i <= 12; i++) {
+        User user = new User();
+        ReflectionTestUtils.setField(user, "id", i);
+        user.setName("User " + i);
 
-        // Skicka bara eventInstanceId som i TournamentDto
-        String json = """
-            {
-                "eventInstanceId": 200
-            }
-            """;
-
-        mockMvc.perform(post("/tournaments")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.teamSize").value(3));
+        RegisteredUsers ru = new RegisteredUsers(eventInstance, user, RegistrationStatus.COMING);
+        registeredUsersList.add(ru);
     }
+
+    eventInstance.setRegisteredUsers(registeredUsersList);
+
+    Tournament savedTournament = new Tournament(eventInstance, 3);
+    ReflectionTestUtils.setField(savedTournament, "id", 10L);
+
+    Mockito.when(eventInstanceRepository.findById(200L)).thenReturn(Optional.of(eventInstance));
+    Mockito.when(tournamentRepository.save(any(Tournament.class))).thenReturn(savedTournament);
+
+    String json = """
+        {
+            "eventInstanceId": 200
+        }
+        """;
+
+    mockMvc.perform(post("/tournaments")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.teamSize").value(3));
+    }
+
 
     @Test
     public void testCreateTournament_missingEventInstance() throws Exception {

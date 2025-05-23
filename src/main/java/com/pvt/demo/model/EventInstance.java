@@ -95,14 +95,16 @@ public class EventInstance {
         List<User> users = new ArrayList<>();
 
         for (RegisteredUsers user : registeredUsers){
-            if(user.getStatus().equals("COMING")){
+            if(user.getStatus() == RegistrationStatus.COMING) {
                 users.add(user.getUser());
             }
         }
         return users;
     }
 
-
+    public void setRegisteredUsers(List<RegisteredUsers> registeredUsers) {
+        this.registeredUsers = registeredUsers;
+    }
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
@@ -178,4 +180,5 @@ public class EventInstance {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }
