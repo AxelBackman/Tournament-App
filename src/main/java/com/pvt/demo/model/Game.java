@@ -41,13 +41,15 @@ public class Game {
     @JsonIgnoreProperties({"left", "right"})
     private Game parent; // if null, then = root
 
-    @OneToOne(mappedBy = "parent")
+    @OneToOne
+    @JoinColumn(name = "left_child_id")
     @JsonIgnoreProperties("parent")
-    private Game left; // if null, then = leaf
+    private Game left;// if null, then = leaf
 
-    @OneToOne(mappedBy = "parent")
+    @OneToOne
+    @JoinColumn(name = "right_child_id")
     @JsonIgnoreProperties("parent")
-    private Game right; // if null, then = leaf
+private Game right;// if null, then = leaf
 
     @ManyToOne
     @JoinColumn(name = "game_group_id") // foreign key i Game-tabellen
