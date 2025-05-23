@@ -1,7 +1,6 @@
 package com.pvt.demo.controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -19,14 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pvt.demo.dto.TournamentDto;
 import com.pvt.demo.model.EventInstance;
-import com.pvt.demo.model.Game;
-import com.pvt.demo.model.GameGroup;
-import com.pvt.demo.model.Team;
 import com.pvt.demo.model.Tournament;
 import com.pvt.demo.repository.EventInstanceRepository;
-import com.pvt.demo.repository.GameGroupRepository;
-import com.pvt.demo.repository.GameRepository;
-import com.pvt.demo.repository.TeamRepository;
 import com.pvt.demo.repository.TournamentRepository;
 
 @RestController
@@ -40,14 +33,6 @@ public class TournamentController {
     @Autowired
     private EventInstanceRepository eventInstanceRepository;
 
-    @Autowired
-    private GameRepository gameRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private GameGroupRepository gameGroupRepository;
 
     // Hämta tournament via ID
     @GetMapping("/{id}")
@@ -131,56 +116,9 @@ public class TournamentController {
                 tournament.setEventInstance(null);
             }
             
-            List<Game> games = new ArrayList<>(Optional.ofNullable(tournament.getAllGames()).orElse(Collections.emptyList()));
-
-
-            for (Game game : games) {
-                tournament.getAllGames().remove(game); // Viktigt!
-            }
-            gameRepository.flush();
-            tournament.setAllGames(new ArrayList<>());
-
-            // Bryt FK i games och spara
-            for (Game game : games) {
-                game.setParent(null);
-                game.setLeft(null);
-                game.setRight(null);
-                game.setTeamOne(null);
-                game.setTeamTwo(null);
-                game.setWinner(null);
-                game.setTournament(null);
-                game.setGameGroup(null);
-            }
-            gameRepository.saveAll(games);
-            gameRepository.flush();
-
-
-            
-
-            
-            List<GameGroup> gameGroups = new ArrayList<>(Optional.ofNullable(tournament.getMap()).orElse(Collections.emptyList()));
-            for (GameGroup gg : gameGroups) {
-                gg.setTournament(null);
-            }
-            gameGroupRepository.saveAll(gameGroups);
-            gameGroupRepository.flush();
-
-            for (GameGroup gg : gameGroups) {
-                tournament.getMap().remove(gg);
-            }
-            gameGroupRepository.flush();
-            tournament.setMap(new ArrayList<>());
-
-            List<Team> teams = new ArrayList<>(Optional.ofNullable(tournament.getTeams()).orElse(Collections.emptyList()));
-            for (Team team : teams) {
-                team.setTournament(null);
-            }
-            teamRepository.saveAll(teams);
-            teamRepository.flush();
-            for (Team team : teams) {
-                tournament.getTeams().remove(team);
-            }
-            teamRepository.flush();
+            tournament.getAllGames().clear();
+            tournament.getMap().clear();
+            tournament.getTeams().clear();
 
            
             // Radera Tournament

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,14 +48,6 @@ public class TournamentControllerTest {
     @Autowired
     private EventInstanceRepository eventInstanceRepository;
 
-    @Autowired
-    private GameRepository gameRepository;
-
-    @Autowired
-    private GameGroupRepository gameGroupRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
 
     @TestConfiguration
     static class Config {
@@ -215,10 +208,11 @@ public class TournamentControllerTest {
                 .andExpect(content().string("Tournament deleted"));
 
         // Verifiera att relationer rensas och sparas/borttas
-        verify(gameRepository).saveAll(any());
-        verify(gameGroupRepository).saveAll(any());
-        verify(teamRepository).saveAll(any());
+        assertTrue(tournament.getAllGames().isEmpty());
+        assertTrue(tournament.getMap().isEmpty());
+        assertTrue(tournament.getTeams().isEmpty());
         verify(tournamentRepository).delete(tournament);
+        verify(tournamentRepository).findById(123L);
     }
 
     @Test
