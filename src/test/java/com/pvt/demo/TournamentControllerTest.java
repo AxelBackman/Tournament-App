@@ -3,11 +3,13 @@ package com.pvt.demo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pvt.demo.controller.TournamentController;
 import com.pvt.demo.model.EventInstance;
+import com.pvt.demo.model.Game;
 import com.pvt.demo.model.RegisteredUsers;
 import com.pvt.demo.model.RegistrationStatus;
 import com.pvt.demo.model.Tournament;
 import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
+import com.pvt.demo.repository.GameRepository;
 import com.pvt.demo.repository.TournamentRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -49,6 +51,11 @@ public class TournamentControllerTest {
         @Bean
         public EventInstanceRepository eventInstanceRepository() {
             return Mockito.mock(EventInstanceRepository.class);
+        }
+
+        @Bean
+        public GameRepository gameRepository() {
+            return Mockito.mock(GameRepository.class);
         }
     }
 
