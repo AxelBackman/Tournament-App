@@ -3,9 +3,11 @@ package com.pvt.demo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pvt.demo.controller.TournamentController;
 import com.pvt.demo.model.EventInstance;
+import com.pvt.demo.model.Game;
 import com.pvt.demo.model.GameGroup;
 import com.pvt.demo.model.RegisteredUsers;
 import com.pvt.demo.model.RegistrationStatus;
+import com.pvt.demo.model.Team;
 import com.pvt.demo.model.Tournament;
 import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
@@ -28,6 +30,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -42,6 +46,15 @@ public class TournamentControllerTest {
 
     @Autowired
     private EventInstanceRepository eventInstanceRepository;
+
+    @Autowired
+    private GameRepository gameRepository;
+
+    @Autowired
+    private GameGroupRepository gameGroupRepository;
+
+    @Autowired
+    private TeamRepository teamRepository;
 
     @TestConfiguration
     static class Config {
@@ -161,6 +174,63 @@ public class TournamentControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(invalidJson))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testDeleteTournament_success() throws Exception {
+        // Mock turnering och dess relationer
+        Tournament tournament = new Tournament();
+        ReflectionTestUtils.setField(tournament, "id", 123L);
+
+        // EventInstance
+        EventInstance ei = new EventInstance();
+        tournament.setEventInstance(ei);
+        ei.setTournament(tournament);
+
+        // Games
+        Game game1 = new Game();
+        game1.setTournament(tournament);
+        Game game2 = new Game();
+        game2.setTournament(tournament);
+        List<Game> games = List.of(game1, game2);
+        tournament.setAllGames(games);
+
+        // GameGroups
+        GameGroup gg1 = new GameGroup();
+        gg1.setTournament(tournament);
+        List<GameGroup> groups = List.of(gg1);
+        tournament.setMap(groups);
+
+        // Teams
+        Team team1 = new Team("Team1");
+        team1.setTournament(tournament);
+        List<Team> teams = List.of(team1);
+        tournament.setTeams(teams);
+
+        // Ställ in mock-beteende
+        when(tournamentRepository.findById(123L)).thenReturn(Optional.of(tournament));
+
+        mockMvc.perform(delete("/tournaments/123"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Tournament deleted"));
+
+        // Verifiera att relationer rensas och sparas/borttas
+        verify(gameRepository).saveAll(any());
+        verify(gameRepository).deleteAll(any());
+        verify(gameGroupRepository).saveAll(any());
+        verify(gameGroupRepository).deleteAll(any());
+        verify(teamRepository).saveAll(any());
+        verify(teamRepository).deleteAll(any());
+        verify(tournamentRepository).delete(tournament);
+    }
+
+    @Test
+    public void testDeleteTournament_notFound() throws Exception {
+        when(tournamentRepository.findById(999L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(delete("/tournaments/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Tournament not found"));
     }
 
 }

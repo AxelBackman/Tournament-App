@@ -1,6 +1,7 @@
 package com.pvt.demo.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -131,7 +132,7 @@ public class TournamentController {
             }
 
             // Bryt FK i games och spara
-            List<Game> games = new ArrayList<>(tournament.getAllGames());
+            List<Game> games = new ArrayList<>(Optional.ofNullable(tournament.getAllGames()).orElse(Collections.emptyList()));
             for (Game game : games) {
                 game.setParent(null);
                 game.setLeft(null);
@@ -148,9 +149,10 @@ public class TournamentController {
 
             gameRepository.deleteAll(games);
             gameRepository.flush();
-            tournament.getAllGames().clear();
+            tournament.setAllGames(new ArrayList<>());
+
             
-            List<GameGroup> gameGroups = new ArrayList<>(tournament.getMap());
+            List<GameGroup> gameGroups = new ArrayList<>(Optional.ofNullable(tournament.getMap()).orElse(Collections.emptyList()));
             for (GameGroup gg : gameGroups) {
                 gg.setTournament(null);
             }
@@ -159,9 +161,9 @@ public class TournamentController {
 
             gameGroupRepository.deleteAll(gameGroups);
             gameGroupRepository.flush();
-            tournament.getMap().clear();
+            tournament.setMap(new ArrayList<>());
 
-            List<Team> teams = new ArrayList<>(tournament.getTeams());
+            List<Team> teams = new ArrayList<>(Optional.ofNullable(tournament.getTeams()).orElse(Collections.emptyList()));
             for (Team team : teams) {
                 team.setTournament(null);
             }
@@ -178,7 +180,8 @@ public class TournamentController {
             return ResponseEntity.ok("Tournament deleted");
         } catch (Exception e) {
             e.printStackTrace();  // Viktigt för debugging
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting tournament: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error deleting tournament: " + e.getClass().getSimpleName() + ": " + e.getMessage());
         }
     }
 }

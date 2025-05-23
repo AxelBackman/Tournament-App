@@ -182,6 +182,8 @@ public class Tournament {
 
     public List<GameGroup> getMap() { return map; }
 
+    public void setMap(List<GameGroup> map) { this.map = map; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
