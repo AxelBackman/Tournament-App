@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pvt.demo.dto.TournamentDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.Tournament;
-import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.TournamentRepository;
-import com.pvt.demo.repository.UserRepository;
 
 @RestController
 @RequestMapping("/tournaments")
@@ -102,6 +100,7 @@ public class TournamentController {
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTournament(@PathVariable Long id) {
+        try {
         Optional<Tournament> tournament = tournamentRepository.findById(id);
         
         if (tournament.isPresent()) {
@@ -110,6 +109,9 @@ public class TournamentController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournament not found");
         }
+        } catch (Exception e) {
+            e.printStackTrace();  // Viktigt för debugging
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting tournament: " + e.getMessage());
+        }
     }
-
 }
