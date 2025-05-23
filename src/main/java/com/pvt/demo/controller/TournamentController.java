@@ -1,5 +1,6 @@
 package com.pvt.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pvt.demo.dto.TournamentDto;
 import com.pvt.demo.model.EventInstance;
+import com.pvt.demo.model.Game;
+import com.pvt.demo.model.GameGroup;
+import com.pvt.demo.model.Team;
 import com.pvt.demo.model.Tournament;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.TournamentRepository;
@@ -101,14 +105,38 @@ public class TournamentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTournament(@PathVariable Long id) {
         try {
-        Optional<Tournament> tournament = tournamentRepository.findById(id);
-        
-        if (tournament.isPresent()) {
-            tournamentRepository.deleteById(id);
+            Optional<Tournament> optionalTournament = tournamentRepository.findById(id);
+            if (optionalTournament.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournament not found");
+            }
+            Tournament tournament = optionalTournament.get();
+
+            // Bryt relationer på båda håll
+            EventInstance ei = tournament.getEventInstance();
+            if (ei != null) {
+                ei.setTournament(null);
+                tournament.setEventInstance(null);
+            }
+
+            for (Game game : new ArrayList<>(tournament.getAllGames())) {
+                game.setTournament(null);
+            }
+            tournament.getAllGames().clear();
+
+            for (Team team : new ArrayList<>(tournament.getTeams())) {
+                team.setTournament(null);
+            }
+            tournament.getTeams().clear();
+
+            for (GameGroup gg : new ArrayList<>(tournament.getMap())) {
+                gg.setTournament(null);
+            }
+            tournament.getMap().clear();
+
+            // Radera Tournament
+            tournamentRepository.delete(tournament);
+
             return ResponseEntity.ok("Tournament deleted");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournament not found");
-        }
         } catch (Exception e) {
             e.printStackTrace();  // Viktigt för debugging
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting tournament: " + e.getMessage());

@@ -180,6 +180,8 @@ public class Tournament {
     public List<Game> getAllGames() { return allGames; }
     public void setAllGames(List<Game> games) { this.allGames = games; }
 
+    public List<GameGroup> getMap() { return map; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
