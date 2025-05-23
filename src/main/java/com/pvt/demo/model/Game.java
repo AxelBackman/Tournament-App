@@ -30,7 +30,7 @@ public class Game {
     private Tournament tournament;
 
     @Column(nullable = true)
-    private int round;
+    private Integer round;
 
     @ManyToOne
     @JoinColumn(name = "winner_id", nullable = true)
@@ -55,7 +55,7 @@ public class Game {
 
     public Game() {}
    
-    public Game(Team teamOne, Team teamTwo, Tournament tournament, int round) {
+    public Game(Team teamOne, Team teamTwo, Tournament tournament, Integer round) {
         this.teamOne = teamOne;
         this.teamTwo = teamTwo;
         this.tournament = tournament;
@@ -74,8 +74,8 @@ public class Game {
     public Tournament getTournament() { return tournament; }
     public void setTournament(Tournament tournament) { this.tournament = tournament; }
 
-    public int getRound() { return round; }
-    public void setRound(int round) { this.round = round; }
+    public Integer getRound() { return round; }
+    public void setRound(Integer round) { this.round = round; }
 
     public Team getWinner () { return winner; }
     public void setWinner(Team winner) {this.winner = winner; }
