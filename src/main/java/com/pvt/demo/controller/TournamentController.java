@@ -23,7 +23,9 @@ import com.pvt.demo.model.GameGroup;
 import com.pvt.demo.model.Team;
 import com.pvt.demo.model.Tournament;
 import com.pvt.demo.repository.EventInstanceRepository;
+import com.pvt.demo.repository.GameGroupRepository;
 import com.pvt.demo.repository.GameRepository;
+import com.pvt.demo.repository.TeamRepository;
 import com.pvt.demo.repository.TournamentRepository;
 
 @RestController
@@ -40,6 +42,11 @@ public class TournamentController {
     @Autowired
     private GameRepository gameRepository;
 
+    @Autowired
+    private TeamRepository teamRepository;
+
+    @Autowired
+    private GameGroupRepository gameGroupRepository;
 
     // Hämta tournament via ID
     @GetMapping("/{id}")
@@ -123,28 +130,32 @@ public class TournamentController {
                 tournament.setEventInstance(null);
             }
 
+            // Bryt FK i games och spara
             List<Game> games = new ArrayList<>(tournament.getAllGames());
             for (Game game : games) {
                 game.setTeamOne(null);
                 game.setTeamTwo(null);
+                game.setTournament(null); // också bryt FK till tournament
             }
-            
             gameRepository.saveAll(games);
 
-
-            // Clear games & teams
+            gameRepository.deleteAll(games);
             tournament.getAllGames().clear();
 
-            for (Team team : new ArrayList<>(tournament.getTeams())) {
+            List<Team> teams = new ArrayList<>(tournament.getTeams());
+            for (Team team : teams) {
                 team.setTournament(null);
             }
+            teamRepository.deleteAll(teams);
             tournament.getTeams().clear();
 
-            for (GameGroup gg : new ArrayList<>(tournament.getMap())) {
+            List<GameGroup> gameGroups = new ArrayList<>(tournament.getMap());
+            for (GameGroup gg : gameGroups) {
                 gg.setTournament(null);
             }
+            gameGroupRepository.saveAll(gameGroups);
+            gameGroupRepository.deleteAll(gameGroups);
             tournament.getMap().clear();
-
             // Radera Tournament
             tournamentRepository.delete(tournament);
 
