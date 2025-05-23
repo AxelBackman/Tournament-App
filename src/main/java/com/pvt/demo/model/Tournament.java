@@ -33,7 +33,8 @@ public class Tournament {
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Team> teams = new ArrayList<>();
 
-    @OneToOne(mappedBy = "tournament", cascade = CascadeType.ALL)
+    // Tar inte bort eventinstance när turneringen tas bort
+    @OneToOne(mappedBy = "tournament")
     @JsonBackReference
     private EventInstance eventInstance;
 

@@ -3,9 +3,11 @@ package com.pvt.demo.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,6 +61,11 @@ public class TournamentController {
                 return ResponseEntity.badRequest().body("EventInstance not found");
             }
 
+            List<Tournament> existingTournaments = tournamentRepository.findByEventInstanceId(eventInstance.getId());
+            if (!existingTournaments.isEmpty()) {
+                return ResponseEntity.badRequest().body("Det finns redan en tournament: " + existingTournaments.get(0));
+            }
+
             int teamSize = eventInstance.getTeamSize();
 
             java.util.List<com.pvt.demo.model.User> users = eventInstance.getUsers();
@@ -87,15 +94,22 @@ public class TournamentController {
             
             return ResponseEntity.ok(saved);
 
-            } catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace(); // skriver till terminal
             return ResponseEntity.status(500).body("Internal error: " + e.getMessage());
+        }
+    } 
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTournament(@PathVariable Long id) {
+        Optional<Tournament> tournament = tournamentRepository.findById(id);
+        
+        if (tournament.isPresent()) {
+            tournamentRepository.deleteById(id);
+            return ResponseEntity.ok("Tournament deleted");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournament not found");
+        }
     }
-}
 
-
-
-    
-
-    
 }
