@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.aspectj.internal.lang.annotation.ajcDeclareAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,8 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pvt.demo.dto.TournamentDto;
 import com.pvt.demo.model.EventInstance;
+import com.pvt.demo.model.Game;
+import com.pvt.demo.model.GameGroup;
+import com.pvt.demo.model.Team;
 import com.pvt.demo.model.Tournament;
 import com.pvt.demo.repository.EventInstanceRepository;
+import com.pvt.demo.repository.GameGroupRepository;
+import com.pvt.demo.repository.GameRepository;
+import com.pvt.demo.repository.TeamRepository;
 import com.pvt.demo.repository.TournamentRepository;
 
 @RestController
@@ -32,6 +39,15 @@ public class TournamentController {
 
     @Autowired
     private EventInstanceRepository eventInstanceRepository;
+
+    @Autowired
+    private GameRepository gameRepository;
+
+    @Autowired
+    private GameGroupRepository gameGroupRepository;
+
+    @Autowired
+    private TeamRepository teamRepository;
 
 
     // Hämta tournament via ID
@@ -109,7 +125,6 @@ public class TournamentController {
             }
             Tournament tournament = optionalTournament.get();
 
-            // Bryt relationer på båda håll
             EventInstance ei = tournament.getEventInstance();
             if (ei != null) {
                 ei.setTournament(null);
@@ -119,14 +134,36 @@ public class TournamentController {
             tournament.getAllGames().clear();
             tournament.getMap().clear();
             tournament.getTeams().clear();
+            
+            for (Game game : tournament.getAllGames()) {
+                game.setTeamOne(null);
+                game.setTeamTwo(null);
+                game.setWinner(null);
+                game.setLeft(null);
+                game.setRight(null);
+                game.setParent(null);
+                game.setGameGroup(null);
+                game.setTournament(null);
+            }
+            gameRepository.saveAll(tournament.getAllGames()); 
 
            
-            // Radera Tournament
+            for (GameGroup gg : tournament.getMap()) {
+                gg.setTournament(null);
+            }
+            gameGroupRepository.saveAll(tournament.getMap());
+
+            
+            for (Team team : tournament.getTeams()) {
+                team.setTournament(null);
+            }
+            teamRepository.saveAll(tournament.getTeams());
+           
             tournamentRepository.delete(tournament);
 
             return ResponseEntity.ok("Tournament deleted");
         } catch (Exception e) {
-            e.printStackTrace();  // Viktigt för debugging
+            e.printStackTrace(); 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error deleting tournament: " + e.getClass().getSimpleName() + ": " + e.getMessage());
         }
