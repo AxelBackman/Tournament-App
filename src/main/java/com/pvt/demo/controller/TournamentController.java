@@ -130,10 +130,7 @@ public class TournamentController {
                 ei.setTournament(null);
                 tournament.setEventInstance(null);
             }
-            
-            tournament.getAllGames().clear();
-            tournament.getMap().clear();
-            tournament.getTeams().clear();
+           
             
             for (Game game : tournament.getAllGames()) {
                 game.setTeamOne(null);
@@ -159,6 +156,11 @@ public class TournamentController {
             }
             teamRepository.saveAll(tournament.getTeams());
            
+             
+            tournament.getAllGames().clear();
+            tournament.getMap().clear();
+            tournament.getTeams().clear();
+            
             tournamentRepository.delete(tournament);
 
             return ResponseEntity.ok("Tournament deleted");
