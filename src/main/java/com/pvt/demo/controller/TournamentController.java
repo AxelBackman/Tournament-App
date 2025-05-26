@@ -1,6 +1,7 @@
 package com.pvt.demo.controller;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,20 +59,23 @@ public class TournamentController {
                            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-   @GetMapping("/{id}/gamegroups")
+    @GetMapping("/{id}/gamegroups")
     public ResponseEntity<?> getGameGroupsForTournament(@PathVariable Long id) {
         Optional<Tournament> tournamentOpt = tournamentRepository.findById(id);
         if (tournamentOpt.isEmpty()) {
+            System.out.println("Tournament med id " + id + " hittades inte!");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournament not found");
         }
 
         Tournament tournament = tournamentOpt.get();
+        System.out.println("Tournament hittad: " + tournament);
 
-        List<ResponseGameGroupDto> groupDtos = tournament.getMap()
+        List<ResponseGameGroupDto> groupDtos = tournament.getMap() != null ? tournament.getMap()
                 .stream()
                 .map(ResponseGameGroupDto::new)
-                .toList();
+                .toList() : Collections.emptyList();
 
+        System.out.println("GameGroups antal: " + groupDtos.size());
         return ResponseEntity.ok(groupDtos);
     }
 
