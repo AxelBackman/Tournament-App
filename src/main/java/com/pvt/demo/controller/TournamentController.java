@@ -27,7 +27,6 @@ import com.pvt.demo.repository.GameGroupRepository;
 import com.pvt.demo.repository.GameRepository;
 import com.pvt.demo.repository.TeamRepository;
 import com.pvt.demo.repository.TournamentRepository;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -59,7 +58,7 @@ public class TournamentController {
                            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{id}/gamegroups")
+   @GetMapping("/{id}/gamegroups")
     public ResponseEntity<?> getGameGroupsForTournament(@PathVariable Long id) {
         Optional<Tournament> tournamentOpt = tournamentRepository.findById(id);
         if (tournamentOpt.isEmpty()) {
@@ -67,7 +66,13 @@ public class TournamentController {
         }
 
         Tournament tournament = tournamentOpt.get();
-        return ResponseEntity.ok(tournament.getMap());
+
+        List<ResponseGameGroupDto> groupDtos = tournament.getMap()
+                .stream()
+                .map(ResponseGameGroupDto::new)
+                .toList();
+
+        return ResponseEntity.ok(groupDtos);
     }
 
     // setTeams
