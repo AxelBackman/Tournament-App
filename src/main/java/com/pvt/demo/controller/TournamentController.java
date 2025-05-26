@@ -1,7 +1,6 @@
 package com.pvt.demo.controller;
 
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,13 +64,13 @@ public class TournamentController {
             Optional<Tournament> tournamentOpt = tournamentRepository.findById(id);
             if (tournamentOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("❌ Tournament med id " + id + " hittades inte.");
+                        .body("Tournament med id " + id + " hittades inte.");
             }
 
             Tournament tournament = tournamentOpt.get();
 
             if (tournament.getMap() == null) {
-                return ResponseEntity.ok("⚠️ Tournament hittades men innehåller ingen grupp (map är null).");
+                return ResponseEntity.ok("Tournament hittades men innehåller ingen grupp (map är null).");
             }
 
             List<ResponseGameGroupDto> groupDtos = tournament.getMap().stream()
@@ -82,7 +81,7 @@ public class TournamentController {
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("❌ Internt fel vid hämtning av gamegroups: " + e.getClass().getSimpleName() + " – " + e.getMessage());
+                    .body("Internt fel vid hämtning av gamegroups: " + e.getClass().getSimpleName() + " – " + e.getMessage());
         }
     }
 

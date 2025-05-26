@@ -1,6 +1,7 @@
 package com.pvt.demo.controller;
 
 import com.pvt.demo.model.Game;
+import com.pvt.demo.model.Team;
 
 public class ResponseGameDto {
     public Long id;
@@ -10,8 +11,12 @@ public class ResponseGameDto {
 
     public ResponseGameDto(Game game) {
         this.id = game.getId();
-        this.teamOneName = game.getTeamOne().getName();
-        this.teamTwoName = game.getTeamTwo().getName();
+
+        Team teamOne = game.getTeamOne();
+        Team teamTwo = game.getTeamTwo();
+
+        this.teamOneName = teamOne != null ? teamOne.getName() : null;
+        this.teamTwoName = teamTwo != null ? teamTwo.getName() : null;
         this.winnerTeamId = game.getWinner() != null ? game.getWinner().getId() : null;
     }
 }
