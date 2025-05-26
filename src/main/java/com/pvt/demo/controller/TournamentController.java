@@ -62,28 +62,27 @@ public class TournamentController {
     @GetMapping("/{id}/gamegroups")
     public ResponseEntity<?> getGameGroupsForTournament(@PathVariable Long id) {
         try {
-            System.out.println("getGameGroupsForTournament kallad med id = " + id);
-
             Optional<Tournament> tournamentOpt = tournamentRepository.findById(id);
             if (tournamentOpt.isEmpty()) {
-                System.out.println("Tournament med id " + id + " hittades inte!");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournament not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("❌ Tournament med id " + id + " hittades inte.");
             }
 
             Tournament tournament = tournamentOpt.get();
-            System.out.println("Tournament hittad: " + tournament);
 
-            List<ResponseGameGroupDto> groupDtos = tournament.getMap() != null
-                    ? tournament.getMap().stream().map(ResponseGameGroupDto::new).toList()
-                    : Collections.emptyList();
+            if (tournament.getMap() == null) {
+                return ResponseEntity.ok("⚠️ Tournament hittades men innehåller ingen grupp (map är null).");
+            }
 
-            System.out.println("GameGroups antal: " + groupDtos.size());
+            List<ResponseGameGroupDto> groupDtos = tournament.getMap().stream()
+                    .map(ResponseGameGroupDto::new)
+                    .toList();
+
             return ResponseEntity.ok(groupDtos);
 
         } catch (Exception e) {
-            e.printStackTrace(); // skriver till konsolen/loggen
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Ett internt fel uppstod: " + e.getMessage());
+                    .body("❌ Internt fel vid hämtning av gamegroups: " + e.getClass().getSimpleName() + " – " + e.getMessage());
         }
     }
 
