@@ -169,12 +169,15 @@ public class TournamentController {
             }
             Team team = teamOpt.get();
 
-            // Validera att game och team hör till detta tournament
+            // Validera att game och team hör till detta tournament + om teamen möter varandra
             if (!tournament.getAllGames().contains(game)) {
                 return ResponseEntity.badRequest().body("Game does not belong to Tournament");
             }
             if (!tournament.getTeams().contains(team)) {
                 return ResponseEntity.badRequest().body("Team does not belong to Tournament");
+            }
+            if (!team.equals(game.getTeamOne()) && !team.equals(game.getTeamTwo())) {
+                return ResponseEntity.badRequest().body("Team is not participating in the selected game");
             }
 
             tournament.setWinner(game, team);
