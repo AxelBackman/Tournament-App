@@ -1,4 +1,4 @@
-package com.pvt.demo.controller;
+package com.pvt.demo.dto;
 
 import java.util.List;
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pvt.demo.dto.ResponseGameGroupDto;
 import com.pvt.demo.dto.TournamentDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.Game;
@@ -169,7 +170,7 @@ public class TournamentController {
             }
             Team team = teamOpt.get();
 
-            // Validera att game och team hör till detta tournament + om teamen möter varandra
+            // Validera att game och team hör till detta tournament
             if (!tournament.getAllGames().contains(game)) {
                 return ResponseEntity.badRequest().body("Game does not belong to Tournament");
             }
@@ -179,7 +180,7 @@ public class TournamentController {
             if (!team.equals(game.getTeamOne()) && !team.equals(game.getTeamTwo())) {
                 return ResponseEntity.badRequest().body("Team is not participating in the selected game");
             }
-
+            
             tournament.setWinner(game, team);
             tournamentRepository.save(tournament); 
 
