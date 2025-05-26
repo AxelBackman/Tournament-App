@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
-import org.aspectj.internal.lang.annotation.ajcDeclareAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,6 +27,8 @@ import com.pvt.demo.repository.GameGroupRepository;
 import com.pvt.demo.repository.GameRepository;
 import com.pvt.demo.repository.TeamRepository;
 import com.pvt.demo.repository.TournamentRepository;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/tournaments")
@@ -56,6 +57,17 @@ public class TournamentController {
         Optional<Tournament> tournament = tournamentRepository.findById(id);
         return tournament.map(ResponseEntity::ok)
                            .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{id}/gamegroups")
+    public ResponseEntity<?> getGameGroupsForTournament(@PathVariable Long id) {
+        Optional<Tournament> tournamentOpt = tournamentRepository.findById(id);
+        if (tournamentOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournament not found");
+        }
+
+        Tournament tournament = tournamentOpt.get();
+        return ResponseEntity.ok(tournament.getMap());
     }
 
     // setTeams
@@ -114,7 +126,54 @@ public class TournamentController {
             e.printStackTrace(); // skriver till terminal
             return ResponseEntity.status(500).body("Internal error: " + e.getMessage());
         }
-    } 
+    }
+
+    
+
+    @PostMapping("/{tournamentId}/games/{gameId}/winner/{teamId}")
+    public ResponseEntity<?> setWinner(
+            @PathVariable Long tournamentId,
+            @PathVariable Long gameId,
+            @PathVariable Long teamId) {
+        try {
+            Optional<Tournament> tournamentOpt = tournamentRepository.findById(tournamentId);
+            if (tournamentOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournament not found");
+            }
+            Tournament tournament = tournamentOpt.get();
+
+            Optional<Game> gameOpt = gameRepository.findById(gameId);
+            if (gameOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found");
+            }
+            Game game = gameOpt.get();
+
+            Optional<Team> teamOpt = teamRepository.findById(teamId);
+            if (teamOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Team not found");
+            }
+            Team team = teamOpt.get();
+
+            // Validera att game och team hör till detta tournament
+            if (!tournament.getAllGames().contains(game)) {
+                return ResponseEntity.badRequest().body("Game does not belong to Tournament");
+            }
+            if (!tournament.getTeams().contains(team)) {
+                return ResponseEntity.badRequest().body("Team does not belong to Tournament");
+            }
+
+            tournament.setWinner(game, team);
+            tournamentRepository.save(tournament); 
+
+            return ResponseEntity.ok("Winner set");
+
+        } catch (Exception e) {
+            e.printStackTrace(); // för loggning i terminalen
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Internal error: " + e.getMessage());
+        }
+    }
+    
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTournament(@PathVariable Long id) {
@@ -160,7 +219,7 @@ public class TournamentController {
             tournament.getAllGames().clear();
             tournament.getMap().clear();
             tournament.getTeams().clear();
-            
+
             tournamentRepository.delete(tournament);
 
             return ResponseEntity.ok("Tournament deleted");
