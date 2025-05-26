@@ -53,6 +53,11 @@ public class UserController {
             String errorMessage = result.getFieldErrors().get(0).getDefaultMessage();
             return ResponseEntity.badRequest().body(errorMessage);
         }
+
+        //Kontroll av om username redan finns i DB
+        if (userRepository.findByName(userDto.name).isPresent()) {
+            return ResponseEntity.badRequest().body("A user with the name '" + userDto.name + "' already exists.");
+        }
         
         // Hämta organisationen baserat på ID
         Organisation organisation = organisationRepository.findById(userDto.organisationId).orElse(null);
@@ -76,6 +81,11 @@ public class UserController {
         User user = userRepository.findById(id).orElse(null);
 
         if (user != null) {
+            Optional<User> existingUser = userRepository.findByName(userDto.name);
+            if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
+                return ResponseEntity.badRequest().body("A user with the name '" + userDto.name + "' already exists.");
+            }
+
             Organisation organisation = organisationRepository.findById(userDto.organisationId).orElse(null);
             if (organisation != null) {
                 user.setName(userDto.name);

@@ -15,8 +15,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id;
 
-    
+    @Column(unique = true)
     private String name;
+    
     private String email;
 
     private boolean isAdmin = false;
