@@ -84,6 +84,8 @@ public class EventInstanceController {
             dto.teamSize
         );
 
+        instance.setImageUrl(dto.imageUrl);
+
         eventInstanceRepository.save(instance);
         return ResponseEntity.ok("EventInstance created with ID: " + instance.getId());
     }
@@ -140,6 +142,7 @@ public class EventInstanceController {
         instance.setEndTime(LocalDateTime.parse(dto.endTime));
         instance.setLocation(dto.location);
         instance.setTeamSize(dto.teamSize);
+        instance.setImageUrl(dto.imageUrl);
 
         if (dto.recurringEventId != null) {
             RecurringEvent recurring = recurringEventRepository.findById(dto.recurringEventId).orElse(null);

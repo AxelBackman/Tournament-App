@@ -34,6 +34,10 @@ public class EventInstance {
 
     @Size(max = 250, message = "Description cannot exceed 200 characters")
     private String description;
+
+    @Size(max = 150, message = "Image URL cannot exceed 500 characters")
+    private String imageUrl;
+
    
     
     @OneToOne
@@ -166,6 +170,12 @@ public class EventInstance {
         }
 
     public Tournament getTournament() { return tournament; }
+
+    public String getImageUrl() { return imageUrl; }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     @Override
     public boolean equals(Object o) {
