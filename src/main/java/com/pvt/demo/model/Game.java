@@ -92,7 +92,9 @@ public class Game {
     public GameGroup getGameGroup() { return gameGroup; }
 
     public void setLeft(Game left) { this.left = left; }
+    public Game getLeft() { return left; }
     public void setRight(Game right) { this.right = right; }
+    public Game getRight() { return right; }
 
     @Override
     public boolean equals(Object o) {

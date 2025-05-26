@@ -76,6 +76,7 @@ public class Tournament {
             GameGroup group = new GameGroup();
             group.setRound(round);
             map.add(group);
+            group.setTournament(this);
         }
     
         // Lägg till matcher för varje rond
@@ -86,6 +87,8 @@ public class Tournament {
             for (int i = 0; i < numGames; i++) {
                 Game game = new Game();
                 group.add(game);
+                game.setTournament(this);
+                game.setRound(group.getRound());
             }
         }
     
@@ -108,14 +111,20 @@ public class Tournament {
                 Game child = currentRoundGames.get(i);
                 Game parent = nextRoundGames.get(i / 2);
                 child.setParent(parent);
+
+                if (i % 2 == 0){
+                    parent.setLeft(child);
+                
+                } else {
+                    parent.setRight(child);
+                }
             }
+
+            
         }
     }
 
     public void setWinner(Game game, Team team){
-        if (game.getTeamOne() != team && game.getTeamTwo() != team){
-            System.err.println("Laget spelar ej i matchen");
-        }        
 
         game.setWinner(team);
 
@@ -125,11 +134,11 @@ public class Tournament {
             return;
         }
 
-        if (nextGame.getTeamOne() == null){
+        if (nextGame.getLeft() == game){
             nextGame.setTeamOne(team);
-        } else if(nextGame.getTeamTwo() == null){
+        } else if (nextGame.getRight() == game){
             nextGame.setTeamTwo(team);
-        } else { // nästa match har redan två lag
+        } else {
             return;
         }
     }
