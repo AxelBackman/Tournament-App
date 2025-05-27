@@ -109,31 +109,9 @@ public class TournamentController {
             if (!existingTournaments.isEmpty()) {
                 return ResponseEntity.badRequest().body("Det finns redan en tournament: " + existingTournaments.get(0));
             }
-
             int teamSize = eventInstance.getTeamSize();
 
-            java.util.List<com.pvt.demo.model.User> users = eventInstance.getUsers();
-
-            if (users == null || users.size() == 0) {
-                return ResponseEntity.badRequest().body("EventInstance must have users");
-            }
-
-            if (users.size() % teamSize != 0) {
-                return ResponseEntity.badRequest().body("Number of users must be evenly divisible by team size");
-            }
-
-            // Skapa Tournament och generera lag
             Tournament newTournament = new Tournament(eventInstance, teamSize);
-            newTournament.setTeams();  // Detta förutsätter att setTeams() använder users och teamSize
-
-            
-            // Validera att antal lag är jämnt delbart med 4
-            if (newTournament.getTeams() == null || newTournament.getTeams().size() % 4 != 0) {
-                return ResponseEntity.badRequest().body("Number of teams must be divisible by 4 to create a bracket");
-            }
-
-            newTournament.generateBracket();  // Bara om team-antalet är korrekt
-
             Tournament saved = tournamentRepository.save(newTournament);
             
             return ResponseEntity.ok(saved);
@@ -144,6 +122,44 @@ public class TournamentController {
         }
     }
 
+    @PostMapping("/{tournamentId}/brackets")
+    public ResponseEntity<?> registerTeamsAndGenerateBracket(@PathVariable Long tournamentId) {
+        try {
+            Optional<Tournament> tournamentOpt = tournamentRepository.findById(tournamentId);
+            if (tournamentOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournament not found");
+            }
+            Tournament tournament = tournamentOpt.get();
+
+            EventInstance eventInstance = tournament.getEventInstance();
+            List<com.pvt.demo.model.User> users = eventInstance.getUsers();
+
+            if (users == null || users.isEmpty()) {
+                return ResponseEntity.badRequest().body("EventInstance must have users");
+            }
+
+            int teamSize = tournament.getTeamSize();
+            if (users.size() % teamSize != 0) {
+                return ResponseEntity.badRequest().body("Number of users must be evenly divisible by team size");
+            }
+
+            tournament.setTeams(); // skapar lag baserat på users och teamSize
+
+            if (tournament.getTeams() == null || tournament.getTeams().size() % 4 != 0) {
+                return ResponseEntity.badRequest().body("Number of teams must be divisible by 4 to create a bracket");
+            }
+
+            tournament.generateBracket();
+
+            Tournament saved = tournamentRepository.save(tournament);
+
+            return ResponseEntity.ok(saved);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Internal error: " + e.getMessage());
+        }
+    }
     
 
     @PostMapping("/{tournamentId}/games/{gameId}/winner/{teamId}")
