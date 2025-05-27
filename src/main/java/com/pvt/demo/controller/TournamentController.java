@@ -50,7 +50,18 @@ public class TournamentController {
     @Autowired
     private TeamRepository teamRepository;
 
-
+    // Hämta alla tournaments
+    @GetMapping
+    public ResponseEntity<List<Tournament>> getAllTournaments() {
+        try {
+            List<Tournament> tournaments = tournamentRepository.findAll();
+            return ResponseEntity.ok(tournaments);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
     // Hämta tournament via ID
     @GetMapping("/{id}")
     public ResponseEntity<Tournament> getOrganisationById(@PathVariable Long id) {
