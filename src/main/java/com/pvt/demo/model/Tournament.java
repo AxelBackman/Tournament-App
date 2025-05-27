@@ -42,6 +42,9 @@ public class Tournament {
 
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GameGroup> map = new ArrayList<>(); // är en egen gjord map
+
+    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RegisteredForTournament> registeredUsers = new ArrayList<>();
     
     public Tournament() {}
 
@@ -146,8 +149,9 @@ public class Tournament {
         }
     }
 
-    public void setTeams(){ // sätter lagen baserat på getUsers
-        List<User> registeredUsers = eventInstance.getUsers();
+    // sätter lagen baserat på getUsers
+    public void setTeams(){ 
+        List<User> registeredUsers = getUsers();
         Collections.shuffle(registeredUsers); // shufflar så alla blir random
 
         Team currentTeam = new Team("team1");
@@ -202,6 +206,14 @@ public class Tournament {
 
     public Long getId() {
         return id;
+    }
+
+    public List<User> getUsers() {
+        List<User> users = new ArrayList<>();
+        for (RegisteredForTournament reg : registeredUsers) {
+            users.add(reg.getUser());
+        }
+        return users;
     }
     
     @Override
