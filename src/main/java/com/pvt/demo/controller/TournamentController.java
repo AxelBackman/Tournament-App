@@ -71,7 +71,8 @@ public class TournamentController {
                 .map(t -> new TournamentResponseDto(
                     t.getId(),
                     t.getEventInstance() != null ? t.getEventInstance().getId() : null,
-                    t.getTeamSize()
+                    t.getTeamSize(),
+                    t.getMaxParticipants()
                 ))
                 .toList();
             return ResponseEntity.ok(dtos);
@@ -93,7 +94,8 @@ public class TournamentController {
             TournamentResponseDto dto = new TournamentResponseDto(
                 t.getId(),
                 t.getEventInstance() != null ? t.getEventInstance().getId() : null,
-                t.getTeamSize()
+                t.getTeamSize(),
+                t.getMaxParticipants()
             );
             return ResponseEntity.ok(dto);
         } catch (Exception e) {
