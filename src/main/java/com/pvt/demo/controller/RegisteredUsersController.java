@@ -80,6 +80,10 @@ public class RegisteredUsersController {
             List<RegisteredUsersResponseDto> responseList = new ArrayList<>();
 
             for (RegisteredUsers regUser : registeredUsers) {
+                if (regUser.getUser() == null || regUser.getEventInstance() == null) {
+                    continue; // hoppa över trasiga rader
+                }
+
                 var user = regUser.getUser();
                 var event = regUser.getEventInstance();
 
