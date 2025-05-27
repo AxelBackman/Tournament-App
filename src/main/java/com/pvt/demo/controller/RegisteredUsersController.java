@@ -68,35 +68,58 @@ public class RegisteredUsersController {
 
     @GetMapping("/allregistered/{eventId}")
     public ResponseEntity<?> getAllRegisteredUsers(@PathVariable Long eventId) {
-        // Check if event exists
-        var eventOpt = eventInstanceRepository.findById(eventId);
-        if (eventOpt.isEmpty()) {
-            return ResponseEntity.status(404).body("Event with id " + eventId + " not found");
+        try {
+            // Check if event exists
+            var eventOpt = eventInstanceRepository.findById(eventId);
+            if (eventOpt.isEmpty()) {
+                return ResponseEntity.status(404).body("Event with id " + eventId + " not found");
+            }
+
+            // Get registered users
+            var registeredUsers = registeredUsersRepository.findByEventInstanceId(eventId);
+            List<RegisteredUsersResponseDto> responseList = new ArrayList<>();
+
+            for (RegisteredUsers regUser : registeredUsers) {
+                var user = regUser.getUser();
+                var event = regUser.getEventInstance();
+
+                responseList.add(new RegisteredUsersResponseDto(
+                    user.getId(),
+                    user.getName(),
+                    event.getId(),
+                    event.getTitle(),
+                    regUser.getStatus().name()
+                ));
+            }
+
+            return ResponseEntity.ok(responseList);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal error occurred: " + e.getMessage());
         }
-
-        // Get registered users
-        var registeredUsers = registeredUsersRepository.findByEventInstanceId(eventId);
-        List<RegisteredUsersResponseDto> responseList = new ArrayList<>();
-
-        for (RegisteredUsers regUser : registeredUsers) {
-            var user = regUser.getUser();
-            var event = regUser.getEventInstance();
-
-            responseList.add(new RegisteredUsersResponseDto(
-                user.getId(),
-                user.getName(),
-                event.getId(),
-                event.getTitle(),
-                regUser.getStatus().name()
-            ));
-        }
-
-        return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("/allregistereduser/{userId}")
-    public Iterable<RegisteredUsers> getAllRegisteredUser(@PathVariable Long userId) {
-        return registeredUsersRepository.findByUserId(userId);
+    public ResponseEntity<?> getAllRegisteredUser(@PathVariable Long userId) {
+        try {
+            List<RegisteredUsers> regs = registeredUsersRepository.findByUserId(userId);
+            List<RegisteredUsersResponseDto> dtos = new ArrayList<>();
+
+            for (RegisteredUsers reg : regs) {
+                dtos.add(new RegisteredUsersResponseDto(
+                    reg.getUser().getId(),
+                    reg.getUser().getName(),
+                    reg.getEventInstance().getId(),
+                    reg.getEventInstance().getTitle(),
+                    reg.getStatus().name()
+                ));
+            }
+
+            return ResponseEntity.ok(dtos);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal error occurred: " + e.getMessage());
+        }
     }
 
     @PatchMapping("/updatecoming/{userId}/{eventId}/{status}")
