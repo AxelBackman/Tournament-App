@@ -1,11 +1,15 @@
 package com.pvt.demo.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pvt.demo.dto.RegisteredUsersResponseDto;
 import com.pvt.demo.model.RegisteredUsers;
 import com.pvt.demo.model.RegistrationStatus;
 import com.pvt.demo.repository.EventInstanceRepository;
@@ -63,8 +67,31 @@ public class RegisteredUsersController {
     }
 
     @GetMapping("/allregistered/{eventId}")
-    public Iterable<RegisteredUsers> getAllRegisteredUsers(@PathVariable Long eventId) {
-        return registeredUsersRepository.findByEventInstanceId(eventId);
+    public ResponseEntity<?> getAllRegisteredUsers(@PathVariable Long eventId) {
+        // Check if event exists
+        var eventOpt = eventInstanceRepository.findById(eventId);
+        if (eventOpt.isEmpty()) {
+            return ResponseEntity.status(404).body("Event with id " + eventId + " not found");
+        }
+
+        // Get registered users
+        var registeredUsers = registeredUsersRepository.findByEventInstanceId(eventId);
+        List<RegisteredUsersResponseDto> responseList = new ArrayList<>();
+
+        for (RegisteredUsers regUser : registeredUsers) {
+            var user = regUser.getUser();
+            var event = regUser.getEventInstance();
+
+            responseList.add(new RegisteredUsersResponseDto(
+                user.getId(),
+                user.getName(),
+                event.getId(),
+                event.getTitle(),
+                regUser.getStatus().name()
+            ));
+        }
+
+        return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("/allregistereduser/{userId}")
