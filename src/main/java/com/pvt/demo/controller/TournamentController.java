@@ -23,6 +23,7 @@ import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.Game;
 import com.pvt.demo.model.GameGroup;
 import com.pvt.demo.model.RegisteredForTournament;
+import com.pvt.demo.model.RegisteredUsers;
 import com.pvt.demo.model.RegistrationStatus;
 import com.pvt.demo.model.Team;
 import com.pvt.demo.model.Tournament;
@@ -30,6 +31,7 @@ import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.GameGroupRepository;
 import com.pvt.demo.repository.GameRepository;
 import com.pvt.demo.repository.RegisteredForTournamentRepository;
+import com.pvt.demo.repository.RegisteredUsersRepository;
 import com.pvt.demo.repository.TeamRepository;
 import com.pvt.demo.repository.TournamentRepository;
 import com.pvt.demo.repository.UserRepository;
@@ -60,6 +62,9 @@ public class TournamentController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RegisteredUsersRepository registeredUsersRepository;
 
     // Hämta tournament via ID
      // Hämta alla tournaments
@@ -149,14 +154,27 @@ public class TournamentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
+        Tournament tournament = tournamentOpt.get();
+
+        //Check om user redan är registrerad
         if (registeredForTournamentRepository.findByUserIdAndTournamentId(userId, tournamentId) != null) {
             return ResponseEntity.badRequest().body("User already registered for this tournament");
         }
 
+        //Check om tournament är full
         long currentCount = registeredForTournamentRepository.countByTournamentId(tournamentId);
-        Tournament tournament = tournamentOpt.get();
         if (currentCount >= tournament.getMaxParticipants()) {
             return ResponseEntity.badRequest().body("Tournament is full");
+        }
+
+        //Om user inte är reg på EI, lägg till i EI som COMING
+        EventInstance event = tournament.getEventInstance();
+        boolean isAlreadyInEvent = event.getUsers().stream()
+            .anyMatch(u -> u.getId().equals(userOpt.get().getId()));
+
+        if (!isAlreadyInEvent) {
+            RegisteredUsers ru = new RegisteredUsers(event, userOpt.get(), RegistrationStatus.COMING);
+            registeredUsersRepository.save(ru);
         }
 
         RegisteredForTournament registration = new RegisteredForTournament(userOpt.get(), tournament, status);
