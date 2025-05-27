@@ -182,6 +182,8 @@ public class TournamentController {
 
         return ResponseEntity.ok("User registered to tournament with status: " + status);
     }
+
+
     
 
     //Skapande av ett Tournament för test av annat
@@ -217,6 +219,22 @@ public class TournamentController {
         }
     }
 
+    @DeleteMapping("/register/{tournamentId}/{userId}")
+    public ResponseEntity<?> unregisterUserFromTournament(
+        @PathVariable Long tournamentId,
+        @PathVariable Long userId) {
+
+        RegisteredForTournament registration = registeredForTournamentRepository
+            .findByUserIdAndTournamentId(userId, tournamentId);
+
+        if (registration == null) {
+            return ResponseEntity.badRequest().body("User is not registered for this tournament");
+        }
+
+        registeredForTournamentRepository.delete(registration);
+        return ResponseEntity.ok("User unregistered from tournament");
+        }
+        
     @PostMapping("/{tournamentId}/brackets")
     public ResponseEntity<?> registerTeamsAndGenerateBracket(@PathVariable Long tournamentId) {
         try {
