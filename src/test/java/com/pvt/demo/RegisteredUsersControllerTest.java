@@ -172,48 +172,48 @@ public class RegisteredUsersControllerTest {
                 .andExpect(jsonPath("$[1].status").value("INTERESTED"));
     }
 
-    // @Test
-    // void testGetAllRegisteredUser() throws Exception {
-    //     // Mock User
-    //     User user = Mockito.mock(User.class);
-    //     when(user.getId()).thenReturn(1L);
-    //     when(user.getName()).thenReturn("Test User");
+    @Test
+    void testGetAllRegisteredUser() throws Exception {
+        // Mock User
+        User user = Mockito.mock(User.class);
+        when(user.getId()).thenReturn(1L);
+        when(user.getName()).thenReturn("Test User");
 
-    //     // Mock EventInstance
-    //     EventInstance event1 = Mockito.mock(EventInstance.class);
-    //     when(event1.getId()).thenReturn(10L);
-    //     when(event1.getTitle()).thenReturn("Test Event 1");
+        // Mock EventInstance
+        EventInstance event1 = Mockito.mock(EventInstance.class);
+        when(event1.getId()).thenReturn(10L);
+        when(event1.getTitle()).thenReturn("Test Event 1");
 
-    //     EventInstance event2 = Mockito.mock(EventInstance.class);
-    //     when(event2.getId()).thenReturn(20L);
-    //     when(event2.getTitle()).thenReturn("Test Event 2");
+        EventInstance event2 = Mockito.mock(EventInstance.class);
+        when(event2.getId()).thenReturn(20L);
+        when(event2.getTitle()).thenReturn("Test Event 2");
 
-    //     // Mock RegisteredUsers
-    //     RegisteredUsers reg1 = Mockito.mock(RegisteredUsers.class);
-    //     when(reg1.getUser()).thenReturn(user);
-    //     when(reg1.getEventInstance()).thenReturn(event1);
-    //     when(reg1.getStatus()).thenReturn(RegistrationStatus.COMING);
+        // Mock RegisteredUsers
+        RegisteredUsers reg1 = Mockito.mock(RegisteredUsers.class);
+        when(reg1.getUser()).thenReturn(user);
+        when(reg1.getEventInstance()).thenReturn(event1);
+        when(reg1.getStatus()).thenReturn(RegistrationStatus.COMING);
 
-    //     RegisteredUsers reg2 = Mockito.mock(RegisteredUsers.class);
-    //     when(reg2.getUser()).thenReturn(user);
-    //     when(reg2.getEventInstance()).thenReturn(event2);
-    //     when(reg2.getStatus()).thenReturn(RegistrationStatus.INTERESTED);
+        RegisteredUsers reg2 = Mockito.mock(RegisteredUsers.class);
+        when(reg2.getUser()).thenReturn(user);
+        when(reg2.getEventInstance()).thenReturn(event2);
+        when(reg2.getStatus()).thenReturn(RegistrationStatus.INTERESTED);
 
-    //     // Mock repo
-    //     when(registeredUsersRepository.findByUserId(1L))
-    //             .thenReturn(List.of(reg1, reg2));
+        // Mock repo
+        when(registeredUsersRepository.findByUserId(1L))
+                .thenReturn(List.of(reg1, reg2));
 
-    //     mockMvc.perform(get("/registeredusers/allregistereduser/1"))
-    //             .andExpect(status().isOk())
-    //             .andExpect(jsonPath("$[0].userId").value(1))
-    //             .andExpect(jsonPath("$[0].userName").value("Test User"))
-    //             .andExpect(jsonPath("$[0].eventId").value(10))
-    //             .andExpect(jsonPath("$[0].eventTitle").value("Test Event 1"))
-    //             .andExpect(jsonPath("$[0].status").value("COMING"))
-    //             .andExpect(jsonPath("$[1].eventId").value(20))
-    //             .andExpect(jsonPath("$[1].eventTitle").value("Test Event 2"))
-    //             .andExpect(jsonPath("$[1].status").value("INTERESTED"));
-    // }
+        mockMvc.perform(get("/registeredusers/allregistereduser/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].userId").value(1))
+                .andExpect(jsonPath("$[0].userName").value("Test User"))
+                .andExpect(jsonPath("$[0].eventInstanceId").value(10))
+                .andExpect(jsonPath("$[0].eventName").value("Test Event 1"))
+                .andExpect(jsonPath("$[0].status").value("COMING"))
+                .andExpect(jsonPath("$[1].eventInstanceId").value(20))
+                .andExpect(jsonPath("$[1].eventName").value("Test Event 2"))
+                .andExpect(jsonPath("$[1].status").value("INTERESTED"));
+    }
 
     @Test
     void testUpdateComingStatus_success() throws Exception {
