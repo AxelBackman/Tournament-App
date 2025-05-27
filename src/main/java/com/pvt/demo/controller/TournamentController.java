@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pvt.demo.dto.ResponseGameGroupDto;
 import com.pvt.demo.dto.TournamentDto;
+import com.pvt.demo.dto.TournamentResponseDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.Game;
 import com.pvt.demo.model.GameGroup;
@@ -61,11 +62,45 @@ public class TournamentController {
     private UserRepository userRepository;
 
     // Hämta tournament via ID
+     // Hämta alla tournaments
+    @GetMapping
+    public ResponseEntity<List<TournamentResponseDto>> getAllTournaments() {
+        try {
+            List<Tournament> tournaments = tournamentRepository.findAll();
+            List<TournamentResponseDto> dtos = tournaments.stream()
+                .map(t -> new TournamentResponseDto(
+                    t.getId(),
+                    t.getEventInstance() != null ? t.getEventInstance().getId() : null,
+                    t.getTeamSize()
+                ))
+                .toList();
+            return ResponseEntity.ok(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    // Hämta tournament via ID
     @GetMapping("/{id}")
-    public ResponseEntity<Tournament> getOrganisationById(@PathVariable Long id) {
-        Optional<Tournament> tournament = tournamentRepository.findById(id);
-        return tournament.map(ResponseEntity::ok)
-                           .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> getTournamentById(@PathVariable Long id) {
+        try {
+            Optional<Tournament> tournamentOpt = tournamentRepository.findById(id);
+            if (tournamentOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournament not found");
+            }
+            Tournament t = tournamentOpt.get();
+            TournamentResponseDto dto = new TournamentResponseDto(
+                t.getId(),
+                t.getEventInstance() != null ? t.getEventInstance().getId() : null,
+                t.getTeamSize()
+            );
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("Internal server error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}/gamegroups")

@@ -200,6 +200,10 @@ public class Tournament {
 
     public void setMaxParticipants(int maxParticipants) { this.maxParticipants = maxParticipants;}
 
+    public Long getId() {
+        return id;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -213,6 +217,8 @@ public class Tournament {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    
 
 
 
