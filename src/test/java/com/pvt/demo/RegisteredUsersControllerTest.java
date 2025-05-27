@@ -3,6 +3,7 @@ package com.pvt.demo;
 import com.pvt.demo.controller.RegisteredUsersController;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RegisteredUsers;
+import com.pvt.demo.model.RegistrationStatus;
 import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RegisteredUsersRepository;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 
 @WebMvcTest(RegisteredUsersController.class)
 public class RegisteredUsersControllerTest {
@@ -129,11 +131,45 @@ public class RegisteredUsersControllerTest {
 
     @Test
     void testGetAllRegisteredUsers() throws Exception {
+        // Mock User 1
+        User mockUser1 = Mockito.mock(User.class);
+        when(mockUser1.getId()).thenReturn(1L);
+        when(mockUser1.getName()).thenReturn("Alice");
+
+        // Mock User 2
+        User mockUser2 = Mockito.mock(User.class);
+        when(mockUser2.getId()).thenReturn(2L);
+        when(mockUser2.getName()).thenReturn("Bob");
+
+        // Mock EventInstance
+        EventInstance mockEvent = Mockito.mock(EventInstance.class);
+        when(mockEvent.getId()).thenReturn(100L);
+        when(mockEvent.getTitle()).thenReturn("Test Event");
+
+        // Mock RegisteredUsers 1
+        RegisteredUsers reg1 = Mockito.mock(RegisteredUsers.class);
+        when(reg1.getUser()).thenReturn(mockUser1);
+        when(reg1.getEventInstance()).thenReturn(mockEvent);
+        when(reg1.getStatus()).thenReturn(RegistrationStatus.COMING);
+
+        // Mock RegisteredUsers 2
+        RegisteredUsers reg2 = Mockito.mock(RegisteredUsers.class);
+        when(reg2.getUser()).thenReturn(mockUser2);
+        when(reg2.getEventInstance()).thenReturn(mockEvent);
+        when(reg2.getStatus()).thenReturn(RegistrationStatus.INTERESTED);
+
+        // Stub repository call
         when(registeredUsersRepository.findByEventInstanceId(100L))
-                .thenReturn(List.of(new RegisteredUsers(), new RegisteredUsers()));
+                .thenReturn(List.of(reg1, reg2));
 
         mockMvc.perform(get("/registeredusers/allregistered/100"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].userId").value(1))
+                .andExpect(jsonPath("$[0].userName").value("Alice"))
+                .andExpect(jsonPath("$[0].status").value("COMING"))
+                .andExpect(jsonPath("$[1].userId").value(2))
+                .andExpect(jsonPath("$[1].userName").value("Bob"))
+                .andExpect(jsonPath("$[1].status").value("INTERESTED"));
     }
 
     @Test
