@@ -21,13 +21,17 @@ import com.pvt.demo.dto.TournamentDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.Game;
 import com.pvt.demo.model.GameGroup;
+import com.pvt.demo.model.RegisteredForTournament;
+import com.pvt.demo.model.RegistrationStatus;
 import com.pvt.demo.model.Team;
 import com.pvt.demo.model.Tournament;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.GameGroupRepository;
 import com.pvt.demo.repository.GameRepository;
+import com.pvt.demo.repository.RegisteredForTournamentRepository;
 import com.pvt.demo.repository.TeamRepository;
 import com.pvt.demo.repository.TournamentRepository;
+import com.pvt.demo.repository.UserRepository;
 
 
 @RestController
@@ -50,6 +54,11 @@ public class TournamentController {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired 
+    private RegisteredForTournamentRepository registeredForTournamentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // Hämta tournament via ID
     @GetMapping("/{id}")
@@ -86,8 +95,39 @@ public class TournamentController {
         }
     }
 
-    // setTeams
-    //generateBracket
+    //Registrera sig på tournaments
+    @PostMapping("/register/{tournamentId}/{userId}/{status}")
+    public ResponseEntity<?> registerUserToTournament(
+        @PathVariable Long tournamentId,
+        @PathVariable Long userId,
+        @PathVariable RegistrationStatus status) {
+
+        Optional<Tournament> tournamentOpt = tournamentRepository.findById(tournamentId);
+        if (tournamentOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournament not found");
+        }
+
+        Optional<com.pvt.demo.model.User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        if (registeredForTournamentRepository.findByUserIdAndTournamentId(userId, tournamentId) != null) {
+            return ResponseEntity.badRequest().body("User already registered for this tournament");
+        }
+
+        long currentCount = registeredForTournamentRepository.countByTournamentId(tournamentId);
+        Tournament tournament = tournamentOpt.get();
+        if (currentCount >= tournament.getMaxParticipants()) {
+            return ResponseEntity.badRequest().body("Tournament is full");
+        }
+
+        RegisteredForTournament registration = new RegisteredForTournament(userOpt.get(), tournament, status);
+        registeredForTournamentRepository.save(registration);
+
+        return ResponseEntity.ok("User registered to tournament with status: " + status);
+    }
+    
 
     //Skapande av ett Tournament för test av annat
     @PostMapping
@@ -111,7 +151,7 @@ public class TournamentController {
             }
             int teamSize = eventInstance.getTeamSize();
 
-            Tournament newTournament = new Tournament(eventInstance, teamSize);
+            Tournament newTournament = new Tournament(eventInstance, teamSize, dto.maxParticipants);
             Tournament saved = tournamentRepository.save(newTournament);
             
             return ResponseEntity.ok(saved);

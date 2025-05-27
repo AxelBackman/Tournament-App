@@ -82,14 +82,15 @@ public class TournamentControllerTest {
         EventInstance event = new EventInstance();
         ReflectionTestUtils.setField(event, "id", 100L);
 
-        Tournament tournament = new Tournament(event, 4);
+        Tournament tournament = new Tournament(event, 4, 16);
         ReflectionTestUtils.setField(tournament, "id", 1L);
 
         Mockito.when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
 
         mockMvc.perform(get("/tournaments/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.teamSize").value(4));
+                .andExpect(jsonPath("$.teamSize").value(4))
+                .andExpect(jsonPath("$.maxParticipants").value(16));
     }
 
     @Test
@@ -119,7 +120,7 @@ public class TournamentControllerTest {
 
     eventInstance.setRegisteredUsers(registeredUsersList);
 
-    Tournament savedTournament = new Tournament(eventInstance, 3);
+    Tournament savedTournament = new Tournament(eventInstance, 3, 16);
     ReflectionTestUtils.setField(savedTournament, "id", 10L);
 
     Mockito.when(eventInstanceRepository.findById(200L)).thenReturn(Optional.of(eventInstance));
@@ -127,7 +128,8 @@ public class TournamentControllerTest {
 
     String json = """
         {
-            "eventInstanceId": 200
+            "eventInstanceId": 200,
+            "maxParticipants": 16
         }
         """;
 

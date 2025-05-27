@@ -27,6 +27,8 @@ public class Tournament {
 
     private boolean created = false;
 
+    private int maxParticipants;
+
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Game> allGames = new ArrayList<>();
 
@@ -43,9 +45,10 @@ public class Tournament {
     
     public Tournament() {}
 
-    public Tournament(EventInstance eventInstance, int teamSize){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
+    public Tournament(EventInstance eventInstance, int teamSize, int maxParticipants){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
         this.eventInstance = eventInstance;
         this.teamSize = teamSize;
+        this.maxParticipants = maxParticipants;
         created = true;
 
         if (eventInstance != null) {
@@ -192,6 +195,10 @@ public class Tournament {
     public List<GameGroup> getMap() { return map; }
 
     public void setMap(List<GameGroup> map) { this.map = map; }
+
+    public int getMaxParticipants() { return maxParticipants; }
+
+    public void setMaxParticipants(int maxParticipants) { this.maxParticipants = maxParticipants;}
 
     @Override
     public boolean equals(Object o) {
