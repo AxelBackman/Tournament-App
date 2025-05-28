@@ -10,8 +10,9 @@ public class TournamentResponseDto {
     public String name;
     public String gameName;
     public LocalDateTime startTime;
+    public String location;
 
-    public TournamentResponseDto(Long id, Long eventInstanceId, int teamSize, int maxParticipants, String name, String gameName, LocalDateTime startTime) {
+    public TournamentResponseDto(Long id, Long eventInstanceId, int teamSize, int maxParticipants, String name, String gameName, LocalDateTime startTime, String location) {
         this.id = id;
         this.eventInstanceId = eventInstanceId;
         this.teamSize = teamSize;
@@ -19,5 +20,6 @@ public class TournamentResponseDto {
         this.name = name;
         this.gameName = gameName;
         this.startTime = startTime;
+        this.location = location;
     }
 }

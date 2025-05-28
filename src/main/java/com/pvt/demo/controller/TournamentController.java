@@ -81,7 +81,8 @@ public class TournamentController {
                     t.getMaxParticipants(),
                     t.getName(),
                     t.getGameName(),
-                    t.getStartTime()
+                    t.getStartTime(),
+                    t.getEventInstance() != null ? t.getEventInstance().getLocation() : null
                 ))
                 .toList();
             return ResponseEntity.ok(dtos);
@@ -107,7 +108,8 @@ public class TournamentController {
                 t.getMaxParticipants(),
                 t.getName(),
                 t.getGameName(),
-                t.getStartTime()
+                t.getStartTime(),
+                t.getEventInstance() != null ? t.getEventInstance().getLocation() : null
             );
             return ResponseEntity.ok(dto);
         } catch (Exception e) {
