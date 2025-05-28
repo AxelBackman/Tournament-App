@@ -4,6 +4,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pvt.demo.dto.EventInstanceDto;
+import com.pvt.demo.dto.EventInstanceResponseDto;
+import com.pvt.demo.dto.TournamentDto;
+import com.pvt.demo.dto.UserDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
 import com.pvt.demo.model.User;
@@ -17,9 +20,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -90,20 +95,59 @@ public class EventInstanceController {
         return ResponseEntity.ok("EventInstance created with ID: " + instance.getId());
     }
 
+    private EventInstanceResponseDto toResponseDto(EventInstance instance) {
+        EventInstanceResponseDto dto = new EventInstanceResponseDto();
+        dto.id = instance.getId();
+        dto.startTime = instance.getStartTime();
+        dto.endTime = instance.getEndTime();
+        dto.title = instance.getTitle();
+        dto.description = instance.getDescription();
+        dto.location = instance.getLocation();
+        dto.teamSize = instance.getTeamSize();
+        dto.imageUrl = instance.getImageUrl();
+        dto.parentEventId = instance.getParentEventId();
+
+        // TournamentId
+        if (instance.getTournament() != null) {
+            Long id = instance.getTournament().getId();
+            dto.tournamentId = id;
+        }
+
+        return dto;
+    }
+
     // Hämta alla
     @GetMapping
-    public List<EventInstance> getAllInstances() {
-        return eventInstanceRepository.findAll();
+    public ResponseEntity<?> getAllInstances() {
+        try {
+            List<EventInstanceResponseDto> result = eventInstanceRepository.findAll().stream()
+                .map(this::toResponseDto)
+                .collect(Collectors.toList());
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Ett fel inträffade vid hämtning av eventinstanser.");
+        }
     }
+
 
     // Hämta en specifik
     @GetMapping("/{id}")
     public ResponseEntity<?> getInstanceById(@PathVariable Long id) {
-        EventInstance instance = eventInstanceRepository.findById(id).orElse(null);
-        if (instance == null) {
-            return ResponseEntity.badRequest().body("EventInstance with ID " + id + " not found");
+        try {
+            Optional<EventInstance> optionalInstance = eventInstanceRepository.findById(id);
+            if (optionalInstance.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("EventInstance with ID " + id + " not found.");
+            }
+
+            EventInstanceResponseDto dto = toResponseDto(optionalInstance.get());
+            return ResponseEntity.ok(dto);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Ett fel inträffade vid hämtning av eventinstansen.");
         }
-        return ResponseEntity.ok(instance);
     }
 
      // Radera en instans
