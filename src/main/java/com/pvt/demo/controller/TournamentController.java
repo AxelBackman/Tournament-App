@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pvt.demo.dto.RegisteredForTournamentResponseDto;
 import com.pvt.demo.dto.ResponseGameGroupDto;
 import com.pvt.demo.dto.TournamentDto;
 import com.pvt.demo.dto.TournamentResponseDto;
+import com.pvt.demo.dto.UserResponseDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.Game;
 import com.pvt.demo.model.GameGroup;
@@ -110,6 +112,8 @@ public class TournamentController {
         }
     }
 
+    
+
     @GetMapping("/{id}/gamegroups")
     public ResponseEntity<?> getGameGroupsForTournament(@PathVariable Long id) {
         try {
@@ -183,7 +187,33 @@ public class TournamentController {
         return ResponseEntity.ok("User registered to tournament with status: " + status);
     }
 
+   @GetMapping("/{tournamentId}/registered-users")
+    public ResponseEntity<?> getRegisteredUsersForTournament(@PathVariable Long tournamentId) {
+        try {
+            Optional<Tournament> tournamentOpt = tournamentRepository.findById(tournamentId);
+            if (tournamentOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tournament not found");
+            }
 
+            List<RegisteredForTournament> registrations = registeredForTournamentRepository.findByTournamentId(tournamentId);
+
+            List<RegisteredForTournamentResponseDto> registeredUsers = registrations.stream()
+                .map(reg -> new RegisteredForTournamentResponseDto(
+                    reg.getId(),
+                    reg.getTournament().getId(),
+                    reg.getUser().getId(),
+                    reg.getUser().getName()
+                ))
+                .toList();
+
+            return ResponseEntity.ok(registeredUsers);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Internal error: " + e.getMessage());
+        }
+    }
     
 
     //Skapande av ett Tournament för test av annat
