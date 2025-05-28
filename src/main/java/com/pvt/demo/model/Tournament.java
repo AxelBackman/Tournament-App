@@ -22,12 +22,11 @@ public class Tournament {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+    private Long id;
+
     private String name;
     private String gameName;
     private LocalDateTime startTime;
-    
-    private Long id;
 
     private int teamSize;
 
