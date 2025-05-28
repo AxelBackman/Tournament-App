@@ -54,6 +54,60 @@ public class UserControllerTest {
     }
 
     @Test
+    public void testGetUserById_found() throws Exception {
+        Organisation org = new Organisation("Org", "Addr", "Desc");
+        ReflectionTestUtils.setField(org, "id", 1L);
+        User user = new User("Dave", "dave@example.com", org, true);
+        ReflectionTestUtils.setField(user, "id", 42L);
+
+        Mockito.when(userRepository.findById(42L)).thenReturn(Optional.of(user));
+
+        mockMvc.perform(get("/users/42"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Dave"))
+                .andExpect(jsonPath("$.email").value("dave@example.com"))
+                .andExpect(jsonPath("$.organisationId").value(1))
+                .andExpect(jsonPath("$.organisationName").value("Org"))
+                .andExpect(jsonPath("$.admin").value(true));
+    }
+
+    @Test
+    public void testGetUserById_notFound() throws Exception {
+        Mockito.when(userRepository.findById(999L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/users/999"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User with ID 999 not found"));
+    }
+
+    @Test
+    public void testGetUserByEmail_found() throws Exception {
+        Organisation org = new Organisation("Org", "Addr", "Desc");
+        ReflectionTestUtils.setField(org, "id", 1L);
+        User user = new User("Eve", "eve@example.com", org, false);
+        ReflectionTestUtils.setField(user, "id", 100L);
+
+        Mockito.when(userRepository.findByEmail("eve@example.com")).thenReturn(Optional.of(user));
+
+        mockMvc.perform(get("/users/email/eve@example.com"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Eve"))
+                .andExpect(jsonPath("$.email").value("eve@example.com"))
+                .andExpect(jsonPath("$.organisationId").value(1))
+                .andExpect(jsonPath("$.organisationName").value("Org"))
+                .andExpect(jsonPath("$.admin").value(false));
+    }
+
+    @Test
+    public void testGetUserByEmail_notFound() throws Exception {
+        Mockito.when(userRepository.findByEmail("unknown@example.com")).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/users/email/unknown@example.com"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User with email unknown@example.com not found"));
+    }
+
+    @Test
     public void testGetAllUsers() throws Exception {
         Organisation org = new Organisation("Org", "Addr", "Desc");
         User user = new User("Alice", "alice@example.com", org, false);

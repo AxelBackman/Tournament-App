@@ -20,6 +20,7 @@ import com.pvt.demo.repository.UserRepository;
 import jakarta.validation.Valid;
 
 import com.pvt.demo.dto.UserDto;
+import com.pvt.demo.dto.UserResponseDto;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,9 +43,64 @@ public class UserController {
     @Autowired
     private TeamRepository teamRepository;
 
+    
+
+    private UserResponseDto toResponseDto(User user) {
+        try {
+            return new UserResponseDto(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getOrganisation().getId(),
+                user.getOrganisation().getName(),
+                user.isAdmin()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Error converting User to UserResponseDto: " + e.getMessage(), e);
+        }
+    }
+
     @GetMapping
-    public Iterable<User> getAllUsers() {
-        return userRepository.findAll();
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            List<UserResponseDto> usersDto = userRepository.findAll()
+                .stream()
+                .map(this::toResponseDto)
+                .toList();
+            return ResponseEntity.ok(usersDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching users: " + e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        try {
+            Optional<User> userOpt = userRepository.findById(id);
+            if (userOpt.isPresent()) {
+                return ResponseEntity.ok(toResponseDto(userOpt.get()));
+            } else {
+                return ResponseEntity.badRequest().body("User with ID " + id + " not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching user by ID: " + e.getMessage());
+        }
+    }
+
+     // Hämta user baserat på email
+   @GetMapping("/email/{email}")
+    public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
+        try {
+            Optional<User> userOpt = userRepository.findByEmail(email);
+            if (userOpt.isPresent()) {
+                return ResponseEntity.ok(toResponseDto(userOpt.get()));
+            } else {
+                return ResponseEntity.badRequest().body("User with email " + email + " not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching user by email: " + e.getMessage());
+        }
     }
 
     @PostMapping("/adduser")
@@ -99,8 +155,8 @@ public class UserController {
             }
         } else {
             return ResponseEntity.badRequest().body("User with ID " + id + " not found");
+        }
     }
-}
 
     @DeleteMapping("/deleteuser/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {

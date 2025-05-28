@@ -1,6 +1,7 @@
 package com.pvt.demo.controller;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,9 +46,14 @@ public class AuthController {
                 String email = payload.getEmail();
                 String name = (String) payload.get("name");
 
-                User user = userRepository.findByEmail(email);
+                Optional<User> optionalUser = userRepository.findByEmail(email);
 
-                if (user == null) {
+                User user;
+                if (optionalUser.isPresent()) {
+                    user = optionalUser.get();
+                }
+                else {
+                    // Om användaren inte finns, skapa en ny med standardorganisation (SK)
                     Organisation organisation = organisationRepository.findById(1L).orElse(null);
 
                     if (organisation == null) {
@@ -85,9 +91,13 @@ public class AuthController {
                 String email = payload.getEmail();
                 String name = (String) payload.get("name");
 
-                User user = userRepository.findByEmail(email);
+                Optional<User> optionalUser = userRepository.findByEmail(email);
 
-                if (user == null) {
+                User user;
+                if (optionalUser.isPresent()) {
+                    user = optionalUser.get();
+                }
+                else {
                     Organisation organisation = organisationRepository.findById(1L).orElse(null);
 
                     if (organisation == null) {
