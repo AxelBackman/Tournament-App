@@ -20,7 +20,6 @@ import com.pvt.demo.dto.RegisteredForTournamentResponseDto;
 import com.pvt.demo.dto.ResponseGameGroupDto;
 import com.pvt.demo.dto.TournamentDto;
 import com.pvt.demo.dto.TournamentResponseDto;
-import com.pvt.demo.dto.UserResponseDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.Game;
 import com.pvt.demo.model.GameGroup;
@@ -79,7 +78,10 @@ public class TournamentController {
                     t.getId(),
                     t.getEventInstance() != null ? t.getEventInstance().getId() : null,
                     t.getTeamSize(),
-                    t.getMaxParticipants()
+                    t.getMaxParticipants(),
+                    t.getName(),
+                    t.getGameName(),
+                    t.getStartTime()
                 ))
                 .toList();
             return ResponseEntity.ok(dtos);
@@ -102,7 +104,10 @@ public class TournamentController {
                 t.getId(),
                 t.getEventInstance() != null ? t.getEventInstance().getId() : null,
                 t.getTeamSize(),
-                t.getMaxParticipants()
+                t.getMaxParticipants(),
+                t.getName(),
+                t.getGameName(),
+                t.getStartTime()
             );
             return ResponseEntity.ok(dto);
         } catch (Exception e) {
@@ -238,7 +243,7 @@ public class TournamentController {
             }
             int teamSize = eventInstance.getTeamSize();
 
-            Tournament newTournament = new Tournament(eventInstance, teamSize, dto.maxParticipants);
+            Tournament newTournament = new Tournament(dto.name, dto.gameName, dto.startTime,eventInstance, teamSize, dto.maxParticipants);
             Tournament saved = tournamentRepository.save(newTournament);
             
             return ResponseEntity.ok(saved);

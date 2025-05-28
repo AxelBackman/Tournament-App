@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -21,6 +22,11 @@ public class Tournament {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    
+    private String name;
+    private String gameName;
+    private LocalDateTime startTime;
+    
     private Long id;
 
     private int teamSize;
@@ -48,7 +54,10 @@ public class Tournament {
     
     public Tournament() {}
 
-    public Tournament(EventInstance eventInstance, int teamSize, int maxParticipants){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
+    public Tournament(String name, String gameName, LocalDateTime startTime, EventInstance eventInstance, int teamSize, int maxParticipants){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
+        this.name = name;
+        this.gameName = gameName;
+        this.startTime = startTime;
         this.eventInstance = eventInstance;
         this.teamSize = teamSize;
         this.maxParticipants = maxParticipants;
@@ -71,6 +80,30 @@ public class Tournament {
         }
 
 
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 
     public void generateBracket() { //hårdkodad single elimination - måste vara lag av 4 potens

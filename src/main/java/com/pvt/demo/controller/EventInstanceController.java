@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pvt.demo.dto.EventInstanceDto;
 import com.pvt.demo.dto.EventInstanceResponseDto;
-import com.pvt.demo.dto.TournamentDto;
-import com.pvt.demo.dto.UserDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
 import com.pvt.demo.model.User;
