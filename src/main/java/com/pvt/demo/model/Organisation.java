@@ -3,6 +3,7 @@ package com.pvt.demo.model;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
@@ -32,10 +33,12 @@ public class Organisation {
 
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("organisation")
+    @JsonIgnore
     private List<User> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("organisation")
+    @JsonIgnore
     private List<RecurringEvent> recurringEvents = new ArrayList<>(); // koppling mot organisationens alla events - skapa attribut för Organisation join cascade i recurringEvent
 
 
