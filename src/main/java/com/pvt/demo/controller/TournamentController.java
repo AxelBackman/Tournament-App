@@ -194,7 +194,7 @@ public class TournamentController {
         return ResponseEntity.ok("User registered to tournament with status: " + status);
     }
 
-   @GetMapping("/{tournamentId}/registered-users")
+    @GetMapping("/{tournamentId}/registered-users")
     public ResponseEntity<?> getRegisteredUsersForTournament(@PathVariable Long tournamentId) {
         try {
             Optional<Tournament> tournamentOpt = tournamentRepository.findById(tournamentId);
@@ -209,7 +209,8 @@ public class TournamentController {
                     reg.getId(),
                     reg.getTournament().getId(),
                     reg.getUser().getId(),
-                    reg.getUser().getName()
+                    reg.getUser().getName(),
+                    reg.getStatus().name()
                 ))
                 .toList();
 
