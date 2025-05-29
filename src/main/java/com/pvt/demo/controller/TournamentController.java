@@ -249,7 +249,18 @@ public class TournamentController {
             Tournament newTournament = new Tournament(dto.name, dto.gameName, dto.startTime,eventInstance, teamSize, dto.maxParticipants);
             Tournament saved = tournamentRepository.save(newTournament);
             
-            return ResponseEntity.ok(saved);
+            TournamentResponseDto responseDto = new TournamentResponseDto(
+                saved.getId(),
+                saved.getEventInstance() != null ? saved.getEventInstance().getId() : null,
+                saved.getTeamSize(),
+                saved.getMaxParticipants(),
+                saved.getName(),
+                saved.getGameName(),
+                saved.getStartTime(),
+                saved.getEventInstance() != null ? saved.getEventInstance().getLocation() : null
+            );
+
+            return ResponseEntity.ok(responseDto);
 
         } catch (Exception e) {
             e.printStackTrace(); // skriver till terminal
