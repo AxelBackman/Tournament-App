@@ -240,6 +240,10 @@ public class TournamentController {
                 return ResponseEntity.badRequest().body("EventInstance not found");
             }
 
+            if (dto.startTime.isBefore(eventInstance.getStartTime()) || dto.startTime.isAfter(eventInstance.getEndTime())) {
+                return ResponseEntity.badRequest().body("Tournament startTime must be within the start and end time of the event instance.");
+            }
+
             List<Tournament> existingTournaments = tournamentRepository.findByEventInstanceId(eventInstance.getId());
             if (!existingTournaments.isEmpty()) {
                 return ResponseEntity.badRequest().body("Det finns redan en tournament: " + existingTournaments.get(0));
