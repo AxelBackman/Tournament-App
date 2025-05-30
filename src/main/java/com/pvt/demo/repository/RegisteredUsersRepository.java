@@ -8,4 +8,6 @@ public interface RegisteredUsersRepository extends JpaRepository<RegisteredUsers
     List<RegisteredUsers> findByEventInstanceId(Long eventInstanceId);
     List<RegisteredUsers> findByUserId(Long userId);
     RegisteredUsers findByUserIdAndEventInstanceId(Long userId, Long eventInstanceId);
+    List<RegisteredUsers> findAllByUserIdAndEventInstanceId(Long userId, Long eventInstanceId);
+
 }

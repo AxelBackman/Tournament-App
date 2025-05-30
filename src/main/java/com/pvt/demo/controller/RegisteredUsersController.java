@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/registeredusers")
@@ -58,12 +59,19 @@ public class RegisteredUsersController {
     @DeleteMapping("/delete/{userId}/{eventId}")
     public ResponseEntity<String> deleteUserFromEvent(@PathVariable Long userId,
     @PathVariable Long eventId) {
-        var registeredUser = registeredUsersRepository.findByUserIdAndEventInstanceId(userId, eventId);
-        if (registeredUser == null) {
+        try {
+        List<RegisteredUsers> registrations = registeredUsersRepository.findAllByUserIdAndEventInstanceId(userId, eventId);
+
+        if (registrations.isEmpty()) {
             return ResponseEntity.badRequest().body("User is not registered for this event");
         }
-        registeredUsersRepository.delete(registeredUser);
+
+        registeredUsersRepository.deleteAll(registrations);
         return ResponseEntity.ok("User " + userId + " unregistered from event " + eventId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error while unregistering user: " + e.getMessage());
+        }
     }
 
     @GetMapping("/allregistered/{eventId}")
