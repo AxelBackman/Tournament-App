@@ -42,7 +42,6 @@ public class Tournament {
 
     // Tar inte bort eventinstance när turneringen tas bort
     @OneToOne(mappedBy = "tournament")
-    @JsonBackReference
     private EventInstance eventInstance;
 
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -42,7 +43,7 @@ public class EventInstance {
     
     @OneToOne
     @JoinColumn(name = "tournament_id")
-    @JsonManagedReference
+    @JsonIgnore
     private Tournament tournament;
 
     private String location;
