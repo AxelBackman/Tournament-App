@@ -51,21 +51,6 @@ public class EventInstanceController {
     // Skapa ny eventInstance med eller utan koppling till RecurringEvent
     @PostMapping("/create")
     public ResponseEntity<String> createEventInstance(@RequestBody EventInstanceDto dto) {
-        if (dto.userId == null) {
-            return ResponseEntity.badRequest().body("UserId not found");
-        }
-
-        User user = userRepository.findById(dto.userId).orElse(null);
-        
-        if (user == null) {
-            return ResponseEntity.badRequest().body("User cannot be found");
-        }
-
-        if (!user.isAdmin()) {
-            return ResponseEntity.badRequest().body("Only admins can create events");
-        }
-
-
         LocalDateTime start = LocalDateTime.parse(dto.startTime);
         LocalDateTime end = LocalDateTime.parse(dto.endTime);
 
@@ -161,19 +146,6 @@ public class EventInstanceController {
     // Updatera en instans
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateEventInstance(@PathVariable Long id, @RequestBody EventInstanceDto dto) {
-        if (dto.userId == null) {
-            return ResponseEntity.badRequest().body("UserId not found");
-        }
-
-        User user = userRepository.findById(dto.userId).orElse(null);
-        
-        if (user == null) {
-            return ResponseEntity.badRequest().body("User cannot be found");
-        }
-
-        if (!user.isAdmin()) {
-            return ResponseEntity.badRequest().body("Only admins can create events");
-        }
         
         EventInstance instance = eventInstanceRepository.findById(id).orElse(null);
         if (instance == null) return ResponseEntity.badRequest().body("EventInstance with ID " + id + " not found");

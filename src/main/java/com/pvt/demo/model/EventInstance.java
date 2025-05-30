@@ -63,7 +63,6 @@ public class EventInstance {
 
     //Konstruktor med RecurringEvent
     public EventInstance(RecurringEvent parentEvent, String title, String description, LocalDateTime startTime, LocalDateTime endTime, String location, int teamSize) {
-        
         this.parentEvent = parentEvent;
         this.title = title;
         this.description = description;
@@ -104,6 +103,15 @@ public class EventInstance {
             }
         }
         return users;
+    }
+
+    public void setUsers(List<User> users) {
+        List<RegisteredUsers> registeredUsersList = new ArrayList<>();
+        for (User user : users) {
+            RegisteredUsers registeredUser = new RegisteredUsers(this, user, RegistrationStatus.COMING);
+            registeredUsersList.add(registeredUser);
+        }
+        this.registeredUsers = registeredUsersList;
     }
 
     public void setRegisteredUsers(List<RegisteredUsers> registeredUsers) {

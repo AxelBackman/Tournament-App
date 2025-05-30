@@ -8,7 +8,6 @@ public class EventInstanceDto {
     public String location;
     public Long recurringEventId;
     public int teamSize;
-    public Long userId;
     public String imageUrl;
 
     public EventInstanceDto() {

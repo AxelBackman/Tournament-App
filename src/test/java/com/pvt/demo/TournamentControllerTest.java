@@ -2,9 +2,11 @@ package com.pvt.demo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pvt.demo.controller.TournamentController;
+import com.pvt.demo.dto.TournamentDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.Game;
 import com.pvt.demo.model.GameGroup;
+import com.pvt.demo.model.RegisteredForTournament;
 import com.pvt.demo.model.RegisteredUsers;
 import com.pvt.demo.model.RegistrationStatus;
 import com.pvt.demo.model.Team;
@@ -13,21 +15,31 @@ import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.GameGroupRepository;
 import com.pvt.demo.repository.GameRepository;
+import com.pvt.demo.repository.RegisteredForTournamentRepository;
+import com.pvt.demo.repository.RegisteredUsersRepository;
 import com.pvt.demo.repository.TeamRepository;
 import com.pvt.demo.repository.TournamentRepository;
+import com.pvt.demo.repository.UserRepository;
+
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,193 +49,263 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TournamentController.class)
-public class TournamentControllerTest {
+@Import(TournamentControllerTest.Config.class)
+class TournamentControllerTest {
 
-    // @Autowired
-    // private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-    // @Autowired
-    // private TournamentRepository tournamentRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    // @Autowired
-    // private EventInstanceRepository eventInstanceRepository;
+    @TestConfiguration
+    static class Config {
+        @Bean
+        public TournamentRepository tournamentRepository() {
+            return Mockito.mock(TournamentRepository.class);
+        }
+
+        @Bean
+        public EventInstanceRepository eventInstanceRepository() {
+            return Mockito.mock(EventInstanceRepository.class);
+        }
+
+        @Bean
+        public GameRepository gameRepository() {
+            return Mockito.mock(GameRepository.class);
+        }
+
+        @Bean
+        public GameGroupRepository gameGroupRepository() {
+            return Mockito.mock(GameGroupRepository.class);
+        }
+
+        @Bean
+        public TeamRepository teamRepository() {
+            return Mockito.mock(TeamRepository.class);
+        }
+
+        @Bean
+        public RegisteredForTournamentRepository registeredForTournamentRepository() {
+            return Mockito.mock(RegisteredForTournamentRepository.class);
+        }
+
+        @Bean
+        public UserRepository userRepository() {
+            return Mockito.mock(UserRepository.class);
+        }
+
+        @Bean
+        public RegisteredUsersRepository registeredUsersRepository() {
+            return Mockito.mock(RegisteredUsersRepository.class);
+        }
+    }
+
+    @Autowired
+    private TournamentRepository tournamentRepository;
+
+    @Autowired
+    private EventInstanceRepository eventInstanceRepository;
+
+    @Autowired
+    private RegisteredForTournamentRepository registeredForTournamentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    Tournament mockTournament;
+    EventInstance mockEventInstance;
+    User mockUser;
+
+    @BeforeEach
+    void setup() {
+        mockUser = createUser(2L, "Mock User", "mockuser@example.com", true);
+
+        mockEventInstance = createEventInstance(
+            10L,
+            "Mock Event",
+            "Description for mock event",
+            LocalDateTime.now().minusHours(2),
+            LocalDateTime.now().plusHours(2),
+            "Mock Location",
+            2
+        );
+
+        mockTournament = createTournament(
+            1L,
+            "Mock Tournament",
+            "Mock Game",
+            LocalDateTime.now(),
+            mockEventInstance,
+            2,
+            16,
+            List.of(mockUser)
+        );
+    }
+
+    private User createUser(Long id, String name, String email, boolean isAdmin) {
+        User user = new User();
+        ReflectionTestUtils.setField(user, "id", id);
+        user.setName(name);
+        user.setEmail(email);
+        user.setAdmin(isAdmin); // om du har detta fält
+        return user;
+    }
+
+    private EventInstance createEventInstance(Long id, String title, String description,
+                                          LocalDateTime start, LocalDateTime end, 
+                                          String location, int teamSize) {
+        EventInstance ei = new EventInstance();
+        ReflectionTestUtils.setField(ei, "id", id);
+        ei.setTitle(title);
+        ei.setDescription(description);
+        ei.setStartTime(start);
+        ei.setEndTime(end);
+        ei.setLocation(location);
+        ei.setTeamSize(teamSize);
+        return ei;
+    }
+
+    private Tournament createTournament(Long id, String name, String gameName, LocalDateTime startTime,
+                                    EventInstance ei, int teamSize, int maxParticipants, List<User> users) {
+        Tournament t = new Tournament(name, gameName, startTime, ei, teamSize, maxParticipants);
+        ReflectionTestUtils.setField(t, "id", id);
+        t.setAllGames(new ArrayList<>());
+        t.setMap(new ArrayList<>());
+        t.setTeams(new ArrayList<>());
+
+        // Skapa RegisteredForTournament för varje user och lägg till i t.registeredUsers
+        List<RegisteredForTournament> registrations = new ArrayList<>();
+        for (User user : users) {
+            RegisteredForTournament reg = new RegisteredForTournament(user, t, RegistrationStatus.COMING);
+            registrations.add(reg);
+        }
+        ReflectionTestUtils.setField(t, "registeredUsers", registrations);
+
+        return t;
+    }
 
 
-    // @TestConfiguration
-    // static class Config {
-    //     @Bean
-    //     public TournamentRepository tournamentRepository() {
-    //         return Mockito.mock(TournamentRepository.class);
-    //     }
+    @Test
+    void getAllTournaments_shouldReturnOk() throws Exception {
+        when(tournamentRepository.findAll()).thenReturn(List.of(mockTournament));
 
-    //     @Bean
-    //     public EventInstanceRepository eventInstanceRepository() {
-    //         return Mockito.mock(EventInstanceRepository.class);
-    //     }
+        mockMvc.perform(get("/tournaments"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(mockTournament.getId()));
+    }
 
-    //     @Bean
-    //     public GameRepository gameRepository() {
-    //         return Mockito.mock(GameRepository.class);
-    //     }
+    @Test
+    void getTournamentById_shouldReturnTournament() throws Exception {
+        Tournament tournament = new Tournament("Test", "Game", LocalDateTime.now(), null, 2, 16);
+        ReflectionTestUtils.setField(tournament, "id", 1L);
 
-    //     @Bean
-    //     public GameGroupRepository gameGroupRepository() {
-    //         return Mockito.mock(GameGroupRepository.class);
-    //     }
+        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
 
-    //     @Bean
-    //     public TeamRepository teamRepository() {
-    //         return Mockito.mock(TeamRepository.class);
-    //     }
-    // }
+        mockMvc.perform(get("/tournaments/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
+    }
+
+    @Test
+    void createTournament_shouldCreateAndReturnTournament() throws Exception {
+        EventInstance ei = new EventInstance();
+        ReflectionTestUtils.setField(ei, "id", 10L);
+        ei.setStartTime(LocalDateTime.now().minusHours(1));
+        ei.setEndTime(LocalDateTime.now().plusHours(1));
+        ei.setTeamSize(2);
+
+        TournamentDto dto = new TournamentDto();
+        dto.name = "Test";
+        dto.gameName = "Game";
+        dto.startTime = LocalDateTime.now();
+        dto.eventInstanceId = 10L;
+        dto.maxParticipants = 16;
+
+        Tournament tournament = new Tournament(dto.name, dto.gameName, dto.startTime, ei, 2, dto.maxParticipants);
+        ReflectionTestUtils.setField(tournament, "id", 1L);
+
+        when(eventInstanceRepository.findById(10L)).thenReturn(Optional.of(ei));
+        when(tournamentRepository.findByEventInstanceId(10L)).thenReturn(List.of());
+        when(tournamentRepository.save(Mockito.any())).thenReturn(tournament);
+
+        mockMvc.perform(post("/tournaments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
+    }
+
+    @Test
+    void registerUserToTournament_shouldRegisterSuccessfully() throws Exception {
+        long tournamentId = 1L;
+        long userId = 2L;
+
+        Tournament tournament = new Tournament("Test", "Game", LocalDateTime.now(), new EventInstance(), 2, 16);
+        ReflectionTestUtils.setField(tournament, "id", tournamentId);
+
+        User user = new User();
+        ReflectionTestUtils.setField(user, "id", userId);
+
+        when(tournamentRepository.findById(tournamentId)).thenReturn(Optional.of(tournament));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(registeredForTournamentRepository.findByUserIdAndTournamentId(userId, tournamentId)).thenReturn(null);
+        when(registeredForTournamentRepository.countByTournamentId(tournamentId)).thenReturn(0L);
+
+        mockMvc.perform(post("/tournaments/register/1/2/COMING"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(Matchers.containsString("User registered")));
+    }
 
     // @Test
-    // public void testGetTournamentById_found() throws Exception {
-    //     EventInstance event = new EventInstance();
-    //     ReflectionTestUtils.setField(event, "id", 100L);
+    // void registerTeamsAndGenerateBracket_shouldShuffleAndGenerate() throws Exception {
+    //     long tournamentId = 1L;
 
-    //     Tournament tournament = new Tournament(event, 4, 16);
-    //     ReflectionTestUtils.setField(tournament, "id", 1L);
+    //     // Skapa användare
+    //     List<User> users = new ArrayList<>();
+    //     for (long i = 1; i <= 8; i++) {
+    //         users.add(createUser(i, "User " + i, "user" + i + "@mail.com", false));
+    //     }
 
-    //     Mockito.when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
-
-    //     mockMvc.perform(get("/tournaments/1"))
-    //             .andExpect(status().isOk())
-    //             .andExpect(jsonPath("$.teamSize").value(4))
-    //             .andExpect(jsonPath("$.maxParticipants").value(16));
-    // }
-
-    // @Test
-    // public void testGetTournamentById_notFound() throws Exception {
-    //     Mockito.when(tournamentRepository.findById(99L)).thenReturn(Optional.empty());
-
-    //     mockMvc.perform(get("/tournaments/99"))
-    //             .andExpect(status().isNotFound());
-    // }
-
-    // @Test
-    // public void testCreateTournament_success() throws Exception {
+    //     // Skapa EventInstance med användarna
     //     EventInstance eventInstance = new EventInstance();
-    //     ReflectionTestUtils.setField(eventInstance, "id", 200L);
-    //     eventInstance.setTeamSize(3);
+    //     ReflectionTestUtils.setField(eventInstance, "id", 10L);
+    //     eventInstance.setTeamSize(2);
+    //     eventInstance.setUsers(new ArrayList<>(users));  // <-- Lägg till detta!
 
-    // List<RegisteredUsers> registeredUsersList = new ArrayList<>();
+    //     // Skapa Tournament och koppla registreringar
+    //     Tournament tournament = new Tournament("Bracket Tournament", "Game", LocalDateTime.now(), eventInstance, 2, 8);
+    //     ReflectionTestUtils.setField(tournament, "id", tournamentId);
 
-    // for (long i = 1; i <= 12; i++) {
-    //     User user = new User();
-    //     ReflectionTestUtils.setField(user, "id", i);
-    //     user.setName("User " + i);
-
-    //     RegisteredUsers ru = new RegisteredUsers(eventInstance, user, RegistrationStatus.COMING);
-    //     registeredUsersList.add(ru);
-    // }
-
-    // eventInstance.setRegisteredUsers(registeredUsersList);
-
-    // Tournament savedTournament = new Tournament(eventInstance, 3, 16);
-    // ReflectionTestUtils.setField(savedTournament, "id", 10L);
-
-    // Mockito.when(eventInstanceRepository.findById(200L)).thenReturn(Optional.of(eventInstance));
-    // Mockito.when(tournamentRepository.save(any(Tournament.class))).thenReturn(savedTournament);
-
-    // String json = """
-    //     {
-    //         "eventInstanceId": 200,
-    //         "maxParticipants": 16
+    //     List<RegisteredForTournament> registrations = new ArrayList<>();
+    //     for (User user : users) {
+    //         RegisteredForTournament rft = new RegisteredForTournament(user, tournament, RegistrationStatus.COMING);
+    //         registrations.add(rft);
     //     }
-    //     """;
+    //     ReflectionTestUtils.setField(tournament, "registeredUsers", registrations);
 
-    // mockMvc.perform(post("/tournaments")
-    //         .contentType(MediaType.APPLICATION_JSON)
-    //         .content(json))
-    //         .andExpect(status().isOk())
-    //         .andExpect(jsonPath("$.teamSize").value(3));
-    // }
+    //     when(tournamentRepository.findById(tournamentId)).thenReturn(Optional.of(tournament));
+    //     when(tournamentRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-
-    // @Test
-    // public void testCreateTournament_missingEventInstance() throws Exception {
-    //     Tournament invalidTournament = new Tournament();
-    //     invalidTournament.setTeamSize(2); // no eventInstance
-
-    //     ObjectMapper mapper = new ObjectMapper();
-    //     String json = mapper.writeValueAsString(invalidTournament);
-
-    //     mockMvc.perform(post("/tournaments")
-    //             .contentType(MediaType.APPLICATION_JSON)
-    //             .content(json))
-    //             .andExpect(status().isBadRequest());
-    // }
-
-    // @Test
-    // public void testCreateTournament_missingEventInstance_shouldReturnBadRequest() throws Exception {
-    //     String invalidJson = """
-    //         {
-    //             "teamSize": 5,
-    //             "allGames": [],
-    //             "teams": []
-    //         }
-    //         """;
-
-    //     mockMvc.perform(post("/tournaments")
-    //             .contentType(MediaType.APPLICATION_JSON)
-    //             .content(invalidJson))
-    //             .andExpect(status().isBadRequest());
-    // }
-
-    // @Test
-    // public void testDeleteTournament_success() throws Exception {
-    //     // Mock turnering och dess relationer
-    //     Tournament tournament = new Tournament();
-    //     ReflectionTestUtils.setField(tournament, "id", 123L);
-
-    //     // EventInstance
-    //     EventInstance ei = new EventInstance();
-    //     tournament.setEventInstance(ei);
-    //     ei.setTournament(tournament);
-
-    //     // Games
-    //     Game game1 = new Game();
-    //     game1.setTournament(tournament);
-    //     Game game2 = new Game();
-    //     game2.setTournament(tournament);
-    //     List<Game> games = new ArrayList<>(List.of(game1, game2));
-    //     tournament.setAllGames(games);
-
-    //     // GameGroups
-    //     GameGroup gg1 = new GameGroup();
-    //     gg1.setTournament(tournament);
-    //     List<GameGroup> groups = new ArrayList<>(List.of(gg1));
-    //     tournament.setMap(groups);
-
-    //     // Teams
-    //     Team team1 = new Team("Team1");
-    //     team1.setTournament(tournament);
-    //     List<Team> teams = new ArrayList<>(List.of(team1));
-    //     tournament.setTeams(teams);
-
-    //     // Ställ in mock-beteende
-    //     when(tournamentRepository.findById(123L)).thenReturn(Optional.of(tournament));
-
-    //     mockMvc.perform(delete("/tournaments/123"))
+    //     mockMvc.perform(post("/tournaments/" + tournamentId + "/brackets"))
     //             .andExpect(status().isOk())
-    //             .andExpect(content().string("Tournament deleted"));
-
-    //     // Verifiera att relationer rensas och sparas/borttas
-    //     assertTrue(tournament.getAllGames().isEmpty());
-    //     assertTrue(tournament.getMap().isEmpty());
-    //     assertTrue(tournament.getTeams().isEmpty());
-    //     verify(tournamentRepository).delete(tournament);
-    //     verify(tournamentRepository).findById(123L);
+    //             .andExpect(jsonPath("$.teams").isArray())
+    //             .andExpect(jsonPath("$.allGames").isArray());
     // }
 
-    // @Test
-    // public void testDeleteTournament_notFound() throws Exception {
-    //     when(tournamentRepository.findById(999L)).thenReturn(Optional.empty());
 
-    //     mockMvc.perform(delete("/tournaments/999"))
-    //             .andExpect(status().isNotFound())
-    //             .andExpect(content().string("Tournament not found"));
-    // }
+    @Test
+    void deleteTournament_shouldReturnOkIfExists() throws Exception {
+        Tournament tournament = new Tournament("Test", "Game", LocalDateTime.now(), new EventInstance(), 2, 16);
+        ReflectionTestUtils.setField(tournament, "id", 1L);
+        tournament.setAllGames(new ArrayList<>());
+        tournament.setMap(new ArrayList<>());
+        tournament.setTeams(new ArrayList<>());
 
+        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
+
+        mockMvc.perform(delete("/tournaments/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(Matchers.containsString("Tournament deleted")));
+    }
 }

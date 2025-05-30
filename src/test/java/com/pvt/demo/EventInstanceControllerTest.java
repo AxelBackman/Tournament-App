@@ -89,7 +89,6 @@ public class EventInstanceControllerTest {
         dto.endTime = "2025-06-01T12:00";
         dto.location = "Gbg";
         dto.teamSize = 3;
-        dto.userId = 1L;
 
         User mockUser = Mockito.mock(User.class);
         ReflectionTestUtils.setField(mockUser, "id", 1L);
@@ -127,7 +126,6 @@ public class EventInstanceControllerTest {
         dto.location = "Field";
         dto.recurringEventId = 100L;
         dto.teamSize = 3;
-        dto.userId = 1L;
         
         User adminUser = Mockito.mock(User.class); // ✔ korrekt mock
         ReflectionTestUtils.setField(adminUser, "id", 1L);
@@ -163,7 +161,6 @@ public class EventInstanceControllerTest {
         dto.endTime = "2025-06-01T16:00";
         dto.location = "NewPlace";
         dto.teamSize = 4;
-        dto.userId = 1L;
 
         User adminUser = Mockito.mock(User.class);
         ReflectionTestUtils.setField(adminUser, "id", 1L);
