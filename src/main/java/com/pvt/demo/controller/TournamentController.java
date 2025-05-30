@@ -28,6 +28,7 @@ import com.pvt.demo.model.RegisteredUsers;
 import com.pvt.demo.model.RegistrationStatus;
 import com.pvt.demo.model.Team;
 import com.pvt.demo.model.Tournament;
+import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.GameGroupRepository;
 import com.pvt.demo.repository.GameRepository;
@@ -166,6 +167,7 @@ public class TournamentController {
         }
 
         Tournament tournament = tournamentOpt.get();
+        User user = userOpt.get();
 
         //Check om user redan är registrerad
         if (registeredForTournamentRepository.findByUserIdAndTournamentId(userId, tournamentId) != null) {
@@ -178,17 +180,30 @@ public class TournamentController {
             return ResponseEntity.badRequest().body("Tournament is full");
         }
 
-        //Om user inte är reg på EI, lägg till i EI som COMING
         EventInstance event = tournament.getEventInstance();
-        boolean isAlreadyInEvent = event.getUsers().stream()
-            .anyMatch(u -> u.getId().equals(userOpt.get().getId()));
-
-        if (!isAlreadyInEvent) {
-            RegisteredUsers ru = new RegisteredUsers(event, userOpt.get(), RegistrationStatus.COMING);
-            registeredUsersRepository.save(ru);
+        RegisteredUsers existingRegistration = registeredUsersRepository.findByUserIdAndEventInstanceId(userId, event.getId());
+        
+        //Om user inte är reg på EI, lägg till i EI som COMING
+        if (status == RegistrationStatus.COMING) {
+            if (existingRegistration != null) {
+                if (existingRegistration.getStatus() != RegistrationStatus.COMING) {
+                    existingRegistration.setStatus(RegistrationStatus.COMING);
+                    registeredUsersRepository.save(existingRegistration);
+                }
+            } else {
+                RegisteredUsers newReg = new RegisteredUsers(event, user, RegistrationStatus.COMING);
+                registeredUsersRepository.save(newReg);
+            }
+        } else if (status == RegistrationStatus.INTERESTED) {
+            // Om användaren inte är registrerad alls till eventet, sätt som INTERESTED
+            if (existingRegistration == null) {
+                RegisteredUsers newReg = new RegisteredUsers(event, user, RegistrationStatus.INTERESTED);
+                registeredUsersRepository.save(newReg);
+            }
         }
+        
 
-        RegisteredForTournament registration = new RegisteredForTournament(userOpt.get(), tournament, status);
+        RegisteredForTournament registration = new RegisteredForTournament(user, tournament, status);
         registeredForTournamentRepository.save(registration);
 
         return ResponseEntity.ok("User registered to tournament with status: " + status);
@@ -327,7 +342,7 @@ public class TournamentController {
                 .toList();
 
             return ResponseEntity.ok(groupDtos);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Internal error: " + e.getMessage());
