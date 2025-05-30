@@ -316,11 +316,18 @@ public class TournamentController {
             }
 
             tournament.generateBracket();
+            
 
+            
             Tournament saved = tournamentRepository.save(tournament);
 
-            return ResponseEntity.ok(saved);
 
+            List<ResponseGameGroupDto> groupDtos = saved.getMap().stream()
+                .map(ResponseGameGroupDto::new)
+                .toList();
+
+            return ResponseEntity.ok(groupDtos);
+            
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Internal error: " + e.getMessage());
