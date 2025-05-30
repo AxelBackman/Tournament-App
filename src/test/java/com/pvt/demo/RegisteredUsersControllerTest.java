@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,17 +113,20 @@ public class RegisteredUsersControllerTest {
 
     @Test
     void testDeleteUserFromEvent_success() throws Exception {
-        when(registeredUsersRepository.findByUserIdAndEventInstanceId(1L, 100L))
-                .thenReturn(new RegisteredUsers());
+        List<RegisteredUsers> mockRegistrations = List.of(new RegisteredUsers());
 
-        mockMvc.perform(delete("/registeredusers/delete/1/100"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("User 1 unregistered from event 100"));
+        when(registeredUsersRepository.findAllByUserIdAndEventInstanceId(1L, 100L))
+            .thenReturn(mockRegistrations);
+
+       mockMvc.perform(delete("/registeredusers/delete/1/100"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("User 1 unregistered from event 100"));
     }
 
     @Test
     void testDeleteUserFromEvent_notFound() throws Exception {
-        when(registeredUsersRepository.findByUserIdAndEventInstanceId(1L, 100L)).thenReturn(null);
+        when(registeredUsersRepository.findAllByUserIdAndEventInstanceId(1L, 100L))
+            .thenReturn(Collections.emptyList());
 
         mockMvc.perform(delete("/registeredusers/delete/1/100"))
                 .andExpect(status().isBadRequest())
