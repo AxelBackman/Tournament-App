@@ -80,6 +80,21 @@ public class TeamController {
         }
        
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Team>> getTeamsByUser(@PathVariable Long userId) {
+        try {
+            User user = userRepository.findById(userId).orElse(null);
+            if (user == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            List<Team> teams = teamRepository.findAllByMembers_Id(userId);
+            return ResponseEntity.ok(teams);
+        } catch (Exception e) {
+            System.err.println("Error fetching teams for user: " + e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
     
     // Hämta alla teams
     @GetMapping
