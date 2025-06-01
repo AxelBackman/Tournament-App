@@ -136,11 +136,16 @@ public class EventInstanceController {
      // Radera en instans
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteInstance(@PathVariable Long id) {
-        if (!eventInstanceRepository.existsById(id)) {
-            return ResponseEntity.badRequest().body("EventInstance not found");
+        try {
+            if (!eventInstanceRepository.existsById(id)) {
+                return ResponseEntity.badRequest().body("EventInstance not found");
+            }
+            eventInstanceRepository.deleteById(id);
+            return ResponseEntity.ok("EventInstance deleted");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while deleting the event instance.");
         }
-        eventInstanceRepository.deleteById(id);
-        return ResponseEntity.ok("EventInstance deleted");
     }
 
     // Updatera en instans
