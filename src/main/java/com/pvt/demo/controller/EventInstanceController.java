@@ -7,10 +7,10 @@ import com.pvt.demo.dto.EventInstanceDto;
 import com.pvt.demo.dto.EventInstanceResponseDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
-import com.pvt.demo.model.User;
+import com.pvt.demo.model.Tournament;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
-import com.pvt.demo.repository.UserRepository;
+import com.pvt.demo.repository.TournamentRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class EventInstanceController {
     private RecurringEventRepository recurringEventRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private TournamentRepository tournamentRepository;
 
     // Skapa ny eventInstance med eller utan koppling till RecurringEvent
     @PostMapping("/create")
@@ -137,14 +137,28 @@ public class EventInstanceController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteInstance(@PathVariable Long id) {
         try {
-            if (!eventInstanceRepository.existsById(id)) {
+            Optional<EventInstance> optionalEventInstance = eventInstanceRepository.findById(id);
+            if (optionalEventInstance.isEmpty()) {
                 return ResponseEntity.badRequest().body("EventInstance not found");
             }
-            eventInstanceRepository.deleteById(id);
+
+            EventInstance ei = optionalEventInstance.get();
+
+            // Koppla bort från Tournament om sådan finns
+            Tournament tournament = ei.getTournament();
+            if (tournament != null) {
+                tournament.setEventInstance(null);
+                ei.setTournament(null);
+                tournamentRepository.save(tournament); // Spara ändringen!
+            }
+
+            eventInstanceRepository.delete(ei);
             return ResponseEntity.ok("EventInstance deleted");
+
         } catch (Exception e) {
+            e.printStackTrace(); // Bra under utveckling, ta ev. bort i produktion
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred while deleting the event instance: " + e.getMessage());
+                .body("An error occurred while deleting the event instance: " + e.getClass().getSimpleName() + ": " + e.getMessage());
         }
     }
 

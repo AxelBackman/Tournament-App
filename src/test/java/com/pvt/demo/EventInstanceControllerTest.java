@@ -17,9 +17,11 @@ import com.pvt.demo.controller.EventInstanceController;
 import com.pvt.demo.dto.EventInstanceDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
+import com.pvt.demo.model.Tournament;
 import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
+import com.pvt.demo.repository.TournamentRepository;
 import com.pvt.demo.repository.UserRepository;
 import com.pvt.demo.services.EventInstanceService;
 
@@ -67,6 +69,11 @@ public class EventInstanceControllerTest {
         @Bean
         public UserRepository userRepository() {
             return Mockito.mock(UserRepository.class);
+        }
+
+        @Bean
+        public TournamentRepository tournamentRepository() {
+            return Mockito.mock(TournamentRepository.class);
         }
     }
 
