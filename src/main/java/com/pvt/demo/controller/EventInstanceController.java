@@ -144,7 +144,7 @@ public class EventInstanceController {
             return ResponseEntity.ok("EventInstance deleted");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred while deleting the event instance.");
+                    .body("An error occurred while deleting the event instance: " + e.getMessage());
         }
     }
 
