@@ -9,6 +9,7 @@ public class TournamentDto {
     public String name;
     public String gameName;
     public LocalDateTime startTime;
+    public Integer teamSize;
 
 
     public TournamentDto() {}

@@ -263,9 +263,18 @@ public class TournamentController {
             if (!existingTournaments.isEmpty()) {
                 return ResponseEntity.badRequest().body("Det finns redan en tournament: " + existingTournaments.get(0));
             }
-            int teamSize = eventInstance.getTeamSize();
+            
+            int finalTeamSize;
+            if (dto.teamSize != null && dto.teamSize > 0) {
+                finalTeamSize = dto.teamSize;
+            } else {
+                finalTeamSize = eventInstance.getTeamSize();
+                if (finalTeamSize <= 0) {
+                    return ResponseEntity.badRequest().body("Ingen giltig teamSize angiven i DTO eller EventInstance.");
+                }
+            }
 
-            Tournament newTournament = new Tournament(dto.name, dto.gameName, dto.startTime,eventInstance, teamSize, dto.maxParticipants);
+            Tournament newTournament = new Tournament(dto.name, dto.gameName, dto.startTime,eventInstance, finalTeamSize, dto.maxParticipants);
             Tournament saved = tournamentRepository.save(newTournament);
             
             TournamentResponseDto responseDto = new TournamentResponseDto(
