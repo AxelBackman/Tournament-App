@@ -36,7 +36,7 @@ public class EventInstance {
     @Size(max = 250, message = "Description cannot exceed 200 characters")
     private String description;
 
-    @Size(max = 1500, message = "Image URL cannot exceed 500 characters")
+    @Size(max = 1500, message = "Image URL cannot exceed 1500 characters")
     private String imageUrl;
 
    
