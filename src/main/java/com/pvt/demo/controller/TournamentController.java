@@ -225,7 +225,8 @@ public class TournamentController {
                     reg.getTournament().getId(),
                     reg.getUser().getId(),
                     reg.getUser().getName(),
-                    reg.getStatus().name()
+                    reg.getStatus().name(),
+                    reg.getUser().getProfilePictureUrl()
                 ))
                 .toList();
 

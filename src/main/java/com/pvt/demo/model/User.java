@@ -21,6 +21,9 @@ public class User {
     private String email;
 
     private boolean isAdmin = false;
+
+    @Column(name = "profile_picture_url")
+    private String profilePictureUrl;
     
     
     @ManyToOne
@@ -76,6 +79,14 @@ public class User {
 
     public void setAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     @Override

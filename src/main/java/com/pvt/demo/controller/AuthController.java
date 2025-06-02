@@ -45,12 +45,16 @@ public class AuthController {
 
                 String email = payload.getEmail();
                 String name = (String) payload.get("name");
+                String pictureUrl = (String) payload.get("picture");
+
 
                 Optional<User> optionalUser = userRepository.findByEmail(email);
 
                 User user;
                 if (optionalUser.isPresent()) {
                     user = optionalUser.get();
+                    user.setProfilePictureUrl(pictureUrl);
+                    userRepository.save(user);
                 }
                 else {
                     // Om användaren inte finns, skapa en ny med standardorganisation (SK)
@@ -61,6 +65,7 @@ public class AuthController {
                     }
 
                     user = new User(name, email, organisation, false);
+                    user.setProfilePictureUrl(pictureUrl);
                     userRepository.save(user);
                 }
 
@@ -90,12 +95,15 @@ public class AuthController {
 
                 String email = payload.getEmail();
                 String name = (String) payload.get("name");
+                String pictureUrl = (String) payload.get("picture");
 
                 Optional<User> optionalUser = userRepository.findByEmail(email);
 
                 User user;
                 if (optionalUser.isPresent()) {
                     user = optionalUser.get();
+                    user.setProfilePictureUrl(pictureUrl);
+                    userRepository.save(user);
                 }
                 else {
                     Organisation organisation = organisationRepository.findById(1L).orElse(null);
@@ -105,6 +113,7 @@ public class AuthController {
                     }
 
                     user = new User(name, email, organisation, false);
+                    user.setProfilePictureUrl(pictureUrl);
                     userRepository.save(user);
                 }
 

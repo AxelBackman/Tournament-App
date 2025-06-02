@@ -100,7 +100,9 @@ public class RegisteredUsersController {
                     user.getName(),
                     event.getId(),
                     event.getTitle(),
-                    regUser.getStatus().name()
+                    regUser.getStatus().name(),
+                    user.getProfilePictureUrl() // Is null for test users
+
                 ));
             }
 
@@ -123,7 +125,8 @@ public class RegisteredUsersController {
                     reg.getUser().getName(),
                     reg.getEventInstance().getId(),
                     reg.getEventInstance().getTitle(),
-                    reg.getStatus().name()
+                    reg.getStatus().name(),
+                    reg.getUser().getProfilePictureUrl() // Is null for test users
                 ));
             }
 

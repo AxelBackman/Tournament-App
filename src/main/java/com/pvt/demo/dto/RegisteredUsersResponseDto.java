@@ -6,13 +6,15 @@ public class RegisteredUsersResponseDto {
     public Long eventInstanceId;
     public String eventName;
     public String status;
+    public String profilePictureUrl;
 
-    public RegisteredUsersResponseDto(Long userId, String userName, Long eventInstanceId, String title, String status) {
+    public RegisteredUsersResponseDto(Long userId, String userName, Long eventInstanceId, String title, String status, String profilePictureUrl) {
         this.userId = userId;
         this.userName = userName;
         this.eventInstanceId = eventInstanceId;
         this.eventName = title;
         this.status = status;
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     public RegisteredUsersResponseDto() {

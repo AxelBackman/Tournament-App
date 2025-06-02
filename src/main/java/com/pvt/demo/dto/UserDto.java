@@ -12,6 +12,7 @@ public class UserDto {
     public String email;
     public Long organisationId;
     public boolean isAdmin;
+    
 
     public UserDto() {
         
