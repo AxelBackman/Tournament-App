@@ -38,7 +38,6 @@ public class Team {
     @JoinColumn(name = "user_id")
     private User creator;
 
-    // Lista representererar "Team-Chat"
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<TeamChat> messages = new ArrayList<>();
