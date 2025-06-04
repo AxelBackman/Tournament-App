@@ -4,12 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pvt.demo.controller.TournamentController;
 import com.pvt.demo.dto.TournamentDto;
 import com.pvt.demo.model.EventInstance;
-import com.pvt.demo.model.Game;
-import com.pvt.demo.model.GameGroup;
 import com.pvt.demo.model.RegisteredForTournament;
-import com.pvt.demo.model.RegisteredUsers;
 import com.pvt.demo.model.RegistrationStatus;
-import com.pvt.demo.model.Team;
 import com.pvt.demo.model.Tournament;
 import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
@@ -36,14 +32,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.lang.reflect.Field;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -148,7 +139,7 @@ class TournamentControllerTest {
         ReflectionTestUtils.setField(user, "id", id);
         user.setName(name);
         user.setEmail(email);
-        user.setAdmin(isAdmin); // om du har detta fält
+        user.setAdmin(isAdmin); 
         return user;
     }
 
@@ -174,7 +165,6 @@ class TournamentControllerTest {
         t.setMap(new ArrayList<>());
         t.setTeams(new ArrayList<>());
 
-        // Skapa RegisteredForTournament för varje user och lägg till i t.registeredUsers
         List<RegisteredForTournament> registrations = new ArrayList<>();
         for (User user : users) {
             RegisteredForTournament reg = new RegisteredForTournament(user, t, RegistrationStatus.COMING);
@@ -256,43 +246,6 @@ class TournamentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(Matchers.containsString("User registered")));
     }
-
-    // @Test
-    // void registerTeamsAndGenerateBracket_shouldShuffleAndGenerate() throws Exception {
-    //     long tournamentId = 1L;
-
-    //     // Skapa användare
-    //     List<User> users = new ArrayList<>();
-    //     for (long i = 1; i <= 8; i++) {
-    //         users.add(createUser(i, "User " + i, "user" + i + "@mail.com", false));
-    //     }
-
-    //     // Skapa EventInstance med användarna
-    //     EventInstance eventInstance = new EventInstance();
-    //     ReflectionTestUtils.setField(eventInstance, "id", 10L);
-    //     eventInstance.setTeamSize(2);
-    //     eventInstance.setUsers(new ArrayList<>(users));  // <-- Lägg till detta!
-
-    //     // Skapa Tournament och koppla registreringar
-    //     Tournament tournament = new Tournament("Bracket Tournament", "Game", LocalDateTime.now(), eventInstance, 2, 8);
-    //     ReflectionTestUtils.setField(tournament, "id", tournamentId);
-
-    //     List<RegisteredForTournament> registrations = new ArrayList<>();
-    //     for (User user : users) {
-    //         RegisteredForTournament rft = new RegisteredForTournament(user, tournament, RegistrationStatus.COMING);
-    //         registrations.add(rft);
-    //     }
-    //     ReflectionTestUtils.setField(tournament, "registeredUsers", registrations);
-
-    //     when(tournamentRepository.findById(tournamentId)).thenReturn(Optional.of(tournament));
-    //     when(tournamentRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-
-    //     mockMvc.perform(post("/tournaments/" + tournamentId + "/brackets"))
-    //             .andExpect(status().isOk())
-    //             .andExpect(jsonPath("$.teams").isArray())
-    //             .andExpect(jsonPath("$.allGames").isArray());
-    // }
-
 
     @Test
     void deleteTournament_shouldReturnOkIfExists() throws Exception {

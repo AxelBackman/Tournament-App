@@ -17,7 +17,6 @@ import com.pvt.demo.controller.EventInstanceController;
 import com.pvt.demo.dto.EventInstanceDto;
 import com.pvt.demo.model.EventInstance;
 import com.pvt.demo.model.RecurringEvent;
-import com.pvt.demo.model.Tournament;
 import com.pvt.demo.model.User;
 import com.pvt.demo.repository.EventInstanceRepository;
 import com.pvt.demo.repository.RecurringEventRepository;
@@ -134,9 +133,9 @@ public class EventInstanceControllerTest {
         dto.recurringEventId = 100L;
         dto.teamSize = 3;
         
-        User adminUser = Mockito.mock(User.class); // ✔ korrekt mock
+        User adminUser = Mockito.mock(User.class); 
         ReflectionTestUtils.setField(adminUser, "id", 1L);
-        Mockito.when(adminUser.isAdmin()).thenReturn(true); // ✔ fungerar nu
+        Mockito.when(adminUser.isAdmin()).thenReturn(true);
 
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(adminUser));
 

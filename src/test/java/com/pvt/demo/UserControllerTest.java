@@ -170,12 +170,7 @@ public class UserControllerTest {
         User user = new User("Charlie", "charlie@mail.com", org, false);
         ReflectionTestUtils.setField(user, "id", 5L);
 
-        // Team team = new Team();
-        // team.setName("My Team");
-        // team.setMembers(List.copyOf(Set.of(user)));
-
         Mockito.when(userRepository.findById(5L)).thenReturn(Optional.of(user));
-        // Mockito.when(teamRepository.findByMembers_Id(5L)).thenReturn(List.of(team));
 
         mockMvc.perform(delete("/users/deleteuser/5"))
                 .andExpect(status().isOk())

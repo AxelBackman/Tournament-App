@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 
 @WebMvcTest(RegisteredUsersController.class)
 public class RegisteredUsersControllerTest {
@@ -71,7 +70,7 @@ public class RegisteredUsersControllerTest {
         user.setName("Alice");
 
         EventInstance event = new EventInstance();
-        setField(event, "id", 100L); // 🛠 Sätt id med reflection
+        setField(event, "id", 100L);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(eventInstanceRepository.findById(100L)).thenReturn(Optional.of(event));
@@ -83,7 +82,6 @@ public class RegisteredUsersControllerTest {
                 .andExpect(content().string("User Alice registered for event 100 with status: COMING"));
     }
 
-    // 🔧 Hjälpmetod för att sätta privata fält
     private void setField(Object target, String fieldName, Object value) throws Exception {
         Field field = target.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
@@ -135,34 +133,28 @@ public class RegisteredUsersControllerTest {
 
     @Test
     void testGetAllRegisteredUsers() throws Exception {
-        // Mock User 1
         User mockUser1 = Mockito.mock(User.class);
         when(mockUser1.getId()).thenReturn(1L);
         when(mockUser1.getName()).thenReturn("Alice");
 
-        // Mock User 2
         User mockUser2 = Mockito.mock(User.class);
         when(mockUser2.getId()).thenReturn(2L);
         when(mockUser2.getName()).thenReturn("Bob");
 
-        // Mock EventInstance
         EventInstance mockEvent = Mockito.mock(EventInstance.class);
         when(mockEvent.getId()).thenReturn(100L);
         when(mockEvent.getTitle()).thenReturn("Test Event");
 
-        // Mock RegisteredUsers 1
         RegisteredUsers reg1 = Mockito.mock(RegisteredUsers.class);
         when(reg1.getUser()).thenReturn(mockUser1);
         when(reg1.getEventInstance()).thenReturn(mockEvent);
         when(reg1.getStatus()).thenReturn(RegistrationStatus.COMING);
 
-        // Mock RegisteredUsers 2
         RegisteredUsers reg2 = Mockito.mock(RegisteredUsers.class);
         when(reg2.getUser()).thenReturn(mockUser2);
         when(reg2.getEventInstance()).thenReturn(mockEvent);
         when(reg2.getStatus()).thenReturn(RegistrationStatus.INTERESTED);
 
-        // Stub repository call
         when(registeredUsersRepository.findByEventInstanceId(100L))
                 .thenReturn(List.of(reg1, reg2));
 
@@ -178,12 +170,10 @@ public class RegisteredUsersControllerTest {
 
     @Test
     void testGetAllRegisteredUser() throws Exception {
-        // Mock User
         User user = Mockito.mock(User.class);
         when(user.getId()).thenReturn(1L);
         when(user.getName()).thenReturn("Test User");
 
-        // Mock EventInstance
         EventInstance event1 = Mockito.mock(EventInstance.class);
         when(event1.getId()).thenReturn(10L);
         when(event1.getTitle()).thenReturn("Test Event 1");
@@ -192,7 +182,6 @@ public class RegisteredUsersControllerTest {
         when(event2.getId()).thenReturn(20L);
         when(event2.getTitle()).thenReturn("Test Event 2");
 
-        // Mock RegisteredUsers
         RegisteredUsers reg1 = Mockito.mock(RegisteredUsers.class);
         when(reg1.getUser()).thenReturn(user);
         when(reg1.getEventInstance()).thenReturn(event1);
@@ -203,7 +192,6 @@ public class RegisteredUsersControllerTest {
         when(reg2.getEventInstance()).thenReturn(event2);
         when(reg2.getStatus()).thenReturn(RegistrationStatus.INTERESTED);
 
-        // Mock repo
         when(registeredUsersRepository.findByUserId(1L))
                 .thenReturn(List.of(reg1, reg2));
 

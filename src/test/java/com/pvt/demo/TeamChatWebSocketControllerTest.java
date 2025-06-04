@@ -38,7 +38,6 @@ class TeamChatWebSocketControllerTest {
 
         controller = new TeamChatWebSocketController();
 
-        // Viktigt: injicera mockarna manuellt eftersom de är private
         ReflectionTestUtils.setField(controller, "teamChatRepository", teamChatRepository);
         ReflectionTestUtils.setField(controller, "teamRepository", teamRepository);
         ReflectionTestUtils.setField(controller, "userRepository", userRepository);
@@ -46,7 +45,6 @@ class TeamChatWebSocketControllerTest {
 
     @Test
     void sendMessage_shouldReturnCorrectDto() {
-        // Arrange
         Long teamId = 1L;
         Long userId = 2L;
 
@@ -71,10 +69,8 @@ class TeamChatWebSocketControllerTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
         when(teamChatRepository.save(any(TeamChat.class))).thenReturn(mockChat);
 
-        // Act
         TeamChatDto result = (TeamChatDto) controller.sendMessage(teamId, inputDto);
 
-        // Assert
         assertNotNull(result);
         assertEquals(10L, result.id);
         assertEquals("Hej laget!", result.message);
@@ -90,31 +86,4 @@ class TeamChatWebSocketControllerTest {
         assertEquals(mockUser, savedChat.getSender());
         assertEquals(mockTeam, savedChat.getTeam());
     }
-
-    // @Test
-    // void sendMessage_shouldThrowIfUserNotInTeam() {
-    //     Long teamId = 1L;
-    //     Long userId = 2L;
-
-    //     TeamChatStompDto dto = new TeamChatStompDto();
-    //     dto.senderId = userId;
-    //     dto.message = "Hej!";
-
-    //     User mockUser = new User();
-    //     ReflectionTestUtils.setField(mockUser, "id", userId);
-    //     mockUser.setName("Utanför");
-
-    //     Team mockTeam = new Team();
-    //     mockTeam.setId(teamId);
-    //     mockTeam.setMembers(Collections.emptyList());
-
-    //     when(teamRepository.findById(teamId)).thenReturn(Optional.of(mockTeam));
-    //     when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
-
-    //     RuntimeException ex = assertThrows(RuntimeException.class, () -> {
-    //         controller.sendMessage(teamId, dto);
-    //     });
-
-    //     assertEquals("User is not a member of this team.", ex.getMessage());
-    // }
 }
