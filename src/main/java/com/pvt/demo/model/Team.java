@@ -114,7 +114,6 @@ public class Team {
         messages.add(message);
     }
 
-    //Hämta N meddelanden och sorterar dessa på senaste först
     public List<TeamChat> getLatestMessages(int count) {
         List<TeamChat> sortedMessages = new ArrayList<>(messages);
 
