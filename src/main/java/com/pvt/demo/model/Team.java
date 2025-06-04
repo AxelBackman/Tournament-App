@@ -38,7 +38,7 @@ public class Team {
     @JoinColumn(name = "user_id")
     private User creator;
 
-    //Lista med chattmeddelanden som är kopplade till detta lag
+    // Lista representererar "Team-Chat"
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<TeamChat> messages = new ArrayList<>();
@@ -115,11 +115,10 @@ public class Team {
         messages.add(message);
     }
 
-    //Hämtar X-antal meddelanden och sorterar dessa på senaste först
+    //Hämta N meddelanden och sorterar dessa på senaste först
     public List<TeamChat> getLatestMessages(int count) {
         List<TeamChat> sortedMessages = new ArrayList<>(messages);
 
-        //Sortera meddelanden baserat på timestamp
         sortedMessages.sort(new Comparator<TeamChat>() {
             @Override
             public int compare(TeamChat message1, TeamChat message2) {
@@ -127,10 +126,8 @@ public class Team {
             }
         });
 
-        //Ny lista för senaste meddelandena
         List<TeamChat> latestMessages = new ArrayList<>();
 
-        //Lägg till X-antal meddelanden
         for (int i = 0; i < count && i < sortedMessages.size(); i++) {
             latestMessages.add(sortedMessages.get(i));
         }

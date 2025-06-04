@@ -3,8 +3,6 @@ package com.pvt.demo.model;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,19 +38,18 @@ public class Tournament {
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Team> teams = new ArrayList<>();
 
-    // Tar inte bort eventinstance när turneringen tas bort
     @OneToOne(mappedBy = "tournament")
     private EventInstance eventInstance;
 
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GameGroup> map = new ArrayList<>(); // är en egen gjord map
+    private List<GameGroup> map = new ArrayList<>(); // Representerar en Map<Integer, List<Game>>
 
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RegisteredForTournament> registeredUsers = new ArrayList<>();
     
     public Tournament() {}
 
-    public Tournament(String name, String gameName, LocalDateTime startTime, EventInstance eventInstance, int teamSize, int maxParticipants){ // skapa olika konstruktorer för olika spel? free for all, scoreboards, eller brackets osv
+    public Tournament(String name, String gameName, LocalDateTime startTime, EventInstance eventInstance, int teamSize, int maxParticipants){
         this.name = name;
         this.gameName = gameName;
         this.startTime = startTime;
@@ -66,7 +63,7 @@ public class Tournament {
         }
     }
 
-    public Tournament(EventInstance eventInstance, int teamSize, String grejer){ // samma konstruktor som ovan men särskiljer sig för mickes chat tjofräs
+    public Tournament(EventInstance eventInstance, int teamSize, String grejer){
         this.eventInstance = eventInstance;
         this.teamSize = teamSize;
         created = true;
@@ -104,9 +101,10 @@ public class Tournament {
         this.startTime = startTime;
     }
 
-    public void generateBracket() { //hårdkodad single elimination - måste vara lag av 4 potens
+    // Hårdkodad single elimination - måste vara lag av 4 potens
+    public void generateBracket() { 
         int teamCount = teams.size();
-        int totalRounds = (int) (Math.log(teamCount) / Math.log(2)); // logaritm, 8 lag -> 3 rundor
+        int totalRounds = (int) (Math.log(teamCount) / Math.log(2)); // 8 lag == 3 rundor
 
         // Skapa alla GameGroups (en per rond)
         for (int round = 1; round <= totalRounds; round++) {
@@ -167,7 +165,7 @@ public class Tournament {
 
         Game nextGame = game.getParent();
 
-        if (nextGame == null){ // alltså finalen nu
+        if (nextGame == null){
             return;
         }
 
@@ -180,10 +178,11 @@ public class Tournament {
         }
     }
 
-    // sätter lagen baserat på getUsers
     public void setTeams(){ 
         List<User> registeredUsers = getUsers();
-        Collections.shuffle(registeredUsers); // shufflar så alla blir random
+        
+        // shuffle för slumpmässiga lag
+        Collections.shuffle(registeredUsers); 
 
         Team currentTeam = new Team("team1");
         int amount = 2;
@@ -191,12 +190,11 @@ public class Tournament {
             currentTeam.addMember(user);
 
             if (currentTeam.getMembers().size() == teamSize) {
-                //Sätter första medlemmen i laget till "lagledare"
                 currentTeam.setCreator(currentTeam.getMembers().get(0));
                 currentTeam.setTournament(this);
                 teams.add(currentTeam);
                 String name = "team" + amount;
-                currentTeam = new Team(name); // börja nytt lag
+                currentTeam = new Team(name);
                 amount++;
             }
         }

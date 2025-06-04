@@ -29,7 +29,7 @@ public class Organisation {
     private String adress;
     
     @Column(length = 1000)
-    private String description; // fyll på mer info om organisationer, typer av event? beskrivning av föreningen?
+    private String description;
 
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("organisation")
@@ -39,7 +39,7 @@ public class Organisation {
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("organisation")
     @JsonIgnore
-    private List<RecurringEvent> recurringEvents = new ArrayList<>(); // koppling mot organisationens alla events - skapa attribut för Organisation join cascade i recurringEvent
+    private List<RecurringEvent> recurringEvents = new ArrayList<>(); 
 
 
     public Organisation() {}
@@ -49,8 +49,6 @@ public class Organisation {
         this.adress = adress;
         this.description = description;
     }
-
-    // GETTERS & SETTERS
 
     public Long getId() {
         return id;
@@ -106,7 +104,6 @@ public class Organisation {
 
     public void addRecurringEvent(RecurringEvent event) {
         this.recurringEvents.add(event);
-        // event.setOrganisation(this); //skapa setOrganisation i recurring
     }
 
     @Override

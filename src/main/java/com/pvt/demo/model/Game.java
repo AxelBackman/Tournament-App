@@ -28,7 +28,7 @@ public class Game {
     private Team teamTwo;
 
     @ManyToOne
-    @JoinColumn(name = "tournament_id") // denna klass äger relationen
+    @JoinColumn(name = "tournament_id")
     private Tournament tournament;
 
     @Column(nullable = true)
@@ -41,21 +41,20 @@ public class Game {
     @ManyToOne
     @JoinColumn(name = "parent_id", foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
     @JsonIgnoreProperties({"left", "right"})
-    private Game parent;
-
+    private Game parent; 
 
     @OneToOne
     @JoinColumn(name = "left_child_id")
     @JsonIgnoreProperties("parent")
-    private Game left;// if null, then = leaf
+    private Game left;
 
     @OneToOne
     @JoinColumn(name = "right_child_id")
     @JsonIgnoreProperties("parent")
-    private Game right;// if null, then = leaf
+    private Game right;
 
     @ManyToOne
-    @JoinColumn(name = "game_group_id") // foreign key i Game-tabellen
+    @JoinColumn(name = "game_group_id")
     private GameGroup gameGroup;
 
     public Game() {}
