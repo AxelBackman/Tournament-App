@@ -68,8 +68,6 @@ public class TournamentController {
     @Autowired
     private RegisteredUsersRepository registeredUsersRepository;
 
-    // Hämta tournament via ID
-     // Hämta alla tournaments
     @GetMapping
     public ResponseEntity<List<TournamentResponseDto>> getAllTournaments() {
         try {
@@ -93,7 +91,6 @@ public class TournamentController {
         }
     }
     
-    // Hämta tournament via ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getTournamentById(@PathVariable Long id) {
         try {
@@ -149,7 +146,6 @@ public class TournamentController {
         }
     }
 
-    //Registrera sig på tournaments
     @PostMapping("/register/{tournamentId}/{userId}/{status}")
     public ResponseEntity<?> registerUserToTournament(
         @PathVariable Long tournamentId,
@@ -169,12 +165,10 @@ public class TournamentController {
         Tournament tournament = tournamentOpt.get();
         User user = userOpt.get();
 
-        //Check om user redan är registrerad
         if (registeredForTournamentRepository.findByUserIdAndTournamentId(userId, tournamentId) != null) {
             return ResponseEntity.badRequest().body("User already registered for this tournament");
         }
 
-        //Check om tournament är full
         long currentCount = registeredForTournamentRepository.countByTournamentId(tournamentId);
         if (currentCount >= tournament.getMaxParticipants()) {
             return ResponseEntity.badRequest().body("Tournament is full");
@@ -183,7 +177,6 @@ public class TournamentController {
         EventInstance event = tournament.getEventInstance();
         RegisteredUsers existingRegistration = registeredUsersRepository.findByUserIdAndEventInstanceId(userId, event.getId());
         
-        //Om user inte är reg på EI, lägg till i EI som COMING
         if (status == RegistrationStatus.COMING) {
             if (existingRegistration != null) {
                 if (existingRegistration.getStatus() != RegistrationStatus.COMING) {
@@ -195,7 +188,6 @@ public class TournamentController {
                 registeredUsersRepository.save(newReg);
             }
         } else if (status == RegistrationStatus.INTERESTED) {
-            // Om användaren inte är registrerad alls till eventet, sätt som INTERESTED
             if (existingRegistration == null) {
                 RegisteredUsers newReg = new RegisteredUsers(event, user, RegistrationStatus.INTERESTED);
                 registeredUsersRepository.save(newReg);
@@ -292,7 +284,7 @@ public class TournamentController {
             return ResponseEntity.ok(responseDto);
 
         } catch (Exception e) {
-            e.printStackTrace(); // skriver till terminal
+            e.printStackTrace(); 
             return ResponseEntity.status(500).body("Internal error: " + e.getMessage());
         }
     }
@@ -334,18 +326,15 @@ public class TournamentController {
                 return ResponseEntity.badRequest().body("Number of users must be evenly divisible by team size");
             }
 
-            tournament.setTeams(); // skapar lag baserat på users och teamSize
+            tournament.setTeams(); 
 
             if (tournament.getTeams() == null || tournament.getTeams().size() % 4 != 0) {
                 return ResponseEntity.badRequest().body("Number of teams must be divisible by 4 to create a bracket");
             }
 
             tournament.generateBracket();
-            
 
-            
             Tournament saved = tournamentRepository.save(tournament);
-
 
             List<ResponseGameGroupDto> groupDtos = saved.getMap().stream()
                 .map(ResponseGameGroupDto::new)
@@ -384,7 +373,6 @@ public class TournamentController {
             }
             Team team = teamOpt.get();
 
-            // Validera att game och team hör till detta tournament
             if (!tournament.getAllGames().contains(game)) {
                 return ResponseEntity.badRequest().body("Game does not belong to Tournament");
             }
@@ -401,7 +389,7 @@ public class TournamentController {
             return ResponseEntity.ok("Winner set");
 
         } catch (Exception e) {
-            e.printStackTrace(); // för loggning i terminalen
+            e.printStackTrace(); 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Internal error: " + e.getMessage());
         }

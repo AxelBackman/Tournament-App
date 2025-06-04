@@ -12,17 +12,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic"); // Teamet prenumererar här
-        config.setApplicationDestinationPrefixes("/app"); // Users i teamet skickar hit
+        config.enableSimpleBroker("/topic");
+        config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws") // Websocket
+        registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*");
 
-        registry.addEndpoint("/ws-sockjs") //  SockJS
+        registry.addEndpoint("/ws-sockjs") 
                 .setAllowedOriginPatterns("*")
-                .withSockJS(); // Fallback
+                .withSockJS(); 
     }
 }

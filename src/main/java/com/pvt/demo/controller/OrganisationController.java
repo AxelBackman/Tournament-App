@@ -13,19 +13,17 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/organisations")
-@CrossOrigin(origins = "*") // Tillåt alla ursprung för CORS, justera vid behov
+@CrossOrigin(origins = "*") 
 public class OrganisationController {
 
     @Autowired
     private OrganisationRepository organisationRepository;
 
-    // Hämta alla organisationer
     @GetMapping
     public List<Organisation> getAllOrganisations() {
         return organisationRepository.findAll();
     }
 
-    // Hämta organisation via ID
     @GetMapping("/{id}")
     public ResponseEntity<Organisation> getOrganisationById(@PathVariable Long id) {
         Optional<Organisation> organisation = organisationRepository.findById(id);
@@ -33,7 +31,6 @@ public class OrganisationController {
                            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Skapa ny organisation
     @PostMapping("/create")
     public Organisation createOrganisation(@RequestBody OrganisationDto dto) {
         Organisation organisation = new Organisation();
@@ -45,7 +42,6 @@ public class OrganisationController {
     }
 
 
-    // Uppdatera en organisation
     @PutMapping("/update/{id}")
     public ResponseEntity<Organisation> updateOrganisation(@PathVariable Long id, @RequestBody OrganisationDto dto) {
         return organisationRepository.findById(id)
@@ -59,7 +55,6 @@ public class OrganisationController {
             .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Radera en organisation
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrganisation(@PathVariable Long id) {
         if (organisationRepository.existsById(id)) {
@@ -70,7 +65,6 @@ public class OrganisationController {
         }
     }
 
-    // Sök organisationer på namn
     @GetMapping("/search")
     public List<Organisation> searchByName(@RequestParam String name) {
         return organisationRepository.findByNameContainingIgnoreCase(name);

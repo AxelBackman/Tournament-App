@@ -36,7 +36,7 @@ public class TeamController {
     @Autowired
     private TournamentRepository tournamentRepository;
 
-    // Skapa ett team
+   
     @PostMapping("/create")
     public ResponseEntity<String> createTeam(@RequestBody TeamDto teamDto) {
        
@@ -48,16 +48,13 @@ public class TeamController {
             return ResponseEntity.badRequest().body("Event instance or user not found");
         }
 
-        // Skapa team med hjälp av konstruktorn
         Team team = new Team(tournament, user, teamDto.name);
 
-        // Spara teamet i databasen
         teamRepository.save(team);
 
         return ResponseEntity.ok("Team '" + team.getName() + "' created successfully with ID " + team.getId());
     }
 
-    // Lägg till en medlem i teamet
     @PatchMapping("/addMember/{teamId}/{userId}")
     public ResponseEntity<String> addMember(@PathVariable Long teamId, @PathVariable Long userId) {
         Team team = teamRepository.findById(teamId).orElse(null);
@@ -96,13 +93,11 @@ public class TeamController {
         }
     }
     
-    // Hämta alla teams
     @GetMapping
     public Iterable<Team> getAll() {
         return teamRepository.findAll();
     }
 
-    // Hämta teamns för en viss EventInstance
     @GetMapping("/event/{tournamentId}")
     public ResponseEntity<List<Team>> getTeamsByEventInstance(@PathVariable Long tournamentId) {
         Tournament tournament = tournamentRepository.findById(tournamentId).orElse(null);
@@ -113,7 +108,6 @@ public class TeamController {
         return ResponseEntity.ok(teams);
     }
 
-    //Hämta members efter teamId
     @GetMapping("/{teamId}/members")
     public ResponseEntity<List<User>> getTeamMembers(@PathVariable Long teamId) {
         Team team = teamRepository.findById(teamId).orElse(null);

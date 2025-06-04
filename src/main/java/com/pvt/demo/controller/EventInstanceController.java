@@ -90,7 +90,6 @@ public class EventInstanceController {
         dto.imageUrl = instance.getImageUrl();
         dto.parentEventId = instance.getParentEventId();
 
-        // TournamentId
         if (instance.getTournament() != null) {
             Long id = instance.getTournament().getId();
             dto.tournamentId = id;
@@ -99,7 +98,6 @@ public class EventInstanceController {
         return dto;
     }
 
-    // Hämta alla
     @GetMapping
     public ResponseEntity<?> getAllInstances() {
         try {
@@ -113,8 +111,6 @@ public class EventInstanceController {
         }
     }
 
-
-    // Hämta en specifik
     @GetMapping("/{id}")
     public ResponseEntity<?> getInstanceById(@PathVariable Long id) {
         try {
@@ -133,7 +129,6 @@ public class EventInstanceController {
         }
     }
 
-     // Radera en instans
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteInstance(@PathVariable Long id) {
         try {
@@ -144,25 +139,23 @@ public class EventInstanceController {
 
             EventInstance ei = optionalEventInstance.get();
 
-            // Koppla bort från Tournament om sådan finns
             Tournament tournament = ei.getTournament();
             if (tournament != null) {
                 tournament.setEventInstance(null);
                 ei.setTournament(null);
-                tournamentRepository.save(tournament); // Spara ändringen!
+                tournamentRepository.save(tournament); 
             }
 
             eventInstanceRepository.delete(ei);
             return ResponseEntity.ok("EventInstance deleted");
 
         } catch (Exception e) {
-            e.printStackTrace(); // Bra under utveckling, ta ev. bort i produktion
+            e.printStackTrace(); 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("An error occurred while deleting the event instance: " + e.getClass().getSimpleName() + ": " + e.getMessage());
         }
     }
 
-    // Updatera en instans
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateEventInstance(@PathVariable Long id, @RequestBody EventInstanceDto dto) {
         
@@ -212,7 +205,6 @@ public class EventInstanceController {
         List<Map<String, Object>> recurringWithInstances = recurringEventRepository.findAll().stream()
             .filter(r -> !r.getSubEvents().isEmpty())
             .map(r -> {
-                // För datum, ta första instansens startTime
                 LocalDateTime earliestStart = r.getSubEvents().stream()
                     .map(EventInstance::getStartTime)
                     .min(LocalDateTime::compareTo)
@@ -228,7 +220,6 @@ public class EventInstanceController {
             })
             .collect(Collectors.toList());
 
-        // Kombinera och sortera
         List<Map<String, Object>> combined = new ArrayList<>();
         combined.addAll(soloInstances);
         combined.addAll(recurringWithInstances);

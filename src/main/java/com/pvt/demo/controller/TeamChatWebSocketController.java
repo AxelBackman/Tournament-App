@@ -64,7 +64,7 @@ public class TeamChatWebSocketController {
             return response;
         } catch (Exception e) {
             System.err.println("Error processing WebSocket message: " + e.getMessage());
-            return null; // Rethrow the exception to indicate failure
+            return null;
         }
     }
 }

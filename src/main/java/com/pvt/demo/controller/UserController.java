@@ -88,7 +88,6 @@ public class UserController {
         }
     }
 
-     // Hämta user baserat på email
    @GetMapping("/email/{email}")
     public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
         try {
@@ -110,16 +109,14 @@ public class UserController {
             return ResponseEntity.badRequest().body(errorMessage);
         }
 
-        //Kontroll av om username redan finns i DB
         if (userRepository.findByName(userDto.name).isPresent()) {
             return ResponseEntity.badRequest().body("A user with the name '" + userDto.name + "' already exists.");
         }
         
-        // Hämta organisationen baserat på ID
         Organisation organisation = organisationRepository.findById(userDto.organisationId).orElse(null);
 
         if (organisation != null) {
-            User user = new User(userDto.name, userDto.email, organisation, userDto.isAdmin); // Skapa användare med organisation
+            User user = new User(userDto.name, userDto.email, organisation, userDto.isAdmin); 
             userRepository.save(user);
             return ResponseEntity.ok("User '" + user.getName() + "' saved successfully");
         } else {
@@ -173,7 +170,7 @@ public class UserController {
             if (team.getMembers().isEmpty()) {
                 teamRepository.delete(team);
             } else {
-                teamRepository.save(team); // Save team without the user
+                teamRepository.save(team); 
             }
         }
         userRepository.delete(user);

@@ -20,7 +20,6 @@ public class EventInstanceService {
     @Autowired
     private EventInstanceRepository eventInstanceRepository;
 
-    // Skapar en EventInstance kopplad till en RecurringEvent
     public EventInstance addInstance(Long parentId) {
         RecurringEvent parentEvent = recurringEventRepository.findById(parentId)
                 .orElseThrow(() -> new RuntimeException("Parent event with ID " + parentId + " not found"));
@@ -30,7 +29,6 @@ public class EventInstanceService {
         return eventInstanceRepository.save(instance);
     }
 
-    //Skapar EventInstance utan koppling till RecurringEvent
     public EventInstance addSoloInstance(String title, String description, LocalDateTime start, LocalDateTime end, String location, int teamSize) {
         EventInstance instance = new EventInstance(title, description, start, end, location, teamSize);
         return eventInstanceRepository.save(instance);

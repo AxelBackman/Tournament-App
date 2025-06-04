@@ -77,19 +77,17 @@ public class RegisteredUsersController {
     @GetMapping("/allregistered/{eventId}")
     public ResponseEntity<?> getAllRegisteredUsers(@PathVariable Long eventId) {
         try {
-            // Check if event exists
             var eventOpt = eventInstanceRepository.findById(eventId);
             if (eventOpt.isEmpty()) {
                 return ResponseEntity.status(404).body("Event with id " + eventId + " not found");
             }
 
-            // Get registered users
             var registeredUsers = registeredUsersRepository.findByEventInstanceId(eventId);
             List<RegisteredUsersResponseDto> responseList = new ArrayList<>();
 
             for (RegisteredUsers regUser : registeredUsers) {
                 if (regUser.getUser() == null || regUser.getEventInstance() == null) {
-                    continue; // hoppa över trasiga rader
+                    continue; 
                 }
 
                 var user = regUser.getUser();
@@ -101,7 +99,7 @@ public class RegisteredUsersController {
                     event.getId(),
                     event.getTitle(),
                     regUser.getStatus().name(),
-                    user.getProfilePictureUrl() // Is null for test users
+                    user.getProfilePictureUrl() 
 
                 ));
             }
@@ -126,7 +124,7 @@ public class RegisteredUsersController {
                     reg.getEventInstance().getId(),
                     reg.getEventInstance().getTitle(),
                     reg.getStatus().name(),
-                    reg.getUser().getProfilePictureUrl() // Is null for test users
+                    reg.getUser().getProfilePictureUrl() 
                 ));
             }
 
