@@ -4,7 +4,7 @@ Groupproject with 11 members developing using agile methodology - scrum.
 
 My roles were project leader, scrum master and part of the development team.
 Project leader:
-Planned and structured the group into teams and set up meetings. Drove engagement and collaboration for all members, and had to drive exclusion of 3 members towards course adminsitrators.
+Planned and structured the group into teams and set up meetings. Drove engagement and collaboration for all members
 
 Scrum master: Held "daily" scrums on mondays, wednesdays and fridays. My work involved structuring scrum meetings and sprints to sustain plans towards development goals, and enabled everyone to get their voice heard.
 
