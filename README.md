@@ -6,7 +6,7 @@ My roles were project leader, scrum master and part of the development team.
 Project leader:
 Planned and structured the group into teams and set up meetings. Drove engagement and collaboration for all members
 
-Scrum master: Held "daily" scrums on mondays, wednesdays and fridays. My work involved structuring scrum meetings and sprints to sustain plans towards development goals, and enabled everyone to get their voice heard.
+Scrum master: Held "daily" scrums on mondays, wednesdays and fridays. My work involved structuring scrum meetings and sprints in to sustainable plans towards development goals, and enabled everyone to get their voice heard.
 
 Development team: 
 Responsiblity driven Design - laying the foundation for majority of classes in the backend, their responsobilities and dependencies.
