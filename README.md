@@ -1,6 +1,7 @@
 
-Tournament-app "Lan Buddies" made as University project - "Project in Software Engineering 15 — VT2025"
+Tournament-app "Lan Buddies" made as University project - "Project in Software Engineering 15 — VT2025" as part of my Bachelors in Computer & Systems sciences at Stockholm University.
 Groupproject with 11 members developing using agile methodology - scrum.
+
 My roles were project leader, scrum master and part of the development team.
 Project leader:
 Planned and structured the group into teams and set up meetings. Drove engagement and collaboration for all members, and had to drive exclusion of 3 members towards course adminsitrators.
