@@ -10,7 +10,7 @@ Scrum master: Held "daily" scrums on mondays, wednesdays and fridays. My work in
 
 Development team: 
 Responsiblity driven Design - laying the foundation for a majority of classes in the backend, their responsobilities and dependencies.
-Writing code for large sums of the backend, particurarly Tournament class where I wrote an algorithm for bracket generation (single- elimination as a binary tree).
+part of the backend development team, best personal implementation - Tournament class where I wrote an algorithm for bracket generation (single- elimination as a binary tree).
 
 Stack:
 Backend - java with JPA to handle mariaDB database. Git with Jenkins as CI / CD tool and buildtool. Frontend made in dart that communicates with backend with REST/json API.
